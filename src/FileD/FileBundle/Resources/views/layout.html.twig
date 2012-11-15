@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap.css') }}">
+		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap-resonsive.css') }}">
+		
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="{{ assets('bundles/filedfile/js/bootstrap.js') }}"></script>
+	</head>
+	<body>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="navbar-inner">
+	        <div class="container">
+	          <a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </a>
+	          <a href="#" class="brand">File Downloader</a>
+	          <div class="nav-collapse collapse">
+	            <ul class="nav">
+	              <li class="{% if page == "Generate Link" %}active {% endif %}"><a href="#">Generate Link</a></li>
+	              <li><a href="#about">About</a></li>
+	              <li><a href="#contact">Contact</a></li>
+	            </ul>
+	          </div><!--/.nav-collapse -->
+	        </div>
+	      </div>
+	    </div>
+		{% block content %}
+	
+		{% endblock %}
+	
+	</body>
+
+
+</html>

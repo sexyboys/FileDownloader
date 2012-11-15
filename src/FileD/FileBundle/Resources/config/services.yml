@@ -1,0 +1,7 @@
+parameters:
+#    file_d_file.example.class: FileD\FileBundle\Example
+
+services:
+#    file_d_file.example:
+#        class: %file_d_file.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
