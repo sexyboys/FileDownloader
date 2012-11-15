@@ -1,10 +1,7 @@
 file_d_user:
     resource: "@FileDUserBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /index
 
-file_d_file:
-    resource: "@FileDFileBundle/Resources/config/routing.yml"
-    prefix:   /
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

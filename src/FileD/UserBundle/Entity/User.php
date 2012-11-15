@@ -22,7 +22,7 @@ class User extends BaseUser {
 
 	/**
 	 * List of downloaded files
-	 * @ORM\ManyToMany(targetEntity="File", inversedBy="usersDownload")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersDownload")
      * @ORM\JoinTable(name="users_files_downloaded")
 	 * 
 	 */
@@ -30,20 +30,20 @@ class User extends BaseUser {
 
 	/**
 	 * List of added files
-	 * @ORM\OneToMany(targetEntity="File", mappedBy="author")
+	 * @ORM\OneToMany(targetEntity="FileD\FileBundle\Entity\File", mappedBy="author")
 	 */
 	protected $addedFiles;
 
 	/**
 	 * List of files available
-	 * @ORM\ManyToMany(targetEntity="File", inversedBy="usersShare")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersShare")
      * @ORM\JoinTable(name="users_files_shared")
 	 */
 	protected $files;
 
 	/**
 	 * List of files seen/marked as seen
-	 * @ORM\ManyToMany(targetEntity="File", inversedBy="usersSeen")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersSeen")
      * @ORM\JoinTable(name="users_files_seen")
 	 */
 	protected $seenFiles;

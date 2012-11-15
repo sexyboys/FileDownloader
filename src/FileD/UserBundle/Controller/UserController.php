@@ -24,6 +24,7 @@ class UserController extends Controller
      */
     public function indexAction()
     {
+    	$this->get('session')->set("page","Accueil");
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('FileDUserBundle:User')->findAll();

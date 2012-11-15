@@ -1,6 +1,7 @@
 <?php
 
 namespace FileD\FileBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,26 +22,26 @@ class File {
 
 	/**
 	 * List of users who have downloaded this file
-	 * @ORM\ManyToMany(targetEntity="User", mappedBy="downloadedFiles")
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="downloadedFiles")
 	 */
 	protected $usersDownload;
 
 	/**
 	 * User who have uploaded this file
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="addedFiles")
+	 * @ORM\ManyToOne(targetEntity="FileD\UserBundle\Entity\User", inversedBy="addedFiles")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
 	 */
 	protected $author;
 
 	/**
 	 * List of users who have access to this file
-	 * @ORM\ManyToMany(targetEntity="User", mappedBy="files")
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="files")
 	 */
 	protected $usersShare;
 
 	/**
 	 * List of users who have marked as seen this file
-	 * @ORM\ManyToMany(targetEntity="User", mappedBy="seenFiles")
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="seenFiles")
 	 */
 	protected $usersSeen;
 

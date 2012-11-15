@@ -8,8 +8,10 @@
                 <a href="{{ path('fos_user_security_logout') }}">
                     {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
                 </a>
+                
+                <!-- DISPLAY FILES AVAILABLE-->
             {% else %}
-                <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+				{% include ":Security:login.html.twig" %}
             {% endif %}
         </div>
          {% for key, message in app.session.getFlashes() %}

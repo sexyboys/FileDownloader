@@ -1,13 +1,25 @@
 <html>
 	<head>
-		<title> {{ page }} | {{ appname }}</title>
+		<title> {{ app.session.get('page') }} | {{ appname }}</title>
         <meta charset="UTF-8" />
-		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap.css') }}">
-		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap-resonsive.css') }}">
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap.css') }}">
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap-resonsive.css') }}">
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/docs.css') }}">
+		<style>
+			/**Left sidebar **/
+			.nav-list{
+				margin-top:100px!important;
+			}
+			
+			/** mid content **/
+			.container{
+				margin-top:100px!important;
+			}
+		</style>
 		{% block css %}
 		{% endblock %}	
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="{{ assets('bundles/filedfile/js/bootstrap.js') }}"></script>
+		<script src="{{ asset('bundles/filedfile/js/bootstrap.js') }}"></script>
 		{% block js %}
 		{% endblock %}
 	</head>

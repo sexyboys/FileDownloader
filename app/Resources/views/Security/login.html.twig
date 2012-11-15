@@ -1,0 +1,41 @@
+{% block css %}
+<style>
+#loginBg{
+	height:300px;
+}
+</style>
+{% endblock %}
+
+
+{% block fos_user_content %}
+
+<div id="loginBg" class="well well-large">
+	<form class="form-horizontal " action="{{ path("fos_user_security_check") }}" method="post">
+	 <fieldset>
+	 	<legend>Connexion</legend>
+		<div class="control-group">
+		    <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
+		    <div class="controls">
+		    	<input type="text" id="username" name="_username" value="" required="required" />
+		    </div>
+		</div>
+		<div class="control-group">
+		    <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
+		    <div class="controls">
+		    	<input type="password" id="password" name="_password" required="required" class="span2"/>
+		    </div>
+		</div>
+		<div class="control-group">
+		   <div class="controls">
+		        <label class="checkbox" for="remember_me"><input type="checkbox" id="remember_me" name="_remember_me" value="on" class="span2"/>{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
+		        <input type="submit" id="_submit" name="_submit" class="btn" data-loading-text="Loading..." value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+		   		<a href="#" class="btn btn-large btn-primary disabled">Primary link</a>
+		   </div>
+		</div>
+	    
+	  </fieldset>
+	   
+	    <input type="hidden" name="_csrf_token" value="" class="span2"/>
+    </form>
+</div>
+{% endblock fos_user_content %}
