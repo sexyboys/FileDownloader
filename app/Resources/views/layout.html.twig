@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title> {{ page }} | {{ appname }}</title>
+        <meta charset="UTF-8" />
+		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap.css') }}">
+		<link rel="stylesheet" href="{{ assets('bundles/filedfile/css/bootstrap-resonsive.css') }}">
+		{% block css %}
+		{% endblock %}	
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="{{ assets('bundles/filedfile/js/bootstrap.js') }}"></script>
+		{% block js %}
+		{% endblock %}
+	</head>
+	<body>	
+		{% for key, message in app.session.getFlashes() %}
+	        <div >
+	            {{ message }}
+	        </div>
+        {% endfor %}
+        
+		{% block body %}
+	
+		{% endblock %}
+	
+	</body>
+
+
+</html>

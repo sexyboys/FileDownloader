@@ -1,3 +1,7 @@
+file_d_user:
+    resource: "@FileDUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
 file_d_file:
     resource: "@FileDFileBundle/Resources/config/routing.yml"
     prefix:   /
