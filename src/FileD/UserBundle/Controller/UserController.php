@@ -33,6 +33,7 @@ class UserController extends Controller
             'entities' => $entities,
         );
     }
+    
 
     /**
      * Finds and displays a User entity.

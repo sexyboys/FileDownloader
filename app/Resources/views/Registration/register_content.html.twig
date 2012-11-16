@@ -1,0 +1,14 @@
+
+
+<form class="form-horizontal well" action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register">
+    <fieldset>
+		 	<legend>Inscription</legend>
+	{{ form_widget(form) }}
+    
+	<div class="control-group">
+	   <div class="controls">
+	        <input class="btn btn-primary" type="submit" value="{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}" />
+	    	<a href="{{ path('user_index') }}" class="btn">Retour</a>
+    	</div>
+    </div>
+</form>
