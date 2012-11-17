@@ -1,16 +1,89 @@
-<h1>File creation</h1>
+
+{% block js %}
+
+<script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/filedfile/js/plupload.full.js') }}"></script>
+{% endblock %}
 
 <form action="{{ path('file_create') }}" method="post" {{ form_enctype(form) }}>
     {{ form_widget(form) }}
+    
+    
+	<div id="filelist">No runtime found.</div>
+	<br />
+	<a id="pickfiles" href="#">[Select files]</a>
+	<a id="uploadfiles" href="#">[Upload files]</a>
     <p>
-        <button type="submit">Create</button>
+        <button type="submit" class="btn btn-primary">Ajouter le(s) fichier(s)</button>
     </p>
 </form>
+<script type="text/javascript">
+//Calculate the last filter enable to put comas
+//is music the last enabled?
+{% set last = 0 %}
+{% if app_upload_enable_images %} {% set last = 1 %}{% endif %}
+{% if app_upload_enable_zip %} {% set last = 2 %}{% endif %}
+{% if app_upload_enable_movies %} {% set last = 3 %}{% endif %}
+{% if app_upload_enable_musics %} {% set last = 4 %}{% endif %}
+// Custom example logic
+$(function() {
+	var uploader = new plupload.Uploader({
+		runtimes : 'gears,html5,flash,silverlight,browserplus',
+		browse_button : 'pickfiles',
+		container : 'container',
+		max_file_size : '{{ app_upload_max_size }}',
+		url : '{{ path('file_add_file') }}',
+		flash_swf_url : '{{ asset('bundles/filedfile/js/plupload.flash.swf') }}',
+		silverlight_xap_url : '{{ asset('bundles/filedfile/js/plupload.silverlight.xap') }}',
+		filters : [
+	   		{% if app_upload_enable_images %}{title : "Image files", extensions : "{{ app_upload_images_types }}"} {% if last >= 1 %}, {%endif%}{% endif %}
+			{% if app_upload_enable_zip %}{title : "Zip files", extensions : "{{ app_upload_zip_types }}"}{% if last >= 2 %}, {%endif%}{% endif %}
+			{% if app_upload_enable_movies %}{title : "Movie files", extensions : "{{ app_upload_movies_types }}"}{% if last >= 3 %}, {%endif%}{% endif %}
+			{% if app_upload_enable_musics %}{title : "Music files", extensions : "{{ app_upload_enable_musics }}"}{% if last >= 4 %}, {%endif%}{% endif %}
+		],
+		resize : {width : {{ app_upload_image_resize_width }}, height : {{ app_upload_image_resize_height }}, quality : {{ app_upload_image_resize_quality }}},
+	});
 
-<ul class="record_actions">
-    <li>
-        <a href="{{ path('file') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
+	uploader.bind('Init', function(up, params) {
+		$('#filelist').html("<div>Current runtime: " + params.runtime + "</div>");
+	});
+
+	$('#uploadfiles').click(function(e) {
+		uploader.start();
+		e.preventDefault();
+	});
+
+	uploader.init();
+
+	uploader.bind('FilesAdded', function(up, files) {
+		$.each(files, function(i, file) {
+			$('#filelist').append(
+				'<div id="' + file.id + '">' +
+				file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>' +
+			'</div>');
+		});
+
+		up.refresh(); // Reposition Flash/Silverlight
+	});
+
+	uploader.bind('UploadProgress', function(up, file) {
+		$('#' + file.id + " b").html(file.percent + "%");
+	});
+
+	uploader.bind('Error', function(up, err) {
+		$('#filelist').append("<div>Error: " + err.code +
+			", Message: " + err.message +
+			(err.file ? ", File: " + err.file.name : "") +
+			"</div>"
+		);
+
+		up.refresh(); // Reposition Flash/Silverlight
+	});
+
+	uploader.bind('FileUploaded', function(up, file) {
+		$('#' + file.id + " b").html("100%");
+	});
+});
+</script>

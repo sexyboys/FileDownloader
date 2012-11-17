@@ -1,9 +1,11 @@
-<h1>File edit</h1>
+
+{% include "PunkAveFileUploaderBundle:Default:templates.html.twig" %}
 
 <form action="{{ path('file_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
     {{ form_widget(edit_form) }}
+    <div class="file-uploader"></div>
     <p>
-        <button type="submit">Edit</button>
+        <button type="submit" class="btn btn-primary">Edit</button>
     </p>
 </form>
 

@@ -36,13 +36,15 @@ class RegistrationController extends ContainerAware
         $process = $formHandler->process($confirmationEnabled);
         if ($process) {
             $user = $form->getData();
-
+			//Locked by default
+			$user->setLocked(true);
+			$this->container->get('fos_user.user_manager')->updateUser($user);
             $authUser = false;
             if ($confirmationEnabled) {
                 $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
                 $route = 'fos_user_registration_check_email';
             } else {
-                $authUser = true;
+                //$authUser = true;
                 $route = 'fos_user_registration_confirmed';
             }
 
@@ -97,7 +99,7 @@ class RegistrationController extends ContainerAware
 
         $this->container->get('fos_user.user_manager')->updateUser($user);
         $response = new RedirectResponse($this->container->get('router')->generate('fos_user_registration_confirmed'));
-        $this->authenticateUser($user, $response);
+        //$this->authenticateUser($user, $response);
 
         return $response;
     }
@@ -107,23 +109,23 @@ class RegistrationController extends ContainerAware
      */
     public function confirmedAction()
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        /*$user = $this->container->get('security.context')->getToken()->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
-        }
+        }*/
 
-        return $this->container->get('templating')->renderResponse('FOSUserBundle:Registration:confirmed.html.'.$this->getEngine(), array(
-            'user' => $user,
+        return $this->container->get('templating')->renderResponse('FileDUserBundle:Registration:confirmed.html.twig.twig.twig', array(
+            
         ));
     }
 
     /**
      * Authenticate a user with Symfony Security
      *
-     * @param \FOS\UserBundle\Model\UserInterface        $user
+     * @param        $user
      * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    protected function authenticateUser(UserInterface $user, Response $response)
+    protected function authenticateUser(User $user, Response $response)
     {
         try {
             $this->container->get('fos_user.security.login_manager')->loginUser(

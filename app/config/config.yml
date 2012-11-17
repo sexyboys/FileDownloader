@@ -21,8 +21,22 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-    globals:
+    globals:    
+    #Application Configuration
         appname: "%app_name%"
+        app_upload_enable_zip: "%app_upload_enable_zip%"
+        app_upload_zip_types: "%app_upload_zip_types%"
+        app_upload_enable_images: "%app_upload_enable_images%"
+        app_upload_images_types: "%app_upload_images_types%"
+        app_upload_enable_movies: "%app_upload_enable_movies%"
+        app_upload_movies_types: "%app_upload_movies_types%"
+        app_upload_enable_musics: "%app_upload_enable_musics%"
+        app_upload_musics_types: "%app_upload_musics_types%"
+        app_upload_enable_repositories: "%app_upload_enable_repositories%"
+        app_upload_max_size: "%app_upload_max_size%"
+        app_upload_image_resize_width: "%app_upload_image_resize_width%"
+        app_upload_image_resize_height: "%app_upload_image_resize_height%"
+        app_upload_image_resize_quality: "%app_upload_image_resize_quality%"
 
 # Assetic Configuration
 assetic:
@@ -64,3 +78,8 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: FileD\UserBundle\Entity\User
+    from_email:
+        address:        webmaster@example.com
+        sender_name:    Admin
+        
+    

@@ -4,20 +4,40 @@
 		{% block navbar %}
 		<div class="navbar navbar-fixed-top">
 	      <div class="navbar-inner">
-	          <a href="" class="brand">{{ appname }}</a>
+	          <a href="{{ path('user_index') }}" class="brand">{{ appname }}</a>
 	          <div class="nav-collapse collapse">
 	            <ul class="nav">
-	              <li class="{% if app.session.get('page')  == "Accueil" %}active {% endif %}"><a href="#">Home</a></li>
+	              <li class="{% if app.session.get('page')  == "Accueil" %}active {% endif %}"><a href="{{ path('user_index') }}">Home</a></li>
 	              <li><a href="#about">About</a></li>
 	              <li><a href="#contact">Contact</a></li>
-	            </ul>
+                </ul>
+	
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <ul class="nav pull-right">   	
+            			<li>
+            				<p class="text-info"><small>
+			                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} </small>
+			                </p>
+			            </li>
+			            <li>
+			                <a  href="{{ path('fos_user_security_logout') }}">
+			                    <i class="icon-off"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }} 
+			                </a>
+                		</li>
+                	</ul>
+                 {% endif %}
+            
 	          </div><!--/.nav-collapse -->
-	        
 	      </div>
 	    </div>
 	    {% endblock %}
-		{% block content %}
-	
-		{% endblock %}
+	    <div class="container">
+			{% block content %}
+				
+	    	{% block fos_user_content %}
+	    	{% endblock %}
+		
+			{% endblock %}
+		</div>
 	
 {% endblock %}

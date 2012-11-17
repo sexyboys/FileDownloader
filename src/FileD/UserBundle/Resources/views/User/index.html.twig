@@ -1,15 +1,73 @@
 {% extends "FileDUserBundle::layout.html.twig" %}
 
 {% block content %}
-	<div class="container">
 		<div>
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
-                <a href="{{ path('fos_user_security_logout') }}">
-                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                </a>
-                
-                <!-- DISPLAY FILES AVAILABLE-->
+            
+            	<!-- Display home content FILES-->
+            	<div class="well">
+            		<fieldset >
+		 				<legend>List of files available</legend>
+		            	<div class="row">
+		            		<a href="#addFileModal" data-toggle="modal" class="span2 offset9"><i class="icon-plus"></i>Add a File</a>
+		            		
+			    				{% if app.user.files is empty %}
+			    					<p class="text-error span2 offset2">No files found.</p>
+			    				{% else %}
+					            	<table class="table table-striped span9" >
+					            		<thead>
+					            			<tr>
+					            				<th>Name</th>
+					            				<th>Size</th>
+					            				<th>Added on</th>
+					            				<th>Added by</th>
+					            				<th>Actions</th>	
+					            			</tr>
+					            		</thead>
+					            		<tbody>
+					    					{% for file in app.user.files %}
+					    						<tr>
+					    							<td>file.name</td>
+					    							<td>file.dateCreation</td>
+					    							<td>file.author.username</td>
+					    							<td>
+					    								<a href="" title="Download"><i class="icon-download"></i></a>
+					    								<a href="" title="View"><i class="icon-zoom-in"></i></a>
+					    								{% if is_granted("ROLE_ADMIN") %}
+					    									<a href="" title="Share"><i class="icon-share"></i></a>
+					    								{% endif %}
+					    								
+					    								{% if file.author.username == app.user.username %}
+					    									<a href="" title="Delete"><i class="icon-remove"></i></a>
+					    								{% endif %}
+					    							</td>
+					    						</tr>
+					    					{% endfor %}
+					    				</tbody>
+					    			</table>
+			    				{% endif %}	
+			    		</div>
+		    		</fieldset>
+    			</div>
+    			
+    			
+    			<!-- Modal -->
+				<div id="addFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addFileModal" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="myModalLabel">Add a new File</h3>
+					</div>
+					<div class="modal-body">
+						<!-- if admin choose share one from server or a new one -->
+						{% render "FileDFileBundle:File:new" %}
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+            	
+            	
             {% else %}
 				{% include ":Security:login.html.twig" %}
             {% endif %}
@@ -24,5 +82,4 @@
             {% block fos_user_content %}
             {% endblock fos_user_content %}
         </div>
-	</div>
 {% endblock %}

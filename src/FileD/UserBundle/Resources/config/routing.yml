@@ -1,7 +1,20 @@
 user_index:
     pattern:  /
-    defaults: { _controller: FileDUserBundle:User:index }
+    defaults: { _controller: FileDUserBundle:Security:login }
     
 user_inscription:
     pattern:  /inscription
     defaults: { _controller: FileDUserBundle:Registration:register }
+
+user_reset_pwd:
+    pattern:  /reset-password
+    defaults: { _controller: FileDUserBundle:Resetting:reset }
+    
+file_create:
+    pattern:  /
+    defaults: { _controller: FileDFileBundle:File:new }
+    
+file_add_file:
+    pattern:  /
+    defaults: { _controller: FileDFileBundle:File:addfile }
+    

@@ -1,11 +1,11 @@
 {% block css %}
 <style>
-#loginBg{
-	height:300px;
+input[type='text'],input[type='password']{
+	height:30px;
 }
+
 </style>
 {% endblock %}
-
 
 {% block fos_user_content %}
 
@@ -15,7 +15,7 @@
 			<div class="control-group">
 			    <label class="control-label" for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
 			    <div class="controls">
-			    	<input class="input-xlarge" type="text" id="username" name="_username" value="" required="required" />
+			    	<input  class="input-xlarge" type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
 			    </div>
 			</div>
 			<div class="control-group">
@@ -31,9 +31,27 @@
 			   		<a href="{{ path('user_inscription') }}" class="btn">Inscription</a>
 			   </div>
 			</div>
+			<div class="control-group">
+			   <div class="controls">
+			        <a href="#resetFileModal" type="" data-toggle="modal" class=""><small>Vous avez oublié votre mot de passe?</small></a>
+			   </div>
+			</div>
 		    
 		  </fieldset>
-	   
-	    <input type="hidden" name="_csrf_token" value="" class="span2"/>
+	    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" class="span2"/>
     </form>
 {% endblock fos_user_content %}
+
+    			<!-- Modal -->
+				<div id="resetFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="resetFileModal" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="myModalLabel">Réinitialiser votre mot de passe</h3>
+					</div>
+					<div class="modal-body">
+						{% include ":Resetting:request_content.html.twig" %}
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					</div>
+				</div>
