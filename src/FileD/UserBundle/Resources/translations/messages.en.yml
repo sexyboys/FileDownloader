@@ -1,0 +1,48 @@
+app.nav.home: Home
+app.nav.compte: My account
+app.nav.contact: Contact
+user.register.confirmed: Your registration is saved but it is not active now. <br/>You will recieve an e-mail when the administrator had activated it.
+user.register.form.title: Register
+user.register.form.back: Back
+user.login.form.title: Sign in
+user.login.form.register: Register
+user.login.form.loading: Loading...
+user.login.form.forgotpwd: Forgot your password?
+user.reset.form.title: Reset your password
+user.reset.form.close: Close
+
+file.list.title: List of files available
+file.list.addfile: Add a file
+file.list.addrepository: Add a repository
+file.list.nofilesfound: No files found.
+file.list.name: Name
+file.list.size: Size
+file.list.addedon: Added on
+file.list.addedby: Added by
+file.list.actions: Tools
+file.list.addfile: Add a new file
+file.list.close: Close
+file.list.parent: Parent Directory
+file.list.name.saving: Saving...
+file.list.name.edit: Edit the name
+file.list.name.access: Display the directory content
+file.list.name.share: Share this file
+
+file.share.title: Sharing File
+file.share.list.empty: Choose one or more user(s)
+
+file.size.unit: bytes
+file.size.unit.kilo: Kb
+file.size.unit.mega: Mb
+file.size.unit.giga: Gb
+file.size.unit.tera: Tb
+
+file.new.title.localfiles: Local files
+file.new.title.serverfiles: Share server files
+file.new.add: Add files
+file.new.uploadall: Upload all
+file.new.upload: Upload
+file.new.server.title: Enter the path of the file to add
+file.new.server.sharefile: Add
+
+msg.error.addfileserver.wrongrights: Please check that the file have necessary permission (read/write for web user)

@@ -11,11 +11,11 @@ input[type='text'],input[type='password']{
 
 	<form class="form-horizontal well" action="{{ path("fos_user_security_check") }}" method="post">
 		 <fieldset>
-		 	<legend>Connexion</legend>
+		 	<legend>{% trans %}user.login.form.title {% endtrans %}</legend>
 			<div class="control-group">
 			    <label class="control-label" for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
 			    <div class="controls">
-			    	<input  class="input-xlarge" type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+			    	<input  class="input-xlarge" type="text" id="username" name="_username" value="{%if last_username is defined %}{{ last_username }}{% endif %}" required="required" />
 			    </div>
 			</div>
 			<div class="control-group">
@@ -27,13 +27,13 @@ input[type='text'],input[type='password']{
 			<div class="control-group">
 			   <div class="controls">
 			        <label class="checkbox" for="remember_me"><input type="checkbox" id="remember_me" name="_remember_me" value="on" class="span2"/>{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
-			        <input type="submit" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="Loading..." value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
-			   		<a href="{{ path('user_inscription') }}" class="btn">Inscription</a>
+			        <input type="submit" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="{% trans %}user.login.form.loading{% endtrans %}" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+			   		<a href="{{ path('user_inscription') }}" class="btn">{% trans %}user.login.form.register{% endtrans %}</a>
 			   </div>
 			</div>
 			<div class="control-group">
 			   <div class="controls">
-			        <a href="#resetFileModal" type="" data-toggle="modal" class=""><small>Vous avez oublié votre mot de passe?</small></a>
+			        <a href="#resetFileModal" type="" data-toggle="modal" class=""><small>{% trans %}user.login.form.forgotpwd{% endtrans %}</small></a>
 			   </div>
 			</div>
 		    
@@ -46,12 +46,12 @@ input[type='text'],input[type='password']{
 				<div id="resetFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="resetFileModal" aria-hidden="true">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="myModalLabel">Réinitialiser votre mot de passe</h3>
+						<h3 id="myModalLabel">{% trans %}user.reset.form.title{% endtrans %}</h3>
 					</div>
 					<div class="modal-body">
 						{% include ":Resetting:request_content.html.twig" %}
 					</div>
 					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}user.reset.form.close{% endtrans %}</button>
 					</div>
 				</div>

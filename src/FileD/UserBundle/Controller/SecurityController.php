@@ -2,18 +2,21 @@
 
 namespace FileD\UserBundle\Controller;
 
+use FileD\FileBundle\Factory\FileFactory;
+
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\Security\Core\SecurityContext;
 
 class SecurityController extends ContainerAware
 {
+	/**
+	 * Sign in action rendering form login or action
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
     public function loginAction()
     {
         $request = $this->container->get('request');
-        /* @var $request \Symfony\Component\HttpFoundation\Request */
         $session = $request->getSession();
-        /* @var $session \Symfony\Component\HttpFoundation\Session */
-
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
             $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
@@ -25,18 +28,51 @@ class SecurityController extends ContainerAware
         }
 
         if ($error) {
-            // TODO: this is a potential security risk (see http://trac.symfony-project.org/ticket/9523)
             $error = $error->getMessage();
         }
         // last username entered by the user
         $lastUsername = (null === $session) ? '' : $session->get(SecurityContext::LAST_USERNAME);
 
         $csrfToken = $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate');
-
+        
+        //Get the parent given through GET of files displayed
+		$fileId = array_key_exists('file', $_GET)?$_GET['file']:null;
+		$fileParent = null;
+		if($fileId!=null) $fileParent = $this->container->get('filed_user.file')->load($fileId);
+				
+        //Loading files children of the given parent file only iff the file is shared to the user
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $hasRight = $fileParent!=null && FileFactory::getInstance()->isSharedWith($user,$fileParent)?true:false;
+        $files = null;
+        if($fileParent != null && $hasRight){
+			//Getting children and only those with rights on it
+			$files = array();
+        	foreach($fileParent->getChildren() as $child){
+				if(FileFactory::getInstance()->isSharedWith($user,$child)){
+					$files[] = $child;		
+				}
+			}
+        }
+        else{
+        	//Default root option
+        	if($user !=null && is_object($user)){
+	        	$userFiles = $user->getFiles();
+	        	//We get only root files (with no parent)
+	        	foreach($userFiles as $file){
+	        		if($file->getParent()==null){
+	        			$files[] = $file;
+	        		}
+        	}
+        	}
+        	$fileId=0;
+        }
+        
         return $this->renderLogin(array(
             'last_username' => $lastUsername,
             'error'         => $error,
             'csrf_token' => $csrfToken,
+        	'files' => $files,
+        	'fileId' => $fileId
         ));
     }
 

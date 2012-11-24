@@ -1,7 +1,15 @@
 parameters:
-#    file_d_user.example.class: FileD\UserBundle\Example
+#   file_d_user.file.class: FileD\UserBundle\Manager\File;
+     filed_user.file.class: FileD\FileBundle\Manager\FileManager
 
 services:
 #    file_d_user.example:
 #        class: %file_d_user.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+#      file_d_user.file:
+#        class: %file_d_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+     filed_user.file:
+         class: %filed_user.file.class%
+         arguments: [@doctrine.orm.entity_manager]

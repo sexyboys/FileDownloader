@@ -11,10 +11,38 @@ user_reset_pwd:
     defaults: { _controller: FileDUserBundle:Resetting:reset }
     
 file_create:
-    pattern:  /
+    pattern:  /file/new
     defaults: { _controller: FileDFileBundle:File:new }
     
 file_add_file:
-    pattern:  /
+    pattern:  /add-file
     defaults: { _controller: FileDFileBundle:File:addfile }
+    
+file_add_file_server:
+    pattern:  /add-file-server
+    defaults: { _controller: FileDFileBundle:File:addfileserver }
+    
+file_add_repository:
+    pattern:  /add-repository
+    defaults: { _controller: FileDFileBundle:File:addrepository }
+    
+file_edit:
+    pattern:  /edit
+    defaults: { _controller: FileDFileBundle:File:edit }
+    
+file_delete:
+    pattern:  /delete
+    defaults: { _controller: FileDFileBundle:File:delete }
+    
+file_download:
+    pattern:  /file/{id}/download
+    defaults: { _controller: FileDFileBundle:File:download }
+    
+file_share:
+    pattern:  /share
+    defaults: { _controller: FileDFileBundle:File:rendershareFile }
+    
+file_confirm_share:
+    pattern:  /share/confirmation
+    defaults: { _controller: FileDFileBundle:File:shareFile }
     

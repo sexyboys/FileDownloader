@@ -1,0 +1,278 @@
+<!-- Rendered by userBundle:Index : display all files-->
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+           
+            	<!-- Display home content FILES-->
+            	<div class="well">
+            		<fieldset >
+		 				<legend>{% trans %}file.list.title{% endtrans %}</legend>
+		            	<div class="row">
+		            		
+	            			{% if parent_id == 0 %}
+	            				<a class="span3 " href="{{ path('user_index') }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            
+	            			{% elseif parent_id > 0 %}
+	            				<a class="span3 " href="{{ path('user_index') }}?file={{ parent_id }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            			
+	            			{% endif %}
+		            		<div class="span3 offset8">
+			            		<a href="#addFileModal" data-toggle="modal" ><i class="icon-plus"></i>{% trans %}file.list.addfile{% endtrans %}</a><br/>
+			            		<a href="#" onclick="addRepository()" ><i class="icon-plus"></i>{% trans %}file.list.addrepository{% endtrans %}</a>
+		            		</div>
+		            			
+			    				{% if files is empty %}
+			    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
+			    				{% else %}
+					            	<table class="table table-striped span9" >
+					            		<thead>
+					            			<tr>
+					            				<th>{% trans %}file.list.name{% endtrans %}</th>
+					            				<th>{% trans %}file.list.size{% endtrans %}</th>
+					            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
+					            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
+					            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
+					            			</tr>
+					            		</thead>
+					            		<tbody>
+					    					{% for file in files %}
+					    						<tr class="tr{{ file.id }}">
+					    							<td>
+					    								{% if file.isDirectory() %}
+					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+					    											<i class="icon-pencil" style="float:left"></i>
+					    										</a>  
+					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" >
+					    											<span class="edit{{ file.id }}">{{ file.name }}</span>
+					    										</a>
+					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
+					    										
+					    									{% else %}
+					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" onclick="editName('edit{{ file.id }}')" ><i class="icon-share-alt"></i></a><span>{{ file.name }}</span>
+					    														    									
+					    									{% endif %}
+					    								{% else %}
+					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+					    											<i class="icon-pencil" style="float:left"></i>
+					    										</a>   
+					    										<span class="edit{{ file.id }}">{{ file.name }}</span>
+					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
+					    										
+					    									{% endif %}
+					    								{% endif %}
+					    							
+					    							</td>
+					    							<td>
+					    								{% if file.isDirectory() and file.size == 0 %}
+					    									
+					    									{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+					    									
+					    								{% else %}
+					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+					    									{% set size = file.size %}
+					    									{% if size < 1000 %}
+					    										{{ file.size }} {% trans %} file.size.unit {% endtrans %}
+					    									{% elseif size <1000000 %}
+					    										{{ file.size / 1000}}	{% trans %} file.size.unit.kilo {% endtrans %}
+					    									{% elseif size <1000000000 %}
+					    										{{ file.size / 1000000}}	{% trans %} file.size.unit.mega {% endtrans %}
+					    									{% elseif size <1000000000000 %}
+					    										{{ file.size / 1000000000}}	{% trans %} file.size.unit.giga {% endtrans %}
+					    									{% else %}
+					    										{{ file.size / 1000000000000}}	{% trans %} file.size.unit.tera {% endtrans %}
+					    									{% endif %}
+					    								{% endif %}
+					    							</td>
+					    							<td>{{ file.dateCreation|date('Y-m-d H:i:s') }}</td>
+					    							<td>{{ file.author.username }}</td>
+					    							<td>
+					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="Download"><i class="icon-download"></i></a>
+					    								
+					    								{% if not file.isDirectory() %}
+					    									<a href="" title="View"><i class="icon-zoom-in"></i></a>
+					    								{% endif %}
+					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN") %}
+					    									<a href="" title="Share" onclick="share({{ file.id }})><i class="icon-share"></i></a>
+					    								{% endif %}
+					    								
+					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
+					    									<a href="" title="Delete" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
+					    								{% endif %}
+					    							</td>
+					    						</tr>
+					    					{% endfor %}
+					    				</tbody>
+					    			</table>
+			    				{% endif %}	
+			    		</div>
+		    		</fieldset>
+    			</div>
+    			
+    			
+    			<!-- Add file Modal -->
+				<div id="addFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addFileModal" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="myModalLabel">{% trans %}file.list.addfile{% endtrans %}</h3>
+					</div>
+					<div class="modal-body">
+						<!-- if admin choose share one from server or a new one -->
+						{% render "FileDFileBundle:File:new" with { "file_id" : file_id } %}
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
+					</div>
+				</div>
+				
+				
+    			<!-- Loading Modal -->
+	    		<div id="loadingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-body">
+	    			<img src="{{ asset('bundles/filedfile/img/loading.gif') }}"/>
+					</div>
+				</div>
+				
+    			<!-- Share Modal -->
+				<div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="myModalLabel">{% trans %}file.list.share{% endtrans %}</h3>
+					</div>
+					<div class="modal-body">
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
+					</div>
+				</div>
+				
+				<!-- Style -->
+				<style>
+					<!--
+					#addFileModal{
+						width:800px;
+					}
+					-->
+				</style>
+				
+				<!-- Script for name edition -->
+				<script type="text/javascript">
+				<!--
+				//Delete a file or directory
+				function deleteFile(id){
+					$('#loadingModal').modal('show');
+					var DATA = {'id': id};
+			 		$.ajax({
+			 			type: "POST",
+			 			url: "{{ path('file_delete') }}",
+			 			data: DATA,
+			 			async:false,
+			 			cache: false,
+			 			success: function(data){
+			 				//avoid full refresh
+							$('#loadingModal').modal('hide');
+			 				if(data=="true") $('.tr'+id).remove();
+			 				return false;
+			 			},
+			 			error: function(request,status,error){
+							$('#loadingModal').modal('hide');
+			 				document.location.reload(true);
+			 				return false;
+			 			}
+			 		});
+				}
+
+				//Prepare edition of name directory
+				function editName(id){
+				    $('#input'+id).css('visibility','visible');
+				    $('#input'+id).css('display','block');
+				    $('#btnok'+id).css('visibility','visible');
+				    $('#btnok'+id).css('display','block');
+				    $('#btncancel'+id).css('visibility','visible');
+				    $('#btncancel'+id).css('display','block');
+				    //hide text
+				    $('.edit'+id).css('visibility','hidden');
+				    $('.edit'+id).css('display','none');
+				}
+
+				//Send data to be saved
+				function sendData(id,canSaved){
+					if(canSaved){
+						var value = $('#input'+id).val();
+				     	var DATA = {'id': id,'name': value};
+				 		$.ajax({
+				 			type: "POST",
+				 			url: "{{ path('file_edit') }}",
+				 			data: DATA,
+				 			async:false,
+				 			cache: false,
+				 			success: function(data){
+				 				//avoid full refresh
+				 				$('.edit'+id).text(value);
+				 				return false;
+				 			},
+				 			error: function(request,status,error){
+				 				document.location.reload(true);
+				 				return false;
+				 			}
+				 		});
+
+					}
+					//show text
+				    $('.edit'+id).css('visibility','visible');
+				    $('.edit'+id).css('display','inline');
+					//hide form
+				    $('#input'+id).css('display','none');
+				    $('#btnok'+id).css('display','none');
+				    $('#btncancel'+id).css('display','none');
+				    
+				    $('#input'+id).css('visibility','hidden');
+				    $('#btnok'+id).css('visibility','hidden');
+				    $('#btncancel'+id).css('visibility','hidden');
+
+				}
+
+
+				//When hiding the modal, refresh
+				    $('#addFileModal').bind('hidden', function () {
+				    	document.location.reload(true);
+				    })
+				    
+				//Prepare the add file from server action
+				function addFilesServer(){
+						$('#loadingModal').modal('show');
+						var parent = $('#server_parent').val();
+						var value = $('#server_dirpath').val();
+				     	var DATA = {'id': parent,'path': value};
+				 		$.ajax({
+				 			type: "POST",
+				 			url: "{{ path('file_add_file_server') }}",
+				 			data: DATA,
+				 			async:false,
+				 			cache: false,
+				 			success: function(data){
+				 				//$('#addFileModal').hide();
+								$('#loadingModal').modal('hide');
+				 				return false;
+				 			},
+				 			error: function(request,status,error){
+								$('#loadingModal').modal('hide');
+				 				//document.location.reload(true);
+				 				return false;
+				 			}
+				 		});
+				}
+
+				//Share a repository (and all content) or a file to another user
+				function share(id){
+					$('#share_file').val(id);
+					$('#shareModal').modal('show');
+				} 
+				
+				//-->
+				</script>
+				            	
+            	
+{% else %}
+		{% include ":Security:login.html.twig" with {'last_username': last_username, 'csrf_token': csrf_token} %}
+{% endif %}

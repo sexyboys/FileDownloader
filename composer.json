@@ -1,6 +1,6 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "name": "epidoux/FileDownloader",
+    "description": "File downloader",
     "autoload": {
         "psr-0": { "": "src/" }
     },

@@ -1,7 +1,16 @@
 parameters:
 #    file_d_file.example.class: FileD\FileBundle\Example
+     filed_file.file.class: FileD\FileBundle\Manager\FileManager
+     filed_file.directory.class: FileD\FileBundle\Manager\DirectoryManager
 
 services:
 #    file_d_file.example:
 #        class: %file_d_file.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+     filed_file.file:
+         class: %filed_file.file.class%
+         arguments: [@doctrine.orm.entity_manager]
+
+     filed_file.directory:
+         class: %filed_file.directory.class%
+         arguments: [@doctrine.orm.entity_manager]

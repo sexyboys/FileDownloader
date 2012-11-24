@@ -12,4 +12,25 @@ use Doctrine\ORM\EntityRepository;
  */
 class FileRepository extends EntityRepository
 {
+
+
+	/**
+	 * Find file by path
+	 * @param $path the path to match
+	 * @return the entity
+	 */
+	public function findIdByPath($path)
+	{
+		$result = $this->_em->createQuery('
+		        SELECT
+		            f.id
+		        FROM
+		            FileDFileBundle:File f
+		        WHERE
+		            f.link = :link
+		    ')
+			    ->setParameter('link', $path)
+				->getResult();
+		return $result[0]['id'];
+	}
 }

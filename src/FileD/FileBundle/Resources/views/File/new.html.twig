@@ -1,89 +1,140 @@
+   {% if is_granted('ROLE_ADMIN') %}
+		<ul class="nav nav-tabs">
+		    <li><a href="#local" data-toggle="tab">{% trans %}file.new.title.localfiles {% endtrans %}</a></li>
+		    <li><a href="#server" data-toggle="tab">{% trans %}file.new.title.serverfiles{% endtrans %}</a></li>
+	    </ul>
+	    <div class="tab-content">
+	    	<img src="{{ asset('bundles/filedfile/img/loading.gif') }}" style="display:none" class="img_loading_add"/>
+			<div class="tab-pane active" id="local">
+				<!-- The file upload form used as target for the file upload widget -->
+			    <form id="fileupload" action="{{ path('file_add_file') }}" method="POST" enctype="multipart/form-data">
+			        <div class="row fileupload-buttonbar">
+			            <div class="span7">
+		    				<input type="hidden" name="parent" value="{{ file_id }}"/>
+			                <!-- The fileinput-button span is used to style the file input field as button -->
+			                <span class="btn btn-success fileinput-button">
+			                    <i class="icon-plus icon-white"></i>
+			                    <span>{% trans %}file.new.add{% endtrans %}</span>
+			                    <input type="file" name="files[]" multiple>
+			                </span>
+			                <button type="submit" class="btn btn-primary start">
+			                    <i class="icon-upload icon-white"></i>
+			                    <span>{% trans %}file.new.uploadall{% endtrans %}</span>
+			                </button>
+			                <input type="checkbox" class="toggle">
+			            </div>
+			            <div class="span5">
+			                <div class="progress progress-success progress-striped active fade">
+			                    <div class="bar" style="width:0%;"></div>
+			                </div>
+			            </div>
+			        </div>
+			        <div class="fileupload-loading"></div>
+			        <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+			        <br>
+			
+			    </form>
+			</div>
+			<div class="tab-pane" id="server">
+					
+					<form id="form_server" action="" method="POST">
+						<div class="control-group">
+							<label class="control-label" for="path">{% trans %}file.new.server.title{% endtrans %}</label>
+			    			<div class="controls">
+			    				<input type="hidden" id="server_parent" name="server_parent" value="{{ file_id }}"/>
+			    				<input  class="input-xlarge" type="text" id="server_dirpath" name="path" value="" required="required" />
+			    				<input type="submit" onclick="addFilesServer()" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="" value="{% trans %}file.new.server.sharefile{% endtrans %}"/>
+			   			    </div>
+						</div>
+					</form>
+			</div>
+		</div>
+    {% else %}
+			<div class="tab-pane" id="local">
+				<div class="control-group">
+					<label class="control-label" for="path">Select the file you want to upload:</label>
+	    			<div class="controls">
+	    				<input id="fileupload" type="file" name="files[]" data-url="{{ path('file_add_file') }}">
+						<div id="progress">
+					   		<div class="bar" style="width: 0%;"></div>
+						</div>
+	   			    </div>
+				</div>
+			</div>
+	{% endif %}
 
-{% block js %}
-
-<script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-
-<script type="text/javascript" src="{{ asset('bundles/filedfile/js/plupload.full.js') }}"></script>
-{% endblock %}
-
-<form action="{{ path('file_create') }}" method="post" {{ form_enctype(form) }}>
-    {{ form_widget(form) }}
-    
-    
-	<div id="filelist">No runtime found.</div>
-	<br />
-	<a id="pickfiles" href="#">[Select files]</a>
-	<a id="uploadfiles" href="#">[Upload files]</a>
-    <p>
-        <button type="submit" class="btn btn-primary">Ajouter le(s) fichier(s)</button>
-    </p>
-</form>
-<script type="text/javascript">
-//Calculate the last filter enable to put comas
-//is music the last enabled?
-{% set last = 0 %}
-{% if app_upload_enable_images %} {% set last = 1 %}{% endif %}
-{% if app_upload_enable_zip %} {% set last = 2 %}{% endif %}
-{% if app_upload_enable_movies %} {% set last = 3 %}{% endif %}
-{% if app_upload_enable_musics %} {% set last = 4 %}{% endif %}
-// Custom example logic
-$(function() {
-	var uploader = new plupload.Uploader({
-		runtimes : 'gears,html5,flash,silverlight,browserplus',
-		browse_button : 'pickfiles',
-		container : 'container',
-		max_file_size : '{{ app_upload_max_size }}',
-		url : '{{ path('file_add_file') }}',
-		flash_swf_url : '{{ asset('bundles/filedfile/js/plupload.flash.swf') }}',
-		silverlight_xap_url : '{{ asset('bundles/filedfile/js/plupload.silverlight.xap') }}',
-		filters : [
-	   		{% if app_upload_enable_images %}{title : "Image files", extensions : "{{ app_upload_images_types }}"} {% if last >= 1 %}, {%endif%}{% endif %}
-			{% if app_upload_enable_zip %}{title : "Zip files", extensions : "{{ app_upload_zip_types }}"}{% if last >= 2 %}, {%endif%}{% endif %}
-			{% if app_upload_enable_movies %}{title : "Movie files", extensions : "{{ app_upload_movies_types }}"}{% if last >= 3 %}, {%endif%}{% endif %}
-			{% if app_upload_enable_musics %}{title : "Music files", extensions : "{{ app_upload_enable_musics }}"}{% if last >= 4 %}, {%endif%}{% endif %}
-		],
-		resize : {width : {{ app_upload_image_resize_width }}, height : {{ app_upload_image_resize_height }}, quality : {{ app_upload_image_resize_quality }}},
-	});
-
-	uploader.bind('Init', function(up, params) {
-		$('#filelist').html("<div>Current runtime: " + params.runtime + "</div>");
-	});
-
-	$('#uploadfiles').click(function(e) {
-		uploader.start();
-		e.preventDefault();
-	});
-
-	uploader.init();
-
-	uploader.bind('FilesAdded', function(up, files) {
-		$.each(files, function(i, file) {
-			$('#filelist').append(
-				'<div id="' + file.id + '">' +
-				file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>' +
-			'</div>');
-		});
-
-		up.refresh(); // Reposition Flash/Silverlight
-	});
-
-	uploader.bind('UploadProgress', function(up, file) {
-		$('#' + file.id + " b").html(file.percent + "%");
-	});
-
-	uploader.bind('Error', function(up, err) {
-		$('#filelist').append("<div>Error: " + err.code +
-			", Message: " + err.message +
-			(err.file ? ", File: " + err.file.name : "") +
-			"</div>"
-		);
-
-		up.refresh(); // Reposition Flash/Silverlight
-	});
-
-	uploader.bind('FileUploaded', function(up, file) {
-		$('#' + file.id + " b").html("100%");
-	});
-});
+	
+{% raw %}
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td class="preview"><span class="fade"></span></td>
+        <td class="name"><span>{%=file.name%}</span></td>
+        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+        {% if (file.error) { %}
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else if (o.files.valid && !i) { %}
+            <td>
+                <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
+            </td>
+            <td class="start">{% if (!o.options.autoUpload) { %}
+                <button class="btn btn-primary">
+                    <i class="icon-upload icon-white"></i>
+                    <span>{%=locale.fileupload.start%}</span>
+                </button>
+            {% } %}</td>
+        {% } else { %}
+            <td colspan="2"></td>
+        {% } %}
+        <td class="cancel">{% if (!i) { %}
+            <button class="btn btn-warning">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>{%=locale.fileupload.cancel%}</span>
+            </button>
+        {% } %}</td>
+    </tr>
+{% } %}
 </script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        {% if (file.error) { %}
+            <td></td>
+            <td class="name"><span>{%=file.name%}</span></td>
+            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else { %}
+            <td class="preview">{% if (file.thumbnail_url) { %}
+                <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
+            {% } %}</td>
+            <td class="name">
+                <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
+            </td>
+            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+            <td colspan="2"></td>
+        {% } %}
+        <td class="delete">
+            <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
+                <i class="icon-trash icon-white"></i>
+                <span>{%=locale.fileupload.destroy%}</span>
+            </button>
+            <input type="checkbox" name="delete" value="1">
+        </td>
+    </tr>
+{% } %}
+</script>
+{% endraw %}
+<script type="text/javascript">
+$(function () {
+    'use strict';
+
+    // Initialize the jQuery File Upload widget:
+    $('#fileupload').fileupload();
+	
+});
+
+
+
+</script>
+

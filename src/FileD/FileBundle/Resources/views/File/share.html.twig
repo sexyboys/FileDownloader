@@ -1,0 +1,13 @@
+
+<!-- form -->
+<form action="" method="POST">
+	<div class="control-group">
+		<label class="control-label" for="path">{% trans %}file.share.title{% endtrans %}</label>
+    			<div class="controls">
+    				<form action="" method="post" {{ form_enctype(form) }}>
+    					{{ form_widget(form) }}
+					    <input type="submit" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="" value="{% trans %}file.share.submit{% endtrans %}"/>		    
+					</form>
+    			</div>
+	</div>
+</form>

@@ -1,0 +1,48 @@
+app.nav.home: Accueil
+app.nav.compte: Mon compte
+app.nav.contact: Contact
+user.register.confirmed: Votre compte a été enregistré mais il n'est cependant pas encore actif. <br/>Vous recevrez une notification par e-mail dès qu'un administrateur aura validé votre compte.
+user.register.form.title: Inscription
+user.register.form.back: Retour
+user.login.form.title: Connexion
+user.login.form.register: Inscription
+user.login.form.loading: Chargement...
+user.login.form.forgotpwd: Vous avez oublié votre mot de passe?
+user.reset.form.title: Réinitialiser votre mot de passe
+user.reset.form.close: Fermer
+
+file.list.title: Liste des fichiers disponibles
+file.list.addfile: Ajouter un fichier
+file.list.addrepository: Créer un répertoire
+file.list.nofilesfound: Aucun fichiers trouvés.
+file.list.name: Nom
+file.list.size: Taille
+file.list.addedon: Date d'ajout
+file.list.addedby: Ajouté par
+file.list.actions: Actions
+file.list.addfile: Ajouter des fichiers
+file.list.close: Fermer
+file.list.parent: Retourner au dossier parent
+file.list.name.saving: Sauvegarde...
+file.list.name.edit: Modifier le nom
+file.list.name.access: Accèder au contenu du repertoire
+file.list.name.share: Partage du fichier
+
+file.share.title: Partage de fichier
+file.share.list.empty: Choisir un ou plusieurs utilisateur(s)
+
+file.size.unit: octets
+file.size.unit.kilo: Ko
+file.size.unit.mega: Mo
+file.size.unit.giga: Go
+file.size.unit.tera: To
+
+file.new.title.localfiles: Fichiers locaux
+file.new.title.serverfiles: Partager des fichiers du serveur
+file.new.add: Ajouter des fichiers
+file.new.uploadall: Charger les fichiers
+file.new.upload: Charger
+file.new.server.title: Entrer le chemin du repertoire à ajouter
+file.new.server.sharefile: Ajouter
+
+msg.error.addfileserver.wrongrights: Veuillez vérifier les droits sur le dossier (droits lecture/ecriture pour l'utilisateur web)

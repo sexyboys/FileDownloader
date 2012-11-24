@@ -24,19 +24,8 @@ twig:
     globals:    
     #Application Configuration
         appname: "%app_name%"
-        app_upload_enable_zip: "%app_upload_enable_zip%"
-        app_upload_zip_types: "%app_upload_zip_types%"
-        app_upload_enable_images: "%app_upload_enable_images%"
-        app_upload_images_types: "%app_upload_images_types%"
-        app_upload_enable_movies: "%app_upload_enable_movies%"
-        app_upload_movies_types: "%app_upload_movies_types%"
-        app_upload_enable_musics: "%app_upload_enable_musics%"
-        app_upload_musics_types: "%app_upload_musics_types%"
         app_upload_enable_repositories: "%app_upload_enable_repositories%"
-        app_upload_max_size: "%app_upload_max_size%"
-        app_upload_image_resize_width: "%app_upload_image_resize_width%"
-        app_upload_image_resize_height: "%app_upload_image_resize_height%"
-        app_upload_image_resize_quality: "%app_upload_image_resize_quality%"
+        
 
 # Assetic Configuration
 assetic:
