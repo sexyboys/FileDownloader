@@ -1,6 +1,8 @@
 <?php
 namespace FileD\FileBundle\Manager;
 
+use Symfony\Bridge\Monolog\Logger;
+
 use FileD\Manager\EntityManager;
 use FileD\FileBundle\Entity\File;
 
@@ -13,9 +15,10 @@ use FileD\FileBundle\Entity\File;
 class FileManager extends EntityManager{
 	
 	
-	public function __construct($em)
+	public function __construct($em,Logger $logger)
 	{
 		$this->em = $em;
+		$this->logger=$logger;
 	}
 		
 	public function getRepository()
@@ -25,6 +28,8 @@ class FileManager extends EntityManager{
 	
 	public function update($file){
 		$this->persistAndFlush($file);
+		$this->logger->info('[FileManager]Update '.$file);
+	
 	}
 	
 	/**
@@ -32,6 +37,7 @@ class FileManager extends EntityManager{
 	 * @return the new entity
 	 */
 	public function create(){
+		$this->logger->info('[FileManager]Create new File');
 		return new File();
 	}
 	
@@ -42,6 +48,7 @@ class FileManager extends EntityManager{
 	 */
 	public function findIdByPath($path)
 	{
+		$this->logger->info('[FileManager]find File id by path '.$path);
 		return $this->getRepository()->findIdByPath($path);
 	}
 	

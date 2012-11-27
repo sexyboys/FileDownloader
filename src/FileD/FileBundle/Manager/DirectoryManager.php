@@ -3,6 +3,7 @@ namespace FileD\FileBundle\Manager;
 
 use FileD\FileBundle\Manager\FileManager;
 use FileD\FileBundle\Entity\Directory;
+use Symfony\Bridge\Monolog\Logger;
 
 /**
  * Define the manager of Directory
@@ -13,9 +14,10 @@ use FileD\FileBundle\Entity\Directory;
 class DirectoryManager extends FileManager{
 	
 	
-	public function __construct($em)
+	public function __construct($em,Logger $logger)
 	{
 		$this->em = $em;
+		$this->logger=$logger;
 	}
 		
 	public function getRepository()
@@ -24,6 +26,7 @@ class DirectoryManager extends FileManager{
 	}
 	
 	public function update($file){
+		$this->logger->info('[DirectoryManager]Updating '.$file);
 		$this->persistAndFlush($file);
 	}
 	
@@ -32,6 +35,7 @@ class DirectoryManager extends FileManager{
 	 * @return the new entity
 	 */
 	public function create(){
+		$this->logger->info('[DirectoryManager]Create new Directory');
 		return new Directory();
 	}
 	

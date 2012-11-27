@@ -32,6 +32,17 @@
 	    </div>
 	    {% endblock %}
 	    <div class="container">
+	    	{% block flash_msg %}
+	    		{% for key, message in app.session.getFlashes() %}
+			        {% if key == "success" %}
+			        	<div class="alert alert-success">
+			        {% else %}
+			        	<div class="alert alert-error">
+			        {% endif %}
+			            {{ message }}
+			        </div>
+		        {% endfor %}
+	    	{% endblock %}
 			{% block content %}
 				
 	    	{% block fos_user_content %}

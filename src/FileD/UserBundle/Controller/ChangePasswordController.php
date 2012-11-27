@@ -36,11 +36,11 @@ class ChangePasswordController extends ContainerAware
 
         $form = $this->container->get('fos_user.change_password.form');
         $formHandler = $this->container->get('fos_user.change_password.form.handler');
-
+		
         $process = $formHandler->process($user);
         if ($process) {
             $this->setFlash('fos_user_success', 'change_password.flash.success');
-
+			$this->container->get('logger')->info('[ChangePasswordController] Successfully changed password for '.$user);
             return new RedirectResponse($this->getRedirectionUrl($user));
         }
 

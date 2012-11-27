@@ -40,9 +40,6 @@ file_download:
     
 file_share:
     pattern:  /share
-    defaults: { _controller: FileDFileBundle:File:rendershareFile }
-    
-file_confirm_share:
-    pattern:  /share/confirmation
     defaults: { _controller: FileDFileBundle:File:shareFile }
+    
     

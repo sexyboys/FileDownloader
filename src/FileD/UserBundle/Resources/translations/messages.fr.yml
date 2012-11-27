@@ -8,6 +8,7 @@ user.login.form.title: Connexion
 user.login.form.register: Inscription
 user.login.form.loading: Chargement...
 user.login.form.forgotpwd: Vous avez oublié votre mot de passe?
+user.login.flash.error: Nom d'utilisateur ou mot de passe incorrect
 user.reset.form.title: Réinitialiser votre mot de passe
 user.reset.form.close: Fermer
 
@@ -28,8 +29,10 @@ file.list.name.edit: Modifier le nom
 file.list.name.access: Accèder au contenu du repertoire
 file.list.name.share: Partage du fichier
 
+file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier
-file.share.list.empty: Choisir un ou plusieurs utilisateur(s)
+file.share.list.label: Utilisateurs
+file.share.submit: Partager
 
 file.size.unit: octets
 file.size.unit.kilo: Ko
@@ -46,3 +49,5 @@ file.new.server.title: Entrer le chemin du repertoire à ajouter
 file.new.server.sharefile: Ajouter
 
 msg.error.addfileserver.wrongrights: Veuillez vérifier les droits sur le dossier (droits lecture/ecriture pour l'utilisateur web)
+
+msg.success.sharefile: Le fichier a été partagé

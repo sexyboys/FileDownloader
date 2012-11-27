@@ -213,5 +213,13 @@ class User extends BaseUser {
 	{
 		return $user->getId() == $this->id;	
 	}
+	
+	/**
+	 * String representation of the entity
+	 * @return string the representation
+	 */
+	public function __toString(){
+		return "User ( id=".$this->id." , username=".$this->username." )";
+	}
 
 }

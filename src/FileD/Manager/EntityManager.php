@@ -9,7 +9,17 @@ namespace FileD\Manager;
   */
 abstract class EntityManager{
 	
+	/**
+	 * Entity manager
+	 * @var entity manager
+	 */
 	protected $em;
+	
+	/**
+	 * Logger
+	 * @var Logger
+	 */
+	protected $logger;
 	
 	/**
 	 * Load an entity with its id
@@ -17,6 +27,7 @@ abstract class EntityManager{
 	 * @return an entity
 	 */
 	public function load($id) {
+		$this->logger->info('[EntityManager]Loading Entity with id '.$id);
 		return $this->getRepository()
 		->find($id);
 	}
@@ -34,6 +45,7 @@ abstract class EntityManager{
 	 */
 	public function save($entity)
 	{
+		$this->logger->info('[EntityManager]Saving '.$entity);
 		$this->persistAndFlush($entity);
 	}
 	
@@ -42,6 +54,7 @@ abstract class EntityManager{
 	 * @param $id
 	 */
 	public function delete($id){
+		$this->logger->info('[EntityManager]Delete Entity with id '.$id);
 		$this->em->remove($this->load($id));
 		$this->em->flush();
 	}

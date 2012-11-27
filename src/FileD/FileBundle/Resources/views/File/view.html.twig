@@ -1,6 +1,5 @@
 <!-- Rendered by userBundle:Index : display all files-->
 
-{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
            
             	<!-- Display home content FILES-->
             	<div class="well">
@@ -93,7 +92,8 @@
 					    									<a href="" title="View"><i class="icon-zoom-in"></i></a>
 					    								{% endif %}
 					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN") %}
-					    									<a href="" title="Share" onclick="share({{ file.id }})><i class="icon-share"></i></a>
+					    									{% set titleShare %}{% trans %} file.share.ahref.title {% endtrans %}{% set i =1 %} {% for user in file.usersShare %}{{ user.username }}{% if i<file.usersShare|length %},{% endif %}{% set i=i+1 %} {% endfor %}{% endset %}
+					    									<a title="{{ titleShare }}" href="#shareModal" data-toggle="modal" onclick="share({{ file.id }})"><i class="icon-share"></i></a>
 					    								{% endif %}
 					    								
 					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
@@ -129,7 +129,7 @@
     			<!-- Loading Modal -->
 	    		<div id="loadingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-body">
-	    			<img src="{{ asset('bundles/filedfile/img/loading.gif') }}"/>
+	    				<img src="{{ asset('bundles/filedfile/img/loading.gif') }}"/>
 					</div>
 				</div>
 				
@@ -137,9 +137,12 @@
 				<div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="myModalLabel">{% trans %}file.list.share{% endtrans %}</h3>
+						<h3 id="myModalLabel">{% trans %}file.list.name.share{% endtrans %}</h3>
 					</div>
 					<div class="modal-body">
+					
+						{% render "FileDFileBundle:File:shareFile" %}
+						
 					</div>
 					<div class="modal-footer">
 						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
@@ -151,6 +154,19 @@
 					<!--
 					#addFileModal{
 						width:800px;
+					}
+					
+					#filed_filebundle_filesharetype_users label{
+						display:inline;
+						margin-left:5px;
+						margin-right:10px;
+						width:50%;
+					}
+					
+					#filed_filebundle_filesharetype_users input{
+						display:inline;
+						width:50%;
+						clear:left;
 					}
 					-->
 				</style>
@@ -237,6 +253,10 @@
 				    $('#addFileModal').bind('hidden', function () {
 				    	document.location.reload(true);
 				    })
+				//When hiding the modal, refresh
+				    $('#shareModal').bind('hidden', function () {
+				    	document.location.reload(true);
+				    })
 				    
 				//Prepare the add file from server action
 				function addFilesServer(){
@@ -265,14 +285,46 @@
 
 				//Share a repository (and all content) or a file to another user
 				function share(id){
-					$('#share_file').val(id);
-					$('#shareModal').modal('show');
+
+					//Set all checkboxes to unchecked
+					$('#filed_filebundle_filesharetype_users').attr('checked','');
+					$('#filed_filebundle_filesharetype_id').val(id);
+					//array key=file_id and content= usernames
+					var txt_usershare = "{{ txt_usershare }}";
+					var tab_usershare = txt_usershare.split(';');
+					
+					var FileuserShare = new Array();
+					for(var i=0;i<tab_usershare.length;i++){
+						var tab = tab_usershare[i].split(':');
+						if(tab[0] == id){//find matching file id
+							var usernames = tab[1];
+							//Split usernames
+							var tab_usernames = usernames.split(',');
+							for(var j=0;j<tab_usernames.length;j++){
+								//Find the usernames already shared in the form
+								var labels = $('#filed_filebundle_filesharetype_users label');
+								var username = tab_usernames[j];
+								for(var i =0;i<labels.length;i++){
+									if(labels[i].innerHTML == username){
+										//checked the input element
+										var id_input = '#'+labels[i].htmlFor;
+										//document.getElementById(id_input).attributeName = 'checked';
+										$(id_input).attr('checked','checked');
+									}
+								}
+								
+							}
+						} 
+						
+					}
+					
+					
+					
+						
+					return true;
 				} 
 				
 				//-->
 				</script>
 				            	
-            	
-{% else %}
-		{% include ":Security:login.html.twig" with {'last_username': last_username, 'csrf_token': csrf_token} %}
-{% endif %}
+         

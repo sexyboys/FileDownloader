@@ -8,6 +8,7 @@ user.login.form.title: Sign in
 user.login.form.register: Register
 user.login.form.loading: Loading...
 user.login.form.forgotpwd: Forgot your password?
+user.login.flash.error: Invalid username or password
 user.reset.form.title: Reset your password
 user.reset.form.close: Close
 
@@ -28,8 +29,10 @@ file.list.name.edit: Edit the name
 file.list.name.access: Display the directory content
 file.list.name.share: Share this file
 
+file.share.ahref.title: Sharing with
 file.share.title: Sharing File
-file.share.list.empty: Choose one or more user(s)
+file.share.list.label: Users
+file.share.submit: Share
 
 file.size.unit: bytes
 file.size.unit.kilo: Kb
@@ -46,3 +49,5 @@ file.new.server.title: Enter the path of the file to add
 file.new.server.sharefile: Add
 
 msg.error.addfileserver.wrongrights: Please check that the file have necessary permission (read/write for web user)
+
+msg.success.sharefile: The file was successfully shared

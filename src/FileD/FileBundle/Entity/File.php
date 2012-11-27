@@ -93,7 +93,7 @@ class File {
 
 	/**
 	 * List of users who have access to this file
-	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="files")
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="files", cascade={"persist"})
 	 */
 	protected $usersShare;
 
@@ -380,6 +380,14 @@ class File {
 	 */
 	public function setType($type) {
 		$this->type = $type;
+	}
+	
+	/**
+	 * String representation of the entity
+	 * @return string the representation
+	 */
+	public function __toString(){
+		return "File ( id=".$this->id." , name=".$this->name." )";
 	}
 
 }

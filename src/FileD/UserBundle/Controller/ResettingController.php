@@ -102,6 +102,7 @@ class ResettingController extends ContainerAware
             $response = new RedirectResponse($this->getRedirectionUrl($user));
             $this->authenticateUser($user, $response);
 
+            $this->container->get('logger')->info('[ResettingController] Successfully reset '.$user);
             return $response;
         }
 

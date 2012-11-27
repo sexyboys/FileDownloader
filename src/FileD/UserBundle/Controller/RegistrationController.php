@@ -48,6 +48,7 @@ class RegistrationController extends ContainerAware
                 $route = 'fos_user_registration_confirmed';
             }
 
+            $this->container->get('logger')->info('[RegistrationController] Successfully registration '.$user);
             $this->setFlash('fos_user_success', 'registration.flash.user_created');
             $url = $this->container->get('router')->generate($route);
             $response = new RedirectResponse($url);

@@ -1,6 +1,7 @@
 parameters:
 #   file_d_user.file.class: FileD\UserBundle\Manager\File;
      filed_user.file.class: FileD\FileBundle\Manager\FileManager
+     filed_user.user.class: FileD\UserBundle\Manager\UserManager
 
 services:
 #    file_d_user.example:
@@ -12,4 +13,12 @@ services:
 
      filed_user.file:
          class: %filed_user.file.class%
-         arguments: [@doctrine.orm.entity_manager]
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }
+         
+     filed_user.user:
+         class: %filed_user.user.class%
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }

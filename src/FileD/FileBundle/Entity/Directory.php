@@ -26,5 +26,13 @@ class Directory extends File {
 	public function isDirectory(){
 		return true;
 	}
+	
+	/**
+	 * String representation of the entity
+	 * @return string the representation
+	 */
+	public function __toString(){
+		return "Directory ( id=".$this->id." , name=".$this->name." )";
+	}
 
 }

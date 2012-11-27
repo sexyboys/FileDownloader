@@ -3,6 +3,8 @@
 namespace FileD\FileBundle\Controller;
 
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use FileD\FileBundle\Form\Type\ShareFileType;
 
 use FileD\FileBundle\Form\Data\Share;
@@ -26,47 +28,9 @@ use FileD\FileBundle\Manager\UploadManager;
  */
 class FileController extends Controller
 {
-    /**
-     * Lists all File entities.
-     *
-     * @Route("/", name="file")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('FileDFileBundle:File')->findAll();
 
-        return array(
-            'entities' => $entities,
-        );
-    }
-
-    /**
-     * Finds and displays a File entity.
-     *
-     * @Route("/{id}/show", name="file_show")
-     * @Template()
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('FileDFileBundle:File')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find File entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
-
+   
     /**
      * Displays the view to upload file (modal box)
      *
@@ -75,6 +39,7 @@ class FileController extends Controller
      */
     public function newAction($file_id)
     {
+		$this->container->get('logger')->debug('[FileController] Displaying view for upload file with id '.$file_id);
         return array(
             'file_id' => $file_id
         );
@@ -92,12 +57,20 @@ class FileController extends Controller
         $entity  = new File();
         $form = $this->createForm(new FileType(), $entity);
         $form->bind($request);
-
+		
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+        	try{
+	            $em = $this->getDoctrine()->getManager();
+	            $em->persist($entity);
+	            $em->flush();
+			
+	            $this->container->get('logger')->debug('[FileController] Create new '.$entity);
+            
+        	}
+        	catch(\Exception $e){
 
+        		$this->container->get('logger')->err('[FileController] Error while updating  '.$entity);
+        	}
             return $this->redirect($this->generateUrl('file_show', array('id' => $entity->getId())));
         }
 
@@ -123,15 +96,23 @@ class FileController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find File entity.');
         }
-
+	
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new FileType(), $entity);
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
-            $em->persist($entity);
-            $em->flush();
+        	try{
+	            $em->persist($entity);
+	            $em->flush();
 
+	            $this->container->get('logger')->debug('[FileController] Updating '.$entity);
+	            
+            }
+            catch(\Exception $e){
+            
+            	$this->container->get('logger')->err('[FileController] Error while updating  '.$entity);
+            }
             return $this->redirect($this->generateUrl('file_edit', array('id' => $id)));
         }
 
@@ -158,54 +139,56 @@ class FileController extends Controller
     public function addfileAction(){
 
     	$uploaded_file = new \stdClass();
-    	try{
     		
     		$file = $this->container->get('filed_file.file')->create();
     		
     		//upload the file
     		if ($_FILES['files']['tmp_name'][0]!="" && $_FILES['files']['error'][0] == 0) {
-
-    			if(array_key_exists('parent', $_POST) && $_POST['parent']!=0){
-    				$parent = $this->container->get('filed_file.file')->load($_POST['parent']);
-    				if($parent!=null)$file->setParent($parent);
-    				else throw new \Exception("Can't find parent with id "+$_POST['parent']);
-
-    				$path = $parent->getLink()."/".$_FILES['files']['name'][0];
-    			}
-    			else $path =  __DIR__."/../../../../web/data/uploads/files/".$_FILES['files']['name'][0];
-    			 
-    			$resu =move_uploaded_file($_FILES['files']['tmp_name'][0], $path);
-    			 
-		    	//Create the entity and the response file
-		    	$file->setName($_FILES['files']['name'][0]);
-		    	$file->setSize($_FILES['files']['size'][0]);
-		    	$user= $this->get('security.context')->getToken()->getUser();
-		    	$file->setAuthor($user);
-		    	$file->setMime($_FILES['files']['type'][0]);
-		    	$file->setDateCreation(new \DateTime());
-		    	$file->addUsersDownload(array($user));
-		    	$file->addUsersShare(array($user));
-		    	$file->setLink($path);
-		    	$this->container->get('filed_file.file')->update($file);
-		    	
-		    	$user->addFiles(array($file));
-		    	$this->container->get('fos_user.user_manager')->updateUser($user);
-
-		    	$uploaded_file->name = $file->getName();
-		    	$uploaded_file->size = intval($file->getSize());
-		    	$uploaded_file->type = $file->getMime();
-            	$uploaded_file->path = $file->getLink();
-
-            	header('Content-type: application/json');
-		    	$response = json_encode(array($uploaded_file));
+				try{
+	    			if(array_key_exists('parent', $_POST) && $_POST['parent']!=0){
+	    				$parent = $this->container->get('filed_file.file')->load($_POST['parent']);
+	    				if($parent!=null)$file->setParent($parent);
+	    				else throw new \Exception("Can't find parent with id "+$_POST['parent']);
+	
+	    				$path = $parent->getLink()."/".$_FILES['files']['name'][0];
+	    			}
+	    			else $path =  __DIR__."/../../../../web/data/uploads/files/".$_FILES['files']['name'][0];
+	    			 
+	    			$resu =move_uploaded_file($_FILES['files']['tmp_name'][0], $path);
+	    			 
+			    	//Create the entity and the response file
+			    	$file->setName($_FILES['files']['name'][0]);
+			    	$file->setSize($_FILES['files']['size'][0]);
+			    	$user= $this->get('security.context')->getToken()->getUser();
+			    	$file->setAuthor($user);
+			    	$file->setMime($_FILES['files']['type'][0]);
+			    	$file->setDateCreation(new \DateTime());
+			    	$file->addUsersDownload(array($user));
+			    	$file->addUsersShare(array($user));
+			    	$file->setLink($path);
+			    	$this->container->get('filed_file.file')->update($file);
+			    	
+			    	$user->addFiles(array($file));
+			    	$this->container->get('fos_user.user_manager')->updateUser($user);
+	
+			    	$uploaded_file->name = $file->getName();
+			    	$uploaded_file->size = intval($file->getSize());
+			    	$uploaded_file->type = $file->getMime();
+	            	$uploaded_file->path = $file->getLink();
+	
+	            	header('Content-type: application/json');
+			    	$response = json_encode(array($uploaded_file));
+	            	$this->container->get('logger')->debug('[FileController] Adding '.$file);
+            
+	        	}
+	        	catch(\Exception $e){
+	
+	        		$this->container->get('logger')->err('[FileController] Error while adding  '.$file);
+    				$response = new Response($e->getMessage());
+	        	}
     		}
     		else $response = new Response("false");
 
-    	}
-    	catch(\Exception $e){
-    		//TODO Exception
-    		$response = new Response($e->getMessage());
-    	}
     	
     	return new Response($response);
     }
@@ -225,7 +208,8 @@ class FileController extends Controller
     		
     	}
     	catch(\Exception $e){
-    		
+        	
+    		$this->container->get('logger')->err('[FileController] Error while adding file from server '.$path);
     		$response = $this->container->get('translator')->trans('msg.error.addfileserver.wrongrights').' '.$e->getMessage();
     	}
     	return new Response($response);
@@ -237,6 +221,7 @@ class FileController extends Controller
      * @param $parent the parent id
      */
     private function addFileFromServer($path,$parent){
+   
 		//Add the first file
     	if(is_dir($path)){
 			$em = $this->container->get('filed_file.directory');
@@ -350,23 +335,50 @@ class FileController extends Controller
     public function viewFilesAction($files,$fileId,$last_username,$csrf_token){
     	
     	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));
-    	
-    	//Get the parent id
-    	$parent_id=-1;
-    	$file_id=0;
-    	if($fileId!=0){
-    		$file = $this->container->get('filed_file.file')->load($fileId);
-    		$file_id=$file->getId();
-	    	if($file!=null && is_object($file)){
-		    	$parent = $file->getParent();
-		    	if($parent!=null && is_object($parent)){
-		    		$parent_id = $parent->getId();
+    	try{
+	    	//Get the parent id
+	    	$parent_id=-1;
+	    	$file_id=0;
+	    	if($fileId!=0){
+	    		$file = $this->container->get('filed_file.file')->load($fileId);
+	    		$file_id=$file->getId();
+		    	if($file!=null && is_object($file)){
+			    	$parent = $file->getParent();
+			    	if($parent!=null && is_object($parent)){
+			    		$parent_id = $parent->getId();
+			    	}
+			    	else $parent_id=null;
 		    	}
-		    	else $parent_id=null;
+		    	else $parent_id=0;
 	    	}
-	    	else $parent_id=0;
+	    	
+	    	//Map an array idfile=>usernames
+	    	//format id:username1,username2;id2:username1
+	    	$txt_array_usershare = "";
+	    	$j=1;
+	    	foreach($files as $file){
+	    		$usersshare=$file->getId().":";
+	    		$i=1;
+	    		foreach($file->getUsersShare() as $user){
+	    			$usersshare.=$user->getUsername();
+	    			if($i<count($file->getUsersShare()))$usersshare.=",";
+	    			
+	    			$i++;
+	    		}
+	    		$txt_array_usershare.=$usersshare;
+	    		if($j<count($files)) $txt_array_usershare.=";";
+	
+	    		$j++;
+	    	} 
+
+	    	$this->container->get('logger')->debug('[FileController] Viewing files of  '.$user);
+	    	
     	}
+    	catch(\Exception $e){
     	
+    		$this->container->get('logger')->err('[FileController] Error while viewing files of '.$user);
+    		$response = new Response($e->getMessage());
+    	}
     	
     	
     	return $this->container->get('templating')->renderResponse($template, 
@@ -374,6 +386,7 @@ class FileController extends Controller
     				  'parent_id' => $parent_id,
     					'file_id' => $file_id,
     				   'last_username' => $last_username,
+    					'txt_usershare'=>$txt_array_usershare,
     					'csrf_token' => $csrf_token));
     }
     
@@ -393,9 +406,12 @@ class FileController extends Controller
 	    	$file = $this->container->get('filed_file.file')->load($id);
 	    	$file->setName($name);
 	    	$this->container->get('filed_file.file')->update($file);
+	    	$this->container->get('logger')->debug('[FileController] Edit '.$file);
 	    	return new Response($name);
     	}
     	catch(\Exception $e){
+
+    		$this->container->get('logger')->err('[FileController] Error while editing file '.$e->getCode().': '.$e->getMessage());
     		return new Response($e->getMessage());
     	}
     	
@@ -420,8 +436,10 @@ class FileController extends Controller
     			$this->rrmdir($dir);
 	    	}
 	    	else $resu = unlink($file->getLink());
+	    	$this->container->get('logger')->debug('[FileController] Delete file with id '.$_POST['id']);
     	}
     	catch(\Exception $e){
+	    	$this->container->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']);
     		
     	}
 
@@ -492,38 +510,44 @@ class FileController extends Controller
         $user->addDownloadedFiles(array($file));
         $this->container->get('filed_file.file')->update($file);
         $this->container->get('fos_user.user_manager')->updateUser($user);
-        
-    	if($file!=null && FileFactory::getInstance()->isSharedWith($user,$file)){
-    		if($file->isDirectory()){
-    			//Zip directory and store it locally to process download
-    			//First : clean the directory of stored zip files
-    			$this->clearDirectory(__DIR__."/../../../../web/data/downloads/zip");
-    			//Then add the new one
-    			$zip = new \ZipArchive();
-    			$name = $file->getName().".zip";
-    			$dirname = basename($file->getName());
-    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
-    			$zip->open($path, \ZipArchive::CREATE);
-    			$zip = $this->addToZip($zip, $file, "/", true);
-    			$zip->close();
-    			$mime = "application/zip";
-    			
-    		}
-    		else{
-    			 $path = $file->getLink();
-    			 $name = $file->getName();
-    			 $mime = $file->getMime();
-    		}
-    		
-    		$response = new Response();
-    		$response->setStatusCode(200);
-    		$response->headers->set('Content-Type', "application/".$mime);
-    		$response->headers->set('Content-Disposition', sprintf('attachment;filename="%s"', $name, $mime));
-    		$response->setCharset('UTF-8');
-    		$response->setContent(file_get_contents($path));
-    		// prints the HTTP headers followed by the content
-    		$response->send();
-    	}
+        try{
+	    	if($file!=null && FileFactory::getInstance()->isSharedWith($user,$file)){
+	    		if($file->isDirectory()){
+	    			//Zip directory and store it locally to process download
+	    			//First : clean the directory of stored zip files
+	    			$this->clearDirectory(__DIR__."/../../../../web/data/downloads/zip");
+	    			//Then add the new one
+	    			$zip = new \ZipArchive();
+	    			$name = $file->getName().".zip";
+	    			$dirname = basename($file->getName());
+	    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+	    			$zip->open($path, \ZipArchive::CREATE);
+	    			$zip = $this->addToZip($zip, $file, "/", true);
+	    			$zip->close();
+	    			$mime = "application/zip";
+	    			
+	    		}
+	    		else{
+	    			 $path = $file->getLink();
+	    			 $name = $file->getName();
+	    			 $mime = $file->getMime();
+	    		}
+	    		
+	    		$response = new Response();
+	    		$response->setStatusCode(200);
+	    		$response->headers->set('Content-Type', "application/".$mime);
+	    		$response->headers->set('Content-Disposition', sprintf('attachment;filename="%s"', $name, $mime));
+	    		$response->setCharset('UTF-8');
+	    		$response->setContent(file_get_contents($path));
+	    		// prints the HTTP headers followed by the content
+	    		$response->send();
+	    	}
+        	$this->container->get('logger')->debug('[FileController] Downloading file with id '.$id);
+        }
+        catch(\Exception $e){
+
+        	$this->container->get('logger')->err('[FileController] Error while downloading file with id '.$id);
+        }
     	return $response;
     }
     
@@ -590,28 +614,78 @@ class FileController extends Controller
     }
 
     /**
-     * Render the form of sharing file
-     * @param integer $_POST['id'] id of the file
-     * @return rendering share.html.twig
+     * Share a file/repository to a list of users
+     * @param Request the request
+     * @return redirection to index
      */
-    public function rendershareFileAction()
+    public function shareFileAction(Request $request)
     {
     	$template = sprintf('FileDFileBundle:File:share.html.%s', $this->container->getParameter('fos_user.template.engine'));
-    	$file_id = $_POST['id'];
-    	 //Get all active users 
-    	 $users = $this->container->get('fos_user.user_manager')->findActiveUsers();
-    	 $choices = array();
-    	 foreach($users as $user){
-    	 	$choices[$user->getId()] = $user->getUsername();
-    	 }
-    	 $shareclass = new Share();
-    	 $form = $this->container->get('form.factory')->create(new ShareFileType(), $shareclass,array('choices' => $choices));
-    	 
-    	 
+    	
+    	
+    	$users = $this->container->get('filed_user.user')->findActiveUsers();
+    	$choices = array();
+    	foreach($users as $user){
+    		$choices[$user->getId()] = $user->getUsername();
+    	}
+    	$shareclass = new Share();
+    	$form = $this->container->get('form.factory')->create(new ShareFileType($choices), $shareclass,array('label'=>$this->container->get('translator')->trans('file.share.list.label')));
+    	try{
+	    	if ($request->getMethod() == 'POST') { 
+	    		$form->bindRequest($request); 
+	    	
+	    		if ($form->isValid()) {
+	    			$file_id = $shareclass->getId();
+	    			$users = $shareclass->getUsers();
+	    			$file = $this->container->get('filed_user.file')->load($file_id);
+	    			//Reset sharing option
+	    			//$file->setUsersShare(new \Doctrine\Common\Collections\ArrayCollection());
+	        		$this->container->get('filed_file.file')->update($file);
+	    			$usershare = $file->getUsersShare();
+	    			$users_added = array();
+	    			foreach($users as $id_user){
+	    				$users_added[$id_user]=$users;
+						//Foreach user add it to file if not already in there
+	    				$user = $this->container->get('filed_user.user')->load($id_user);
+	    				$p = function($key, $element) use ($id_user){
+	    					return $element->getId() == $id_user;
+	    				};
+	    				//do not add it if the user is already shared
+	    				if($usershare==null || !$usershare->exists($p)){
+		    				$user->addFiles(array($file));
+		    				$file->addUsersShare(array($user));
+		    				$this->container->get('filed_user.user')->update($user);
+    						$this->container->get('logger')->debug('[FileController] Sharing file '.$file->getId().' to user id'.$id_user);
+	    				}
+	    			}
+	    			
+	    			//TODO need better algorithm...
+	    			if(count($users_added) != $file->getUsersShare()->count()){
+		    			//Find the ones to remove
+		    			foreach($file->getUsersShare() as $user){
+		    				if(!array_key_exists($user->getId(),$users_added)){
+		    					//remove it
+    							$this->container->get('logger')->debug('[FileController] Unsharing file '.$file->getId().' to user id'.$user->getId());
+    							$file->removeUsersShare(array($user));
+    							$user->removeFiles(array($file));
+		    					$this->container->get('filed_user.user')->update($user);
+    							
+		    				}
+		    			}
+	    			}
+	        		$this->container->get('filed_file.file')->update($file);
+            		$this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('msg.success.sharefile'));
+	    			return new RedirectResponse($this->container->get('router')->generate('user_index'));
+	    		}
+	    	}
+    	}
+    	catch(\Exception $e){
+
+    		$this->container->get('logger')->err('[FileController] Error while sharing file with id '.$shareclass->getId()." : ".$e->getMessage());
+    	}
     	return $this->container->get('templating')->renderResponse($template,
-    			array('users' => $users,
-    					'file_id' => $file_id,
-    					'form' => $form->createView(),
+    			array(
+    					'form' => $form->createView()
     				));
     }
     

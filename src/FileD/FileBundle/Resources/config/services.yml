@@ -9,8 +9,12 @@ services:
 #        arguments: [@service_id, "plain_value", %parameter%]
      filed_file.file:
          class: %filed_file.file.class%
-         arguments: [@doctrine.orm.entity_manager]
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }
 
      filed_file.directory:
          class: %filed_file.directory.class%
-         arguments: [@doctrine.orm.entity_manager]
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }

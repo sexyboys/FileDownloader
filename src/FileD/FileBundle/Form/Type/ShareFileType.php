@@ -8,13 +8,21 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ShareFileType extends AbstractType
 {
+	private $choices;
+	
+	/**
+	 * Constructor
+	 * @param array of choices $choices
+	 */
+	public function __construct($choices){
+		$this->choices = $choices;	
+	}
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('users', 'choice', array('choices' => $options['choices'],
+        $builder->add('users', 'choice', array('choices' => $this->choices,
+        								'label' => $options['label'],
 						    	 		'multiple' => true,
-						    	 		'expanded' => true,
-						    	 		'empty_value' => $this->container->get('translator')->trans('file.share.list.empty'),
-						    	 		'empty_data'  => -1
+						    	 		'expanded' => true
     	 		))
         		->add('id','hidden');
         ;

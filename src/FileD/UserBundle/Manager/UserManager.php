@@ -2,80 +2,54 @@
 
 namespace FileD\UserBundle\Manager;
 
-use Doctrine\ORM\EntityManager;
-use FOS\UserBundle\Entity\UserManager;
+
+use Symfony\Bridge\Monolog\Logger;
+
+use FileD\Manager\EntityManager;
 use FileD\UserBundle\Entity\User;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use FOS\UserBundle\Util\CanonicalizerInterface;
 
-class MyUserManager extends UserManager
+/**
+ * Define the manager of User
+ * @author epidoux
+ * @version 1.0
+ *
+ */
+class UserManager extends EntityManager
 {
-	public function __construct(
-			EncoderFactoryInterface $encoderFactory,
-			CanonicalizerInterface $usernameCanonicalizer,
-			CanonicalizerInterface $emailCanonicalizer,
-			EntityManager $em,
-			$class
-	) {
-		parent::__construct($encoderFactory, $usernameCanonicalizer, $emailCanonicalizer, $em);
+
+	public function __construct($em,Logger $logger)
+	{
+		$this->em = $em;
+		$this->logger=$logger;
 	}
-
+		
+	public function getRepository()
+	{
+		return $this->em->getRepository('FileDUserBundle:User');
+	}
+	
+	public function update($user){
+		$this->persistAndFlush($user);
+		$this->logger->info('[UserManager]Updating '.$user);
+	}
+	
+	/**
+	 * Create an entity
+	 * @return the new entity
+	 */
+	public function create(){
+		$this->logger->info('[UserManager]Create new user');
+		return new User();
+	}
+	
    /**
-     * {@inheritDoc}
-     */
-    public function deleteUser(User $user)
-    {
-        $this->objectManager->remove($user);
-        $this->objectManager->flush();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findUserBy(array $criteria)
-    {
-        return $this->repository->findOneBy($criteria);
-    }
-    
-    /**
-     * Find all active users
-     * @return array of User
-     */
-    public function findActiveUsers()
-    {
-        return $this->repository->findActiveUsers();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findUsers()
-    {
-        return $this->repository->findAll();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function reloadUser(User $user)
-    {
-        $this->objectManager->refresh($user);
-    }
-
-    /**
-     * Updates a user.
-     *
-     * @param User $user
-     * @param Boolean       $andFlush Whether to flush the changes (default true)
-     */
-    public function updateUser(User $user, $andFlush = true)
-    {
-        $this->updateCanonicalFields($user);
-        $this->updatePassword($user);
-
-        $this->objectManager->persist($user);
-        if ($andFlush) {
-            $this->objectManager->flush();
-        }
-    }
+    * Find all active users
+    * @return array of users
+    */
+	public function findActiveUsers()
+	{
+		$this->logger->info('[UserManager]Find active users');
+		return $this->getRepository()->findActiveUsers();
+		
+	}
 }
