@@ -31,6 +31,11 @@ class FileRepository extends EntityRepository
 		    ')
 			    ->setParameter('link', $path)
 				->getResult();
-		return $result[0]['id'];
+		$id = null;
+		if(count($result) > 0)
+		{
+			$id=$result[0]['id'];
+		}
+		return $id;
 	}
 }

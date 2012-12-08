@@ -184,6 +184,7 @@ class FileController extends Controller
 			    	$file->addUsersDownload(array($user));
 			    	$file->addUsersShare(array($user));
 			    	$file->setLink($path);
+			    	$file->setExternal(false);
 			    	$this->container->get('filed_file.file')->update($file);
 			    	
 			    	$user->addFiles(array($file));
@@ -244,7 +245,7 @@ class FileController extends Controller
             //add flash msg to user
             $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.add'));
         	
-    		$this->container->get('logger')->err('[FileController] Error while adding file from server '.$path);
+    		$this->container->get('logger')->err('[FileController] Error while adding file from server '.$path." : ".$e->getCode()." : ".$e->getMessage());
     		$response = $this->container->get('translator')->trans('msg.error.addfileserver.wrongrights').' '.$e->getMessage();
     	}
     	return new Response($response);
@@ -283,7 +284,7 @@ class FileController extends Controller
 	    	$file->addUsersDownload(array($user));
 	    	$file->addUsersShare(array($user));
 	    	$file->setLink($path);
-	    	
+	    	$file->setExternal(true);
 	    	if($parent!=null && $parent!=0){
 				$parent_dir = $this->container->get('filed_file.directory')->load($parent);
 	    		$file->setParent($parent_dir);
@@ -422,8 +423,17 @@ class FileController extends Controller
     		$this->container->get('logger')->err('[FileController] Error while viewing files of '.$last_username.' : '.$e->getMessage());
     		
     	}
-    	
-    	
+    	$param_upload = $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_UPLOAD);
+    	$param_share = $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_SHARE);
+    	$enable_upload = null;
+    	$enable_share = null;
+    	if($param_upload!=null)$enable_upload = $param_upload[0]->getValue();
+    	if($param_share!=null)$enable_share = $param_share[0]->getValue();
+    	if($this->container->get('security.context')->isGranted('ROLE_ADMIN')){
+    		//if it's the administrator pass through the restriction
+    		$enable_share = "1";
+    		$enable_upload = "1";
+    	}
     	return $this->container->get('templating')->renderResponse($template, 
     			array('files' => $files, 
     				  'parent_id' => $parent_id,
@@ -431,8 +441,8 @@ class FileController extends Controller
     				   'last_username' => $last_username,
     					'txt_usershare'=> $txt_array_usershare,
     					'csrf_token' => $csrf_token,
-    					'enable_upload' => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_UPLOAD),
-    					'enable_share' => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_SHARE)));
+    					'enable_upload' => $enable_upload,
+    					'enable_share' => $enable_share));
     }
     
 
@@ -857,6 +867,24 @@ class FileController extends Controller
     	$this->container->get('filed_user.user')->update($user);
     	$this->container->get('filed_file.file')->update($file);
     	
+    }
+    
+    /**
+     * Refresh an external directory (a file which isn't inside the application directory)
+     * @param POST integer the file id
+     * @return response
+     */
+    public function refreshAction()
+    {
+    	$id = $_POST['id'];
+    	$file = $this->container->get('filed_file.file')->load($id);
+    	if($file!=null)
+    	{
+    		$this->addFileFromServer($file->getLink(), $file->getParent()!=null?$file->getParent()->getId():null);
+	        $user = $this->container->get('security.context')->getToken()->getUser();
+	        $this->markAsSeen($file,$user);
+    	}
+        return new Response('');
     }
 
 }

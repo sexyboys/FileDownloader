@@ -54,3 +54,7 @@ file_mark_as_seen:
     pattern:  /mark
     defaults: { _controller: FileDFileBundle:File:markAsSeen }
     
+file_refresh:
+    pattern:  /refresh
+    defaults: { _controller: FileDFileBundle:File:refresh }
+    

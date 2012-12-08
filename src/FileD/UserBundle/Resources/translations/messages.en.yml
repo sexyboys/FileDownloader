@@ -36,6 +36,7 @@ file.list.name.view: View file
 file.list.name.delete: Delete
 file.list.name.mark: Mark as seen 
 file.list.name.mark.by: by
+file.list.name.refresh: Refresh the content of the external directory
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File

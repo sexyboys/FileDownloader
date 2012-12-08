@@ -103,6 +103,13 @@ class File {
 	 */
 	protected $usersSeen;
 
+	/**
+	 * Define if the file is located externaly (on the server outside application)
+	 * @var boolean $external
+	 * @ORM\Column(name="external", type="boolean")
+	 */
+	protected $external;
+
 	public function __construct() {
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersSeen = new \Doctrine\Common\Collections\ArrayCollection();
@@ -381,13 +388,27 @@ class File {
 	public function setType($type) {
 		$this->type = $type;
 	}
-	
+
+	/**
+	 * @return the string
+	 */
+	public function getExternal() {
+		return $this->external;
+	}
+
+	/**
+	 * @param boolean $external
+	 */
+	public function setExternal($external) {
+		$this->external = $external;
+	}
+
 	/**
 	 * String representation of the entity
 	 * @return string the representation
 	 */
-	public function __toString(){
-		return "File ( id=".$this->id." , name=".$this->name." )";
+	public function __toString() {
+		return "File ( id=" . $this->id . " , name=" . $this->name . " )";
 	}
 
 }

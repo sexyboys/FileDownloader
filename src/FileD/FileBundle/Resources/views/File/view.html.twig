@@ -105,6 +105,10 @@
 					    								
 					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id } %}
 					    								
+					    								{% if is_granted("ROLE_ADMIN") and file.getExternal() and file.isDirectory() %}
+					    									<a href="" title="{% trans %} file.list.name.refresh {% endtrans %}" onclick="refresh({{ file.id }})"><i class="icon-refresh"></i></a>
+					    								{% endif %}
+					    								
 					    							</td>
 					    						</tr>
 					    					{% endfor %}
@@ -334,6 +338,27 @@
 			 		$.ajax({
 			 			type: "POST",
 			 			url: "{{ path('file_mark_as_seen') }}",
+			 			data: DATA,
+			 			async:false,
+			 			cache: false,
+			 			success: function(data){
+			 				document.location.reload(true);
+			 				return false;
+			 			},
+			 			error: function(request,status,error){
+			 				document.location.reload(true);
+			 				return false;
+			 			}
+			 		});
+				} 
+
+
+				// Refresh repository and its content)
+				function refresh(id){
+			     	var DATA = {'id': id};
+			 		$.ajax({
+			 			type: "POST",
+			 			url: "{{ path('file_refresh') }}",
 			 			data: DATA,
 			 			async:false,
 			 			cache: false,
