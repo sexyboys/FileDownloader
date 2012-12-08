@@ -1,7 +1,19 @@
+file_d_param:
+    resource: "@FileDParamBundle/Resources/config/routing.yml"
+    prefix:   /
+
 file_d_user:
     resource: "@FileDUserBundle/Resources/config/routing.yml"
     prefix:   /
-
+    
+admin:
+    resource: '@SonataAdminBundle/Resources/config/routing/sonata_admin.xml'
+    prefix: /admin
+    
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

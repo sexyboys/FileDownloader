@@ -29,40 +29,46 @@ class RegistrationController extends ContainerAware
 {
     public function registerAction()
     {
-        $form = $this->container->get('fos_user.registration.form');
-        $formHandler = $this->container->get('fos_user.registration.form.handler');
-        $confirmationEnabled = $this->container->getParameter('fos_user.registration.confirmation.enabled');
-
-        $process = $formHandler->process($confirmationEnabled);
-        if ($process) {
-            $user = $form->getData();
-			//Locked by default
-			$user->setLocked(true);
-			$this->container->get('fos_user.user_manager')->updateUser($user);
-            $authUser = false;
-            if ($confirmationEnabled) {
-                $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
-                $route = 'fos_user_registration_check_email';
-            } else {
-                //$authUser = true;
-                $route = 'fos_user_registration_confirmed';
-            }
-
-            $this->container->get('logger')->info('[RegistrationController] Successfully registration '.$user);
-            $this->setFlash('fos_user_success', 'registration.flash.user_created');
-            $url = $this->container->get('router')->generate($route);
-            $response = new RedirectResponse($url);
-
-            if ($authUser) {
-                $this->authenticateUser($user, $response);
-            }
-
-            return $response;
-        }
-
-        return $this->container->get('templating')->renderResponse('FileDUserBundle:Registration:register.html.twig.twig', array(
-            'form' => $form->createView(),
-        ));
+    	if($this->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_REGISTER)){
+	        $form = $this->container->get('fos_user.registration.form');
+	        $formHandler = $this->container->get('fos_user.registration.form.handler');
+	        $confirmationEnabled = $this->container->getParameter('fos_user.registration.confirmation.enabled');
+	
+	        $process = $formHandler->process($confirmationEnabled);
+	        if ($process) {
+	            $user = $form->getData();
+				//Locked by default
+				$user->setLocked(true);
+				$this->container->get('fos_user.user_manager')->updateUser($user);
+	            $authUser = false;
+	            if ($confirmationEnabled) {
+	                $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
+	                $route = 'fos_user_registration_check_email';
+	            } else {
+	                //$authUser = true;
+	                $route = 'fos_user_registration_confirmed';
+	            }
+	
+	            $this->container->get('logger')->info('[RegistrationController] Successfully registration '.$user);
+	            $this->setFlash('success', 'registration.flash.user_created');
+	            $url = $this->container->get('router')->generate($route);
+	            $response = new RedirectResponse($url);
+	
+	            if ($authUser) {
+	                $this->authenticateUser($user, $response);
+	            }
+	
+	            return $response;
+	        }
+	
+	        return $this->container->get('templating')->renderResponse('FileDUserBundle:Registration:register.html.twig.twig', array(
+	            'form' => $form->createView(),
+	        ));
+    	}
+    	else{
+    		//no reason to be here because it's locked
+    		return new RedirectResponse($this->container->get('router')->generate('user_index'));
+    	}
     }
 
     /**

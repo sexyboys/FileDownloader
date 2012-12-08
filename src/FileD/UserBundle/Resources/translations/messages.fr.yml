@@ -1,6 +1,7 @@
 app.nav.home: Accueil
 app.nav.compte: Mon compte
 app.nav.contact: Contact
+app.nav.admin: Administration
 user.register.confirmed: Votre compte a été enregistré mais il n'est cependant pas encore actif. <br/>Vous recevrez une notification par e-mail dès qu'un administrateur aura validé votre compte.
 user.register.form.title: Inscription
 user.register.form.back: Retour
@@ -11,6 +12,9 @@ user.login.form.forgotpwd: Vous avez oublié votre mot de passe?
 user.login.flash.error: Nom d'utilisateur ou mot de passe incorrect
 user.reset.form.title: Réinitialiser votre mot de passe
 user.reset.form.close: Fermer
+
+user.profile.form.title: Mon compte
+user.profile.edit: Modifier
 
 file.list.title: Liste des fichiers disponibles
 file.list.addfile: Ajouter un fichier
@@ -28,6 +32,10 @@ file.list.name.saving: Sauvegarde...
 file.list.name.edit: Modifier le nom
 file.list.name.access: Accèder au contenu du repertoire
 file.list.name.share: Partage du fichier
+file.list.name.view: Aperçu du fichier
+file.list.name.delete: Supprimer
+file.list.name.mark: Marquer comme vu 
+file.list.name.mark.by: par
 
 file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier
@@ -48,6 +56,34 @@ file.new.upload: Charger
 file.new.server.title: Entrer le chemin du repertoire à ajouter
 file.new.server.sharefile: Ajouter
 
-msg.error.addfileserver.wrongrights: Veuillez vérifier les droits sur le dossier (droits lecture/ecriture pour l'utilisateur web)
+file.player.title: Lecteur media
+file.player.play: Lire
+file.player.pause: Pause
+file.player.stop: Arrêter
+file.player.mute: Désactiver le son
+file.player.unmute: Activer le son
+file.player.maxvolume: Volume maximum
+file.player.repeat: Répeter
+file.player.repeatoff: Désactiver la répetition
+file.player.update.title: Mise à jour requise
+file.player.update.content:  Pour lire le media, vous devez soit mettre à jour votre navigateur ou mettre à jour le plugin Flash
 
-msg.success.sharefile: Le fichier a été partagé
+#Error messages displayed with flash messages
+msg.error.account.edit: Votre compte n'a pas pu être modifié
+msg.error.file.add.wrongrights: Veuillez vérifier les droits sur le dossier (droits lecture/ecriture pour l'utilisateur web)
+msg.error.file.add: Le(s) fichier(s) n'ont pas pu être ajouté(s), veuillez recommencer ultérieurement
+msg.error.file.delete: Le fichier n'a pas pu être supprimé, veuillez recommencer ultérieurement
+msg.error.file.download: Le fichier n'a pas pu être téléchargé, veuillez recommencer ultérieurement
+msg.error.file.edit: Le fichier n'a pas pu être modifié, veuillez recommencer ultérieurement
+msg.error.file.new: Le fichier n'a pas pu être ajouté, veuillez recommencer ultérieurement
+msg.error.file.share: Le fichier n'a pas pu être partagé, veuillez recommencer ultérieurement
+msg.error.repository.new: Le répertoire n'a pas pu être ajouté, veuillez recommencer ultérieurement
+
+msg.success.account.edit: Votre compte a été édité avec succès
+msg.success.file.add: Le(s) fichier(s) ont été ajouté(s) avec succès
+msg.success.file.delete: Le fichier a été supprimé avec succès
+msg.success.file.edit: Le fichier a été modifié avec succès
+msg.success.file.new: Le fichier a été ajouté avec succès
+msg.success.file.share: Le fichier a été partagé
+msg.success.repository.new: Le répertoire a été ajouté avec succès 
+

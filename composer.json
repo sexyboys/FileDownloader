@@ -18,7 +18,12 @@
         "sensio/generator-bundle": "2.1.*",
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
-        "friendsofsymfony/user-bundle": "*"
+        "friendsofsymfony/user-bundle": "*",
+        "sonata-project/admin-bundle": "dev-master",
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "sonata-project/cache-bundle": "*",
+        "knplabs/knp-menu-bundle":"1.1.*",
+        "sonata-project/exporter": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

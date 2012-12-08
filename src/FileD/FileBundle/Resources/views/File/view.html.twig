@@ -13,14 +13,18 @@
 	            				<a class="span3 " href="{{ path('user_index') }}?file={{ parent_id }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            			
 	            			{% endif %}
 		            		<div class="span3 offset8">
-			            		<a href="#addFileModal" data-toggle="modal" ><i class="icon-plus"></i>{% trans %}file.list.addfile{% endtrans %}</a><br/>
-			            		<a href="#" onclick="addRepository()" ><i class="icon-plus"></i>{% trans %}file.list.addrepository{% endtrans %}</a>
+		            			{% if enable_upload =="1" %}
+			            			<a href="#addFileModal" data-toggle="modal" ><i class="icon-plus"></i>{% trans %}file.list.addfile{% endtrans %}</a><br/>
+			            			{% if is_granted("ROLE_ADMIN")%}
+			            				<a href="#" onclick="addRepository()" ><i class="icon-plus"></i>{% trans %}file.list.addrepository{% endtrans %}</a>
+		            				{% endif %}
+			            		{% endif %}
 		            		</div>
 		            			
 			    				{% if files is empty %}
 			    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
 			    				{% else %}
-					            	<table class="table table-striped span9" >
+					            	<table id="filestable" class="table table-striped span9" >
 					            		<thead>
 					            			<tr>
 					            				<th>{% trans %}file.list.name{% endtrans %}</th>
@@ -88,17 +92,19 @@
 					    							<td>
 					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="Download"><i class="icon-download"></i></a>
 					    								
-					    								{% if not file.isDirectory() %}
-					    									<a href="" title="View"><i class="icon-zoom-in"></i></a>
-					    								{% endif %}
-					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN") %}
+					    								{% render "FileDFileBundle:File:viewFile" with {'id' : file.id } %}
+					    								
+					    								{% if (file.author.username == app.user.username and enable_share =="1") or is_granted("ROLE_ADMIN") %}
 					    									{% set titleShare %}{% trans %} file.share.ahref.title {% endtrans %}{% set i =1 %} {% for user in file.usersShare %}{{ user.username }}{% if i<file.usersShare|length %},{% endif %}{% set i=i+1 %} {% endfor %}{% endset %}
 					    									<a title="{{ titleShare }}" href="#shareModal" data-toggle="modal" onclick="share({{ file.id }})"><i class="icon-share"></i></a>
 					    								{% endif %}
 					    								
 					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
-					    									<a href="" title="Delete" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
+					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
 					    								{% endif %}
+					    								
+					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id } %}
+					    								
 					    							</td>
 					    						</tr>
 					    					{% endfor %}
@@ -317,13 +323,31 @@
 						} 
 						
 					}
-					
-					
-					
 						
 					return true;
 				} 
-				
+
+
+				//Mark a file as seen (file or repository and its content)
+				function markAsSeen(id){
+			     	var DATA = {'id': id};
+			 		$.ajax({
+			 			type: "POST",
+			 			url: "{{ path('file_mark_as_seen') }}",
+			 			data: DATA,
+			 			async:false,
+			 			cache: false,
+			 			success: function(data){
+			 				document.location.reload(true);
+			 				return false;
+			 			},
+			 			error: function(request,status,error){
+			 				document.location.reload(true);
+			 				return false;
+			 			}
+			 		});
+				} 
+
 				//-->
 				</script>
 				            	

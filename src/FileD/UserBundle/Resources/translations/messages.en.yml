@@ -1,6 +1,7 @@
 app.nav.home: Home
 app.nav.compte: My account
 app.nav.contact: Contact
+app.nav.admin: Administration
 user.register.confirmed: Your registration is saved but it is not active now. <br/>You will recieve an e-mail when the administrator had activated it.
 user.register.form.title: Register
 user.register.form.back: Back
@@ -11,6 +12,9 @@ user.login.form.forgotpwd: Forgot your password?
 user.login.flash.error: Invalid username or password
 user.reset.form.title: Reset your password
 user.reset.form.close: Close
+
+user.profile.form.title: Profile
+user.profile.edit: Edit
 
 file.list.title: List of files available
 file.list.addfile: Add a file
@@ -28,6 +32,10 @@ file.list.name.saving: Saving...
 file.list.name.edit: Edit the name
 file.list.name.access: Display the directory content
 file.list.name.share: Share this file
+file.list.name.view: View file
+file.list.name.delete: Delete
+file.list.name.mark: Mark as seen 
+file.list.name.mark.by: by
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File
@@ -48,6 +56,35 @@ file.new.upload: Upload
 file.new.server.title: Enter the path of the file to add
 file.new.server.sharefile: Add
 
-msg.error.addfileserver.wrongrights: Please check that the file have necessary permission (read/write for web user)
+file.player.title: Player
+file.player.play: Play
+file.player.pause: Pause
+file.player.stop: Stop
+file.player.mute: Mute
+file.player.unmute: Unmute
+file.player.maxvolume: Max volume
+file.player.repeat: Repeat
+file.player.repeatoff: Repeat off
+file.player.update.title: Update Required
+file.player.update.content:  To play the media you will need to either update your browser to a recent version or update your flash plugin
 
-msg.success.sharefile: The file was successfully shared
+#Error messages displayed with flash messages
+
+msg.error.account.edit: Your account wasn't edited
+msg.error.file.add.wrongrights: Please check that the file have necessary permission (read/write for web user)
+msg.error.file.add: The file(s) wasn't uploaded, please try later
+msg.error.file.delete: The file wasn't removed, please try later
+msg.error.file.download: The file wasn't downloaded, please try later
+msg.error.file.edit: The file wasn't edited, please try later
+msg.error.file.new: The file wasn't added, please try later
+msg.error.file.share: The file wasn't shared, please try later
+msg.error.repository.new: The folder wasn't added, please try later
+
+msg.success.account.edit: Your account was successfully edited
+msg.success.file.add: The file(s) was successfully added
+msg.success.file.delete: The file was successfully removed
+msg.success.file.edit: The file was successfully edited
+msg.success.file.new: The file was successfully added
+msg.success.file.share: The file was successfully shared
+msg.success.repository.new: The repository was successfully added
+

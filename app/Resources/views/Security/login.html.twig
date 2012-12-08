@@ -10,8 +10,15 @@ input[type='text'],input[type='password']{
 {% block fos_user_content %}
 
 	<form class="form-horizontal well" action="{{ path("fos_user_security_check") }}" method="post">
+	
 		 <fieldset>
 		 	<legend>{% trans %}user.login.form.title {% endtrans %}</legend>
+		 	
+    		{% for key, message in app.session.getFlashes() %}
+		        	<div class="alert alert-error">
+			            {{ message }}
+			        </div>
+        	{% endfor %}
 			<div class="control-group">
 			    <label class="control-label" for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
 			    <div class="controls">
@@ -28,7 +35,9 @@ input[type='text'],input[type='password']{
 			   <div class="controls">
 			        <label class="checkbox" for="remember_me"><input type="checkbox" id="remember_me" name="_remember_me" value="on" class="span2"/>{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
 			        <input type="submit" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="{% trans %}user.login.form.loading{% endtrans %}" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
-			   		<a href="{{ path('user_inscription') }}" class="btn">{% trans %}user.login.form.register{% endtrans %}</a>
+			   		{% if enable_register=="1" %}
+			   			<a href="{{ path('user_inscription') }}" class="btn">{% trans %}user.login.form.register{% endtrans %}</a>
+			   		{% endif %}
 			   </div>
 			</div>
 			<div class="control-group">

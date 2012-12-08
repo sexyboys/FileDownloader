@@ -17,10 +17,29 @@
 			}
 			
 		</style>
-		{% block css %}
-		{% endblock %}	
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="{{ asset('bundles/filedfile/js/bootstrap.js') }}"></script>
+	<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/jquery.fancybox.css') }}"/>
+	
+	<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/jplayer.blue.monday.css') }}"/>
+	{% block css %}
+	{% endblock %}	
+		
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="{{ asset('bundles/filedfile/js/bootstrap.js') }}"></script>
+		
+	<script src="{{ asset('bundles/filedfile/js/jplayer/jquery.jplayer.min.js') }}"></script>
+		
+	<script src="{{ asset('bundles/filedfile/js/fancybox/jquery.fancybox.pack.js') }}"></script>
+	<script src="{{ asset('bundles/filedfile/js/fancybox/jquery.mousewheel-3.0.6.pack.js') }}"></script>
+	
+	
+	
+	
+	<script type="text/javascript">
+
+
+			$(".gallery").fancybox();
+		
+	</script>
 		{% block js %}
 		{% endblock %}
 	</head>

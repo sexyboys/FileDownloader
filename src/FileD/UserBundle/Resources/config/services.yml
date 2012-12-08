@@ -2,6 +2,7 @@ parameters:
 #   file_d_user.file.class: FileD\UserBundle\Manager\File;
      filed_user.file.class: FileD\FileBundle\Manager\FileManager
      filed_user.user.class: FileD\UserBundle\Manager\UserManager
+     filed_user.param.class: FileD\ParamBundle\Manager\ParameterManager
 
 services:
 #    file_d_user.example:
@@ -22,3 +23,21 @@ services:
          arguments: [@doctrine.orm.entity_manager,@logger]
          tags:
             - { name: monolog.logger, channel: main }
+         
+     filed_user.param:
+         class: %filed_user.param.class%
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }
+     
+     filed_user.admin.user:
+        class: FileD\UserBundle\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: filed, label: users }
+        arguments: [null, FileD\UserBundle\Entity\User, SonataAdminBundle:CRUD]
+     
+     filed_user.admin.param:
+        class: FileD\ParamBundle\Admin\ParameterAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: filed, label: parameters }
+        arguments: [null, FileD\ParamBundle\Entity\Parameter, SonataAdminBundle:CRUD]

@@ -6,89 +6,145 @@ namespace FileD\FileBundle\Factory;
  * FileD\FileBundle\Factory\FileFactory
  */
 class FileFactory {
+	/**
+	 * Constant define a non-managed file
+	 * @var integer
+	 */
+	const NONE = 0;
 	
+	/**
+	 * Constant define a managed audio file
+	 * @var integer
+	 */
+	const AUDIO = 1;
+	
+	/**
+	 * Constant defining a managed video file
+	 * @var integer
+	 */
+	const VIDEO = 2;
+	
+	/**
+	 * Constant defining a managed img file
+	 * @var integer
+	 */
+	const IMG = 3;
+	
+	/**
+	 * Instance of FileFactory
+	 * @var FileFactory
+	 */
 	private static $INSTANCE;
 	
+	/**
+	 * Array of mime types
+	 * @var array
+	 */
 	private $mimeTypes;
+	
+	/**
+	 * Array of types with integer if handle or not
+	 */
+	private $types;
 	
 	private function __construct(){
 		$this->mimeTypes = array();
 		$this->mimeTypes['dir']="0directory";
-		$this->mimeTypes['js']="application/javascript";
-		$this->mimeTypes['ogg']="application/ogg";
-		$this->mimeTypes['pdf']="application/pdf";
-		$this->mimeTypes['xhtml+xml']="application/xhtml+xml";
-		
-/*
-		application/EDI-X12 : données EDI ANSI ASC X12 ; défini dans la RFC 1767.
-		application/EDIFACT : données EDI EDIFACT ; défini dans la RFC 1767.
-		application/javascript : JavaScript ; défini dans la RFC 4329.
-		application/octet-stream : flux de données arbitraire. Considéré comme le format « par défaut » dans plusieurs OS, souvent utilisé pour identifier des fichiers exécutables, ou de type inconnu, ou des fichiers qui doivent être téléchargés grâce à des protocoles qui ne fournissent pas de champ « content disposition » dans leur en-tête. La RFC 2046 le décrit comme un recours pour les sous-types et les types non reconnus.
-		application/ogg : Ogg, un flux de données multimedia, conteneur ; défini dans la RFC 3534.
-		application/pdf: Portable Document Format, PDF, utilisé pour les échanges de documents depuis 1993 ; défini dans la RFC 3778.
-		application/xhtml+xml : XHTML ; défini dans la RFC 3236.
-		application/x-shockwave-flash : fichier Adobe Flash ; documenté par Adobe TechNote tn_4151 et Adobe TechNote tn_16509.
-		application/json : JavaScript Object Notation ; défini dans la RFC 4627.
-		application/xml : eXtensible Markup Language ; défini dans la RFC 3023.
-		application/zip : fichier ZIP.
-		
-		Type audio : audio.
-		
-		audio/mpeg : MP3 ou autres MPEG ; défini dans la RFC 3003 (attention, sur certains navigateurs tels que Chrome / Chromium le content-type est : audio/mp3).
-		audio/x-ms-wma : Windows Media Audio ; documenté par Microsoft KB 288102.
-		audio/vnd.rn-realaudio : RealAudio ; documenté par RealPlayer Customer Support Answer 2559.
-		audio/x-wav : WAV.
-		
-		Type example.
-		Type image.
-		
-		image/gif : GIF ; défini dans la RFC 2045 et la RFC 2046.
-		image/jpeg : JPEG image JFIF ; défini dans la RFC 2045 et la RFC 2046 (attention, sous Internet Explorer[Quoi ?] le type MIME peut être « image/pjpeg » 5).
-		image/png : Portable Network Graphics ; enregistré6 (attention, à l'instar du jpeg sous Internet Explorer[Quoi ?] le type MIME peut être « image/x-png »).
-    image/tiff : Tagged Image File Format ; défini dans la RFC 3302.
-    image/vnd.microsoft.icon : icône ICO ; enregistré. 7
-    image/svg+xml : image vectorielle SVG ; défini dans SVG Tiny 1.2 Specification Appendix M.
-		
-Type message.
-Type model : modèle 3D.
-Type multipart : archive et autres objets composés de plus d'une seule partie.
-		
-		multipart/mixed : MIME courriel ; défini dans la RFC 2045 et la RFC 2046.
-		multipart/alternative : MIME courriel ; défini dans la RFC 2045 et la RFC 2046.
-		multipart/related : MIME courriel ; défini dans la RFC 2387 et utilisé par MHTML (HTML mail).
-		
-		Type text : texte lisible par un être humain ou code source.
-		
-		text/css : feuilles de style en cascade ; défini dans la RFC 2318.
-		text/csv : comma-separated values ; défini dans la RFC 4180.
-		text/html : HTML ; défini dans la RFC 2854.
-		text/javascript (obsolète) : JavaScript ; défini et rendu désuet dans la RFC 4329 pour décourager son usage au profit du type application/javascript.
-		text/plain : données textuelles ; défini dans la RFC 2046 et la RFC 3676.
-		text/xml : Extensible Markup Language ; défini dans la RFC 3023.
-		
-		Type video : vidéo.
-		
-		video/mpeg : MPEG-1, vidéo avec son multiplexé ; défini dans la RFC 2045 et la RFC 2046.
-		video/mp4 : vidéo MP4 ; défini dans la RFC 4337.
-		video/quicktime : vidéo QuickTime ; enregistré. 8
-		video/x-ms-wmv : Windows Media Video ; documenté par Microsoft KB 288102.
-		video/x-msvideo : vidéo dans un conteneur AVI.
-		video/x-flv : Flash Video (FLV) par Adobe Systems.
-		
-		Type vnd : fichiers spécifiques à certains éditeurs.
-		
-		application/vnd.oasis.opendocument.text : texte OpenDocument (enregistré 9).
-		application/vnd.oasis.opendocument.spreadsheet : feuille de calcul OpenDocument (enregistré 10).
-		application/vnd.oasis.opendocument.presentation : présentation OpenDocument (enregistré 11).
-		application/vnd.oasis.opendocument.graphics : graphique OpenDocument (enregistré 12).
-		application/vnd.ms-excel : fichiers Microsoft Excel.
-		application/vnd.openxmlformats-officedocument.spreadsheetml.sheet : fichiers Microsoft Excel 2007.
-		application/vnd.ms-powerpoint : fichiers Microsoft Powerpoint.
-		application/msword : fichiers Microsoft Word.
-		application/vnd.openxmlformats-officedocument.wordprocessingml.document : fichiers Microsoft Word 2007.
-		application/vnd.mozilla.xul+xml : fichiers Mozilla XUL.
-		*/
-		
+		$this->mimeTypes['app_js']="application/javascript";
+		$this->mimeTypes['app_ogg']="application/ogg";
+		$this->mimeTypes['app_pdf']="application/pdf";
+		$this->mimeTypes['app_xhtml+xml']="application/xhtml+xml";
+		$this->mimeTypes['app_x-shockwave-flash']="application/x-shockwave-flash";
+		$this->mimeTypes['app_edi-X12']="application/EDI-X12";
+		$this->mimeTypes['app_edifact']="application/EDIFACT";
+		$this->mimeTypes['app_octet-stream']="application/octet-stream";
+		$this->mimeTypes['app_json']="application/json";
+		$this->mimeTypes['app_xml']="application/xml";
+		$this->mimeTypes['app_zip']="application/zip";
+		$this->mimeTypes['audio_mpeg']="audio/mpeg";
+		$this->mimeTypes['audio_x-ms-wma']="audio/x-ms-wma";
+		$this->mimeTypes['audio_vnd.rn-realaudio']="audio/vnd.rn-realaudio";
+		$this->mimeTypes['audio_x-wav']="audio/x-wav";
+		$this->mimeTypes['img_gif']="image/gif";
+		$this->mimeTypes['img_jpeg']="image/jpeg";
+		$this->mimeTypes['img_png']="image/png";
+		$this->mimeTypes['img_tiff']="image/tiff";
+		$this->mimeTypes['img_vnd.microsoft.icon']="image/vnd.microsoft.icon";
+		$this->mimeTypes['img_svg+xml']="image/svg+xml";
+		$this->mimeTypes['mpart_mixed']="multipart/mixed";
+		$this->mimeTypes['mpart_alternative']="multipart/alternative";
+		$this->mimeTypes['mpart_related']="multipart/related";
+		$this->mimeTypes['text_css']="text/css";
+		$this->mimeTypes['text_csv']="text/csv";
+		$this->mimeTypes['text_html']="text/html";
+		$this->mimeTypes['text_plain']="text/plain";
+		$this->mimeTypes['text_xml']="text/xml";
+		$this->mimeTypes['text_css']="text/css";
+		$this->mimeTypes['video_mpeg']="video/mpeg";
+		$this->mimeTypes['video_mp4']="video/mp4";
+		$this->mimeTypes['video_quicktime']="video/quicktime";
+		$this->mimeTypes['video_x-ms-wmv']="video/x-ms-wmv";
+		$this->mimeTypes['video_x-msvideo']="video/x-msvideo";
+		$this->mimeTypes['video_x-flv']="video/x-flv";
+		$this->mimeTypes['vnd_oasis-text']="application/vnd.oasis.opendocument.text";
+		$this->mimeTypes['vnd_oasis-spread']="application/vnd.oasis.opendocument.spreadsheet";
+		$this->mimeTypes['vnd_oasis-presentation']="application/vnd.oasis.opendocument.presentation";
+		$this->mimeTypes['vnd_oasis-graphics']="application/vnd.oasis.opendocument.graphics";
+		$this->mimeTypes['vnd_ms-excel']="application/vnd.ms-excel";
+		$this->mimeTypes['vnd_openxml']="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+		$this->mimeTypes['vnd_ms-ppt']="application/vnd.ms-powerpoint";
+		$this->mimeTypes['vnd_ms-word']="application/vnd.msword";
+		$this->mimeTypes['vnd_openxml']="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+		$this->mimeTypes['vnd_mozilla']="application/vnd.mozilla.xul+xml";
+
+		$this->types = array();
+		$this->types['dir']=FileFactory::NONE;
+		$this->types['app_js']=FileFactory::NONE;
+		$this->types['app_ogg']=FileFactory::NONE;
+		$this->types['app_pdf']=FileFactory::NONE;
+		$this->types['app_xhtml+xml']=FileFactory::NONE;
+		$this->types['app_x-shockwave-flash']=FileFactory::NONE;
+		$this->types['app_edi-X12']=FileFactory::NONE;
+		$this->types['app_edifact']=FileFactory::NONE;
+		$this->types['app_octet-stream']=FileFactory::NONE;
+		$this->types['app_json']=FileFactory::NONE;
+		$this->types['app_xml']=FileFactory::NONE;
+		$this->types['app_zip']=FileFactory::NONE;
+		$this->types['audio_mpeg']=FileFactory::AUDIO;
+		$this->types['audio_x-ms-wma']=FileFactory::NONE;
+		$this->types['audio_vnd.rn-realaudio']=FileFactory::NONE;
+		$this->types['audio_x-wav']=FileFactory::AUDIO;
+		$this->types['img_gif']=FileFactory::IMG;
+		$this->types['img_jpeg']=FileFactory::IMG;
+		$this->types['img_png']=FileFactory::IMG;
+		$this->types['img_tiff']=FileFactory::IMG;
+		$this->types['img_vnd.microsoft.icon']=FileFactory::IMG;
+		$this->types['img_svg+xml']=FileFactory::IMG;
+		$this->types['mpart_mixed']=FileFactory::NONE;
+		$this->types['mpart_alternative']=FileFactory::NONE;
+		$this->types['mpart_related']=FileFactory::NONE;
+		$this->types['text_css']=FileFactory::NONE;
+		$this->types['text_csv']=FileFactory::NONE;
+		$this->types['text_html']=FileFactory::NONE;
+		$this->types['text_plain']=FileFactory::NONE;
+		$this->types['text_xml']=FileFactory::NONE;
+		$this->types['text_css']=FileFactory::NONE;
+		$this->types['video_mpeg']=FileFactory::VIDEO;
+		$this->types['video_mp4']=FileFactory::VIDEO;
+		$this->types['video_quicktime']=FileFactory::NONE;
+		$this->types['video_x-ms-wmv']=FileFactory::NONE;
+		$this->types['video_x-msvideo']=FileFactory::NONE;
+		$this->types['video_x-flv']=FileFactory::VIDEO;
+		$this->types['vnd_oasis-text']=FileFactory::NONE;
+		$this->types['vnd_oasis-spread']=FileFactory::NONE;
+		$this->types['vnd_oasis-presentation']=FileFactory::NONE;
+		$this->types['vnd_oasis-graphics']=FileFactory::NONE;
+		$this->types['vnd_ms-excel']=FileFactory::NONE;
+		$this->types['vnd_openxml']=FileFactory::NONE;
+		$this->types['vnd_ms-ppt']=FileFactory::NONE;
+		$this->types['vnd_ms-word']=FileFactory::NONE;
+		$this->types['vnd_openxml']=FileFactory::NONE;
+		$this->types['vnd_mozilla']=FileFactory::NONE;
 	}
 	
 	public static function getInstance(){
@@ -134,5 +190,46 @@ Type multipart : archive et autres objets composés de plus d'une seule partie.
 		else $hasRight = true;
         
         return $hasRight;
+	}
+	
+	
+	/**
+	 * Define if the type of file is handled to view content of file
+	 * @param File $file
+	 * @return constant class (NONE,AUDIO,VIDEO,IMG)
+	 */
+	public function isTypeHandle($file){
+		return $this->types[array_search($file->getMime(), $this->mimeTypes)];
+	}
+	
+	/**
+	 * Get the format of the given audio file
+	 * @param File $file
+	 * @return string format
+	 */
+	public function getAudioFormat($file){
+
+		$format['audio_mpeg']="mp3";
+		$format['audio_x-wav']="wav";
+		if(array_key_exists($file->getMime(), $format)){
+			return $format[$file->getMime()];
+		}
+		else return "mp3";
+	}
+	
+	/**
+	 * Get the format of the given video file
+	 * @param File $file
+	 * @return string format
+	 */
+	public function getVideoFormat($file){
+
+		$format['video_mpeg']="mpg";
+		$format['video_mp4']="mp4";
+		$format['video_x-flv']="flv";
+		if(array_key_exists($file->getMime(), $format)){
+			return $format[$file->getMime()];
+		}
+		else return "flv";
 	}
 }

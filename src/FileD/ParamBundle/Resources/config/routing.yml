@@ -1,0 +1,3 @@
+file_d_param_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: FileDParamBundle:Default:index }

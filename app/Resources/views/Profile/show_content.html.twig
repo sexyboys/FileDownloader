@@ -1,4 +1,8 @@
-<div class="fos_user_user_show">
-    <p>{{ 'profile.show.username'|trans({}, 'FOSUserBundle') }}: {{ user.username }}</p>
-    <p>{{ 'profile.show.email'|trans({}, 'FOSUserBundle') }}: {{ user.email }}</p>
+<div class="fos_user_user_show well">
+		 <fieldset>
+		 	<legend>{% trans %}user.profile.form.title {% endtrans %}</legend>
+		    <p>{{ 'profile.show.username'|trans({}, 'FOSUserBundle') }}: {{ user.username }}</p>
+		    <p>{{ 'profile.show.email'|trans({}, 'FOSUserBundle') }}: {{ user.email }}</p>
+		    <p><a href="{{ path('user_profile_edit') }}" class="btn"> {% trans %}user.profile.edit {% endtrans %}</a></p>
+		 </fieldset>
 </div>

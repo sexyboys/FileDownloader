@@ -10,6 +10,14 @@ user_reset_pwd:
     pattern:  /reset-password
     defaults: { _controller: FileDUserBundle:Resetting:reset }
     
+user_profile:
+    pattern: /profile/
+    defaults: { _controller: FileDUserBundle:Profile:show }
+    
+user_profile_edit:
+    pattern: /profile/edit
+    defaults: { _controller: FileDUserBundle:Profile:edit }
+    
 file_create:
     pattern:  /file/new
     defaults: { _controller: FileDFileBundle:File:new }
@@ -42,4 +50,7 @@ file_share:
     pattern:  /share
     defaults: { _controller: FileDFileBundle:File:shareFile }
     
+file_mark_as_seen:
+    pattern:  /mark
+    defaults: { _controller: FileDFileBundle:File:markAsSeen }
     

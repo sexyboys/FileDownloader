@@ -1,0 +1,14 @@
+parameters:
+#    file_d_param.example.class: FileD\ParamBundle\Example
+     filed_param.file.class: FileD\ParamBundle\Manager\ParameterManager
+
+services:
+#    file_d_param.example:
+#        class: %file_d_param.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+     filed_param.file:
+         class: %filed_param.file.class%
+         arguments: [@doctrine.orm.entity_manager,@logger]
+         tags:
+            - { name: monolog.logger, channel: main }

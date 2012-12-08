@@ -2,6 +2,8 @@
 
 namespace FileD\UserBundle\Controller;
 
+use FileD\ParamBundle\Manager\ParameterManager;
+
 use FileD\FileBundle\Factory\FileFactory;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
@@ -20,14 +22,14 @@ class SecurityController extends ContainerAware
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
             $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
-            $this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('user.login.flash.error'));
+            $this->container->get('session')->setFlash('fos_error',$this->container->get('translator')->trans('user.login.flash.error'));
         } elseif (null !== $session && $session->has(SecurityContext::AUTHENTICATION_ERROR)) {
             $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
             $session->remove(SecurityContext::AUTHENTICATION_ERROR);
-            $this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('user.login.flash.error'));
+            $this->container->get('session')->setFlash('fos_error',$this->container->get('translator')->trans('user.login.flash.error'));
         } else {
             $error = '';    
-            $this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('user.login.flash.error'));
+            $this->container->get('session')->setFlash('fos_error',$this->container->get('translator')->trans('user.login.flash.error'));
         
         }
 
@@ -76,7 +78,8 @@ class SecurityController extends ContainerAware
             'error'         => $error,
             'csrf_token' => $csrfToken,
         	'files' => $files,
-        	'fileId' => $fileId
+        	'fileId' => $fileId,
+        	"enable_register" => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_REGISTER)
         ));
     }
 

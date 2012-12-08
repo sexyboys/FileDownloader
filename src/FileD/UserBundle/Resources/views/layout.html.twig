@@ -8,8 +8,10 @@
 	          <div class="nav-collapse collapse">
 	            <ul class="nav">
 	              <li class="{% if app.session.get('page')  == "Accueil" %}active {% endif %}"><a href="{{ path('user_index') }}">{% trans %}app.nav.home{% endtrans %}</a></li>
-	              <li><a href="#compte">{% trans %}app.nav.compte{% endtrans %}</a></li>
-	              <li><a href="#contact">{% trans %}app.nav.contact{% endtrans %}</a></li>
+	              <li><a href="{{ path('user_profile') }}">{% trans %}app.nav.compte{% endtrans %}</a></li>
+	              {% if is_granted("ROLE_ADMIN") %}
+	              	<li><a href="{{ path('sonata_admin_dashboard') }}" >{% trans %} app.nav.admin {% endtrans %}</a></li>
+	              {% endif %}
                 </ul>
 	
                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
@@ -32,17 +34,24 @@
 	    </div>
 	    {% endblock %}
 	    <div class="container">
-	    	{% block flash_msg %}
-	    		{% for key, message in app.session.getFlashes() %}
-			        {% if key == "success" %}
-			        	<div class="alert alert-success">
-			        {% else %}
-			        	<div class="alert alert-error">
-			        {% endif %}
-			            {{ message }}
+	    
+    	{% block flash_msg %}
+    		{% for key, message in app.session.getFlashes() %}
+    			{% if key=="error" %}
+		        	<div class="alert alert-error">
+		        	{{ message }}
 			        </div>
-		        {% endfor %}
-	    	{% endblock %}
+		        {% elseif key=="success" %}
+		        	<div class="alert alert-success">
+		        	{{ message }}
+			        </div>
+		        {% elseif key=="notice" %}
+		        	<div class="alert alert-info">
+		        	{{ message }}
+			        </div>
+		        {% endif %}
+        	{% endfor %}
+    	{% endblock %}
 			{% block content %}
 				
 	    	{% block fos_user_content %}
