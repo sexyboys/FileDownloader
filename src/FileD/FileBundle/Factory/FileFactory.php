@@ -133,12 +133,12 @@ class FileFactory {
 		$this->types['text_plain']=FileFactory::NONE;
 		$this->types['text_xml']=FileFactory::NONE;
 		$this->types['text_css']=FileFactory::NONE;
-		$this->types['video_mpeg']=FileFactory::VIDEO;
-		$this->types['video_mp4']=FileFactory::VIDEO;
+		$this->types['video_mpeg']=FileFactory::NONE;
+		$this->types['video_mp4']=FileFactory::NONE;
 		$this->types['video_quicktime']=FileFactory::NONE;
 		$this->types['video_x-ms-wmv']=FileFactory::NONE;
 		$this->types['video_x-msvideo']=FileFactory::NONE;
-		$this->types['video_x-flv']=FileFactory::VIDEO;
+		$this->types['video_x-flv']=FileFactory::NONE;
 		$this->types['vnd_oasis-text']=FileFactory::NONE;
 		$this->types['vnd_oasis-spread']=FileFactory::NONE;
 		$this->types['vnd_oasis-presentation']=FileFactory::NONE;
