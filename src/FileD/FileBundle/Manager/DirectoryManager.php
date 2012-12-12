@@ -7,8 +7,8 @@ use Symfony\Bridge\Monolog\Logger;
 
 /**
  * Define the manager of Directory
-  * @author epidoux
-  * @version 1.0
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
   *
   */
 class DirectoryManager extends FileManager{

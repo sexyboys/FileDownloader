@@ -1,0 +1,14 @@
+{% extends "FileDUserBundle::layout.html.twig" %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block content %}
+		<div>
+			<a class="btn" href="{{ path('file_download_public' , {'id':file.id} ) }}">{% trans %} file.list.name.download {% endtrans %} {{ file.name }}</a>
+        </div>
+        
+{% endblock %}

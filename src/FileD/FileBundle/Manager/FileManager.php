@@ -8,8 +8,8 @@ use FileD\FileBundle\Entity\File;
 
 /**
  * Define the manager of File
-  * @author epidoux
-  * @version 1.0
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
   *
   */
 class FileManager extends EntityManager{
@@ -50,6 +50,17 @@ class FileManager extends EntityManager{
 	{
 		$this->logger->info('[FileManager]find File id by path '.$path);
 		return $this->getRepository()->findIdByPath($path);
+	}
+	
+	/**
+	 * Find file by hash
+	 * @param string the hash
+	 * @return the file
+	 */
+	public function findFileByHash($hash)
+	{
+		$this->logger->info('[FileManager]find File by hash '.$hash);
+		return $this->getRepository()->findByHash($hash);
 	}
 	
 }

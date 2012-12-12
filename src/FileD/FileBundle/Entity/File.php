@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"file" = "File", "directory" = "Directory"})
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
  */
 class File {
 
@@ -79,12 +81,6 @@ class File {
 	protected $children;
 
 	/**
-	 * List of users who have downloaded this file
-	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="downloadedFiles")
-	 */
-	protected $usersDownload;
-
-	/**
 	 * User who have uploaded this file
 	 * @ORM\ManyToOne(targetEntity="FileD\UserBundle\Entity\User", inversedBy="addedFiles")
 	 * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="SET NULL")
@@ -110,6 +106,13 @@ class File {
 	 */
 	protected $external;
 
+	/**
+	 * Define the hash of the file
+	 * @var string hash
+	 * @ORM\Column(name="hash", type="string", nullable=true)
+	 */
+	protected $hash;
+
 	public function __construct() {
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersSeen = new \Doctrine\Common\Collections\ArrayCollection();
@@ -124,40 +127,6 @@ class File {
 	 */
 	public function getId() {
 		return $this->id;
-	}
-
-	/**
-	 * @return the unknown_type
-	 */
-	public function getUsersDownload() {
-		return $this->usersDownload;
-	}
-
-	/**
-	 * @param unknown_type $usersDownload
-	 */
-	public function setUsersDownload($usersDownload) {
-		$this->usersDownload = $usersDownload;
-	}
-
-	/**
-	 * Add Users to usersDownload
-	 * @param array of User $users
-	 */
-	public function addUsersDownload($users) {
-		foreach ($users as $user) {
-			$this->usersDownload->add($user);
-		}
-	}
-
-	/**
-	 * Remove Users to usersDownload
-	 * @param array of User $users
-	 */
-	public function removeUsersDownload($users) {
-		foreach ($users as $user) {
-			$this->usersDownload->removeElement($user);
-		}
 	}
 
 	/**
@@ -409,6 +378,20 @@ class File {
 	 */
 	public function __toString() {
 		return "File ( id=" . $this->id . " , name=" . $this->name . " )";
+	}
+
+	/**
+	 * @return the string
+	 */
+	public function getHash() {
+		return $this->hash;
+	}
+
+	/**
+	 * @param string $hash
+	 */
+	public function setHash($hash) {
+		$this->hash = $hash;
 	}
 
 }

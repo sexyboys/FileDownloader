@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * FileD\FileBundle\Entity\Directory
  * @ORM\Entity(repositoryClass="FileD\FileBundle\Entity\DirectoryRepository")
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
  */
 class Directory extends File {
 	

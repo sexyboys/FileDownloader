@@ -33,10 +33,12 @@ file.list.name.edit: Modifier le nom
 file.list.name.access: Accèder au contenu du repertoire
 file.list.name.share: Partage du fichier
 file.list.name.view: Aperçu du fichier
+file.list.name.download: Télécharger le fichier
 file.list.name.delete: Supprimer
 file.list.name.mark: Marquer comme vu 
 file.list.name.mark.by: par
 file.list.name.refresh: Rafraîchir le contenu du dossier externe
+file.list.name.link: Obtenir le lien public
 
 file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier
@@ -54,6 +56,8 @@ file.new.title.serverfiles: Partager des fichiers du serveur
 file.new.add: Ajouter des fichiers
 file.new.uploadall: Charger les fichiers
 file.new.upload: Charger
+file.new.start: Commencer
+file.new.cancel: Annuler
 file.new.server.title: Entrer le chemin du repertoire à ajouter
 file.new.server.sharefile: Ajouter
 
@@ -79,6 +83,7 @@ msg.error.file.edit: Le fichier n'a pas pu être modifié, veuillez recommencer 
 msg.error.file.new: Le fichier n'a pas pu être ajouté, veuillez recommencer ultérieurement
 msg.error.file.share: Le fichier n'a pas pu être partagé, veuillez recommencer ultérieurement
 msg.error.repository.new: Le répertoire n'a pas pu être ajouté, veuillez recommencer ultérieurement
+msg.error.file.public: Le fichier n'est pas disponible ou n'existe pas
 
 msg.success.account.edit: Votre compte a été édité avec succès
 msg.success.file.add: Le(s) fichier(s) ont été ajouté(s) avec succès

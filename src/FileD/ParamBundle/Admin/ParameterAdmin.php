@@ -9,6 +9,12 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Form\FormMapper;
 
+/**
+ * Admin sonata class
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
+ *
+ */
 class ParameterAdmin extends Admin
 {
   protected function configureFormFields(FormMapper $formMapper)

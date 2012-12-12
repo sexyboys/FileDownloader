@@ -9,6 +9,8 @@ use FOS\UserBundle\Entity\User as BaseUser;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="FileD\UserBundle\Entity\UserRepository")
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
  */
 class User extends BaseUser {
 	/**
@@ -19,14 +21,6 @@ class User extends BaseUser {
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	protected $id;
-
-	/**
-	 * List of downloaded files
-	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersDownload")
-     * @ORM\JoinTable(name="users_files_downloaded")
-	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
-	 */
-	protected $downloadedFiles;
 
 	/**
 	 * List of added files
@@ -68,40 +62,7 @@ class User extends BaseUser {
 		return $this->id;
 	}
 
-	/**
-	 * @return the unknown_type
-	 */
-	public function getDownloadedFiles() {
-		return $this->downloadedFiles;
-	}
-
-	/**
-	 * @param unknown_type $downloadedFiles
-	 */
-	public function setDownloadedFiles($downloadedFiles) {
-		$this->downloadedFiles = $downloadedFiles;
-	}
 	
-	/**
-	 * Add Files to downloadedFiles
-	 * @param array of File $files
-	 */
-	public function addDownloadedFiles($files){
-		foreach($files as $file){
-			$this->downloadedFiles->add($file);
-		}
-	}
-	
-	/**
-	 * Remove Files to downloadedFiles
-	 * @param array of File $files
-	 */
-	public function removeDownloadedFiles($files){
-		foreach($files as $file){
-			$this->downloadedFiles->removeElement($file);
-		}
-	}
-
 	/**
 	 * @return the unknown_type
 	 */

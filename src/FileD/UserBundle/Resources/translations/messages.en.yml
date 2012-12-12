@@ -33,10 +33,12 @@ file.list.name.edit: Edit the name
 file.list.name.access: Display the directory content
 file.list.name.share: Share this file
 file.list.name.view: View file
+file.list.name.download: Download the file
 file.list.name.delete: Delete
 file.list.name.mark: Mark as seen 
 file.list.name.mark.by: by
 file.list.name.refresh: Refresh the content of the external directory
+file.list.name.link: Get the public link
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File
@@ -54,6 +56,8 @@ file.new.title.serverfiles: Share server files
 file.new.add: Add files
 file.new.uploadall: Upload all
 file.new.upload: Upload
+file.new.start: Start
+file.new.cancel: Cancel
 file.new.server.title: Enter the path of the file to add
 file.new.server.sharefile: Add
 
@@ -80,6 +84,7 @@ msg.error.file.edit: The file wasn't edited, please try later
 msg.error.file.new: The file wasn't added, please try later
 msg.error.file.share: The file wasn't shared, please try later
 msg.error.repository.new: The folder wasn't added, please try later
+msg.error.file.public: The file is not available or not found
 
 msg.success.account.edit: Your account was successfully edited
 msg.success.file.add: The file(s) was successfully added

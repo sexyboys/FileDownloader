@@ -58,3 +58,12 @@ file_refresh:
     pattern:  /refresh
     defaults: { _controller: FileDFileBundle:File:refresh }
     
+file_public_link:
+    pattern: /file/{hash}
+    defaults: { _controller: FileDFileBundle:File:publicLink }
+    
+file_download_public:
+    pattern:  /public/download/{id}
+    defaults: { _controller: FileDFileBundle:File:downloadPublic }
+    
+    

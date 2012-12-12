@@ -16,3 +16,11 @@ parameters:
 
     #Define the name of the application/site displayed on title and nav bar
     app_name: FileDownloader
+    #Enable the functionnality to add repositories
+    app_upload_enable_repositories: true
+    #Define the max size of uploaded file (in bytes: 2Go default value)
+    app_upload_max_size: 2000000000
+    #Define the file types regex accepted for uploaded files
+    app_upload_file_types: 
+    #Define the hash passphrase to add for public link
+    app_hash_passphrase: filedownloader

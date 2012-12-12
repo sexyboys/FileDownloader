@@ -4,6 +4,10 @@ namespace FileD\FileBundle\Factory;
 
 /**
  * FileD\FileBundle\Factory\FileFactory
+ * Factory of File
+ * 
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
  */
 class FileFactory {
 	/**

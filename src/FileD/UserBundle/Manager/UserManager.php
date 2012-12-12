@@ -10,7 +10,7 @@ use FileD\UserBundle\Entity\User;
 
 /**
  * Define the manager of User
- * @author epidoux
+ * @author epidoux <eric.pidoux@gmail.com>
  * @version 1.0
  *
  */
@@ -51,5 +51,23 @@ class UserManager extends EntityManager
 		$this->logger->info('[UserManager]Find active users');
 		return $this->getRepository()->findActiveUsers();
 		
+	}
+	
+	/**
+	 * Find all administrators
+	 * @return array of User
+	 */
+	public function findAdministrators()
+	{
+		$this->logger->info('[UserManager]Find administrators');
+		$users = $this->getRepository()->findActiveUsers();
+		$admins = array();
+		foreach($users as $user)
+		{
+			if($user->hasRole('ROLE_ADMIN')){
+				$admins[]=$user;
+			}
+		}
+		return $admins;
 	}
 }

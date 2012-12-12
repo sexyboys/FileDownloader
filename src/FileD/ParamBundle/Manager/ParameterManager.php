@@ -10,7 +10,7 @@ use FileD\ParamBundle\Entity\Parameter;
 
 /**
  * Define the manager of Parameter
- * @author epidoux
+ * @author epidoux <eric.pidoux@gmail.com>
  * @version 1.0
  *
  */

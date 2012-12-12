@@ -8,7 +8,10 @@
 	          <div class="nav-collapse collapse">
 	            <ul class="nav">
 	              <li class="{% if app.session.get('page')  == "Accueil" %}active {% endif %}"><a href="{{ path('user_index') }}">{% trans %}app.nav.home{% endtrans %}</a></li>
-	              <li><a href="{{ path('user_profile') }}">{% trans %}app.nav.compte{% endtrans %}</a></li>
+	             
+                  {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+	              	<li><a href="{{ path('user_profile') }}">{% trans %}app.nav.compte{% endtrans %}</a></li>
+	              {% endif %}
 	              {% if is_granted("ROLE_ADMIN") %}
 	              	<li><a href="{{ path('sonata_admin_dashboard') }}" >{% trans %} app.nav.admin {% endtrans %}</a></li>
 	              {% endif %}

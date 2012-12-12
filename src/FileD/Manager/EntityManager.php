@@ -3,8 +3,8 @@ namespace FileD\Manager;
 
 /**
  * Define the manager of Entity
-  * @author epidoux
-  * @version 1.0
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
   *
   */
 abstract class EntityManager{

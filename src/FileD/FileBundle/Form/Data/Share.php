@@ -3,7 +3,7 @@ namespace FileD\FileBundle\Form\Data;
 
 /**
  * Define a class of sharing files using by the form
- * @author Eric Pidoux
+ * @author epidoux <eric.pidoux@gmail.com>
  * @version 1.0
  */
 class Share {

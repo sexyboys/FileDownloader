@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Entity describing Internal app parameter
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="FileD\ParamBundle\Entity\ParameterRepository")
+ * @author epidoux <eric.pidoux@gmail.com>
+ * @version 1.0
  */
 class Parameter {
 	/**

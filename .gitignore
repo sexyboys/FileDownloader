@@ -5,11 +5,13 @@ app/bootstrap*
 vendor/*
 */logs/*
 */cache/*
-web/uploads/*
-#web/bundles/*
+web/data/uploads/files/*
+web/data/downloads/zip/*
+
 
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
 
 .project
+composer.phar
