@@ -17,6 +17,9 @@ user.profile.form.title: Mon compte
 user.profile.edit: Modifier
 
 file.list.title: Liste des fichiers disponibles
+file.list.title.seen: Liste des fichiers marqués comme vu
+file.list.title.small.seen: (montrer les fichiers vus)
+file.list.title.small.seen.not: (montrer les fichiers disponibles)
 file.list.addfile: Ajouter un fichier
 file.list.addrepository: Créer un répertoire
 file.list.nofilesfound: Aucun fichiers trouvés.
@@ -35,7 +38,7 @@ file.list.name.share: Partage du fichier
 file.list.name.view: Aperçu du fichier
 file.list.name.download: Télécharger le fichier
 file.list.name.delete: Supprimer
-file.list.name.mark: Marquer comme vu 
+file.list.name.mark: Marqué comme vu 
 file.list.name.mark.by: par
 file.list.name.refresh: Rafraîchir le contenu du dossier externe
 file.list.name.link: Obtenir le lien public

@@ -164,27 +164,35 @@ class FileController extends Controller
     		//upload the file
     		if ($_FILES['files']['tmp_name'][0]!="" && $_FILES['files']['error'][0] == 0) {
 				try{
+			    	$user= $this->get('security.context')->getToken()->getUser();
 	    			if(array_key_exists('parent', $_POST) && $_POST['parent']!=0){
 	    				$parent = $this->container->get('filed_file.file')->load($_POST['parent']);
-	    				if($parent!=null)$file->setParent($parent);
+	    				if($parent!=null){
+	    					$file->setParent($parent);
+	    					//add parent author to child author
+	    					$file->setAuthor($parent->getAuthor());
+	    				}
 	    				else throw new \Exception("Can't find parent with id "+$_POST['parent']);
 	
 	    				$path = $parent->getLink()."/".$_FILES['files']['name'][0];
 	    			}
-	    			else $path =  __DIR__.FileController::UPLOAD_DIR.$_FILES['files']['name'][0];
+	    			else{
+	    				$path =  __DIR__.FileController::UPLOAD_DIR.$_FILES['files']['name'][0];
+
+	    				$file->setAuthor($user);
+	    			}
 	    			 
 	    			$resu =move_uploaded_file($_FILES['files']['tmp_name'][0], $path);
 	    			 
 			    	//Create the entity and the response file
 			    	$file->setName($_FILES['files']['name'][0]);
 			    	$file->setSize($_FILES['files']['size'][0]);
-			    	$user= $this->get('security.context')->getToken()->getUser();
-			    	$file->setAuthor($user);
 			    	$file->setMime($_FILES['files']['type'][0]);
 			    	$file->setDateCreation(new \DateTime());
 			    	$file->addUsersShare(array($user));
 			    	//Add administrator users
 
+			    	$this->container->get('filed_file.file')->update($file);
 			    	$admins = $this->container->get('filed_user.user')->findAdministrators();
 			    	foreach($admins as $admin)
 			    	{
@@ -293,9 +301,8 @@ class FileController extends Controller
 	    	$file->setName($name);
 	    	$file->setSize(filesize($path));
 	    	$user= $this->get('security.context')->getToken()->getUser();
-	    	$file->setAuthor($user);
 	    	$file->setMime($mime);
-	    	$file->setDateCreation(new \DateTime());
+	    	$file->setDateCreation(new \DateTime(filectime($path)!=false?'@'.filectime($path):null));
 	    	$file->addUsersShare(array($user));
 	    	$file->setLink($path);
 	    	$file->setExternal(true);
@@ -313,8 +320,13 @@ class FileController extends Controller
 				    	$this->container->get('fos_user.user_manager')->updateUser($u);
 	    			}
 	    		}
+
+	    		//add parent author to child author
+	    		$file->setAuthor($parent_dir->getAuthor());
 	    	}
 	    	else{
+
+	    		$file->setAuthor($user);
 	    		//share to the admins too
 	    		$admins = $this->container->get('filed_user.user')->findAdministrators();
 	    		foreach($admins as $admin)
@@ -366,9 +378,10 @@ class FileController extends Controller
     			//find the parent
     			$parent = $this->container->get('filed_file.file')->load($id);
     			$entity->setParent($parent);
+    			//set parent author
+	    		$entity->setAuthor($parent->getAuthor());
     		}
-    		
-	    	$entity->setAuthor($user);
+    		else $entity->setAuthor($user);
 	    	//enable sharing for the current user
 	    	$users = array();
 	    	$users[]=$user;
@@ -419,9 +432,10 @@ class FileController extends Controller
      * @param $fileId the parent id of the files displayed to generate the url to get back
      * @param $last_username property used to render login form
      * @param $csrf_token property used to render login form
+     * @param $showMarkedAsSeen option used to display file marked as seen or not by default
      * @return the rendering view.html.twig with files loaded
      */
-    public function viewFilesAction($files,$fileId,$last_username,$csrf_token){
+    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$showMarkedAsSeen){
     	
     	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));
     	try{
@@ -487,7 +501,8 @@ class FileController extends Controller
     					'txt_usershare'=> $txt_array_usershare,
     					'csrf_token' => $csrf_token,
     					'enable_upload' => $enable_upload,
-    					'enable_share' => $enable_share));
+    					'enable_share' => $enable_share,
+    					'showMarkedAsSeen' =>$showMarkedAsSeen));
     }
     
 
@@ -875,23 +890,28 @@ class FileController extends Controller
         $user = $this->container->get('security.context')->getToken()->getUser();
         $exists = false;
 
-        $title = $this->container->get('translator')->trans('file.list.name.mark');
-        $i=1;
-        foreach($file->getUsersSeen() as $userSeen){
-        	if($i==1)$title.=" ".$this->container->get('translator')->trans('file.list.name.mark.by');
-        	$title.=" ".$userSeen->getUsername();
-        	if($i< $file->getUsersSeen()->count()) $title.=",";
-	        if($userSeen->getId() == $user->getId()){
-	        	$exists=true;
-	        }
-	        $i++;
-        }  						
-        if($exists){
+	    //text for marked as seen
+	    $txt_userseen = "";
+    	$i=1;
+    	foreach($file->getUsersSeen() as $user){
+    		$txt_userseen.=$user->getUsername();
+    		if($i<count($file->getUsersSeen()))$txt_userseen.=",";
+    			
+    		$i++;
+    	}
+
+    	$title = $this->container->get('translator')->trans('file.list.name.mark');
+    	 
+    	if($txt_userseen!=""){
+    		$title.=" ".$this->container->get('translator')->trans('file.list.name.mark.by')." ".$txt_userseen;
+    	}
+	    
+	    if($exists){
         	//Marked as seen
         	$response = '<a href="" title="'.$title.'" ><i title="'.$title.'" class="icon-ok"></i></a>';
         }
         else{
-        	//didn't mark as seen
+        	//didn't marked as seen
         	$response = '<a href="" title="'.$title.'" onclick="markAsSeen('.$id.')"><i class="icon-ok-circle"></i></a>';
         }
         

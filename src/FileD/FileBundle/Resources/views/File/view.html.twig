@@ -4,7 +4,12 @@
             	<!-- Display home content FILES-->
             	<div class="well">
             		<fieldset >
-		 				<legend>{% trans %}file.list.title{% endtrans %}</legend>
+		 				<legend>{% if showMarkedAsSeen %}
+		 							{% trans %}file.list.title.seen{% endtrans %} <small><a href="{{ path('user_index') }}?seen=0"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
+		 						{% else %}
+		 							{% trans %}file.list.title{% endtrans %} <small><a href="{{ path('user_index') }}?seen=1"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
+		 						{% endif %}
+		 				</legend>
 		            	<div class="row">
 		            		
 	            			{% if parent_id == 0 %}
@@ -62,6 +67,8 @@
 					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
 					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
 					    										
+					    									{% else %}
+					    										<span>{{ file.name }}</span>
 					    									{% endif %}
 					    								{% endif %}
 					    							
@@ -87,7 +94,12 @@
 					    									{% endif %}
 					    								{% endif %}
 					    							</td>
-					    							<td>{{ file.dateCreation|date('Y-m-d H:i:s') }}</td>
+					    							<td>{%if app.request.locale == "fr" %}
+					    									{{ file.dateCreation|date('d-m-Y H:i:s') }}
+					    								{%else %}
+					    									{{ file.dateCreation|date('Y-m-d H:i:s') }}
+					    								{% endif %}
+					    							</td>
 					    							<td>{{ file.author.username }}</td>
 					    							<td>
 					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
@@ -103,7 +115,7 @@
 					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
 					    								{% endif %}
 					    								
-					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id } %}
+					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
 					    								
 					    								{% if is_granted("ROLE_ADMIN") and file.getExternal() and file.isDirectory() %}
 					    									<a href="" title="{% trans %} file.list.name.refresh {% endtrans %}" onclick="refresh({{ file.id }})"><i class="icon-refresh"></i></a>
@@ -199,6 +211,10 @@
 						display:inline;
 						width:50%;
 						clear:left;
+					}
+					
+					#filestable{
+						width: 90% !important;
 					}
 					-->
 				</style>

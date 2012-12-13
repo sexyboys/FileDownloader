@@ -13,7 +13,10 @@ class SecurityController extends ContainerAware
 {
 	/**
 	 * Sign in action rendering form login or action
+	 * @param GET file the file id
+	 * @param GET seen if we have to render only seen files or by default the new ones
 	 * @return \Symfony\Component\HttpFoundation\Response
+	 * 
 	 */
     public function loginAction()
     {
@@ -53,22 +56,41 @@ class SecurityController extends ContainerAware
         if($fileParent != null && $hasRight){
 			//Getting children and only those with rights on it
 			$files = array();
+			$needSeen = false;
+			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
         	foreach($fileParent->getChildren() as $child){
 				if(FileFactory::getInstance()->isSharedWith($user,$child)){
-					$files[] = $child;		
+					//check with the seen option and add it if we need it
+					$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
+					if(!$needSeen && !$mark){//only not seen yet
+						$files[] = $child;		
+					}
+					else if($needSeen && $mark){//all seen only
+						$files[] = $child;
+					}
 				}
 			}
         }
         else{
         	//Default root option
+			$needSeen = false;
+			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
         	if($user !=null && is_object($user)){
 	        	$userFiles = $user->getFiles();
 	        	//We get only root files (with no parent)
 	        	foreach($userFiles as $file){
+	        		$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
+
 	        		if($file->getParent()==null){
-	        			$files[] = $file;
+		        		if(!$needSeen && !$mark){//only not seen yet
+		        			$files[] = $file;
+		        		}
+		        		else if($needSeen && $mark){//all seen only
+		        			$files[] = $file;
+		        		}
+	        			
 	        		}
-        	}
+        		}
         	}
         	$fileId=0;
         }
@@ -79,6 +101,7 @@ class SecurityController extends ContainerAware
             'csrf_token' => $csrfToken,
         	'files' => $files,
         	'fileId' => $fileId,
+        	'showMarkedAsSeen'=> $needSeen,
         	"enable_register" => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_REGISTER)
         ));
     }

@@ -17,6 +17,9 @@ user.profile.form.title: Profile
 user.profile.edit: Edit
 
 file.list.title: List of files available
+file.list.title.seen: List of files marked as seen
+file.list.title.small.seen: (show seen files)
+file.list.title.small.seen.not: (show new files)
 file.list.addfile: Add a file
 file.list.addrepository: Add a repository
 file.list.nofilesfound: No files found.

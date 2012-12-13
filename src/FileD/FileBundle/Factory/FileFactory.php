@@ -196,6 +196,25 @@ class FileFactory {
         return $hasRight;
 	}
 	
+	/**
+	 * Define if the file is marked as seen by the given user
+	 * @param User $user
+	 * @param File $file
+	 * @return true or false
+	 */
+	public function isMarkedAsSeenBy($user,$file)
+	{
+		$hasRight=false;
+		foreach($file->getUsersSeen() as $userSeen){
+        	if($userSeen->equals($user)){
+        		$hasRight = true;
+        	}
+        }
+		
+        
+        return $hasRight;
+	}
+	
 	
 	/**
 	 * Define if the type of file is handled to view content of file
