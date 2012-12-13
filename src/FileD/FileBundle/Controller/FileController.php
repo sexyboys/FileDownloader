@@ -302,6 +302,30 @@ class FileController extends Controller
 	    	if($parent!=null && $parent!=0){
 				$parent_dir = $this->container->get('filed_file.directory')->load($parent);
 	    		$file->setParent($parent_dir);
+	    		//Apply share options
+	    		$users = $parent_dir->getUsersShare();
+	    		foreach($users as $u)
+	    		{
+	    			if($u->getId() != $user->getId())
+	    			{
+	    				$file->addUsersShare(array($u));
+				    	$u->addFiles(array($file));
+				    	$this->container->get('fos_user.user_manager')->updateUser($u);
+	    			}
+	    		}
+	    	}
+	    	else{
+	    		//share to the admins too
+	    		$admins = $this->container->get('filed_user.user')->findAdministrators();
+	    		foreach($admins as $admin)
+	    		{
+	    			//Shared the file to all administrators and escape the current user in case of it's an admin
+	    			if($admin->getId()!=$user->getId()){
+	    				$file->addUsersShare(array($admin));
+	    				$admin->addFiles(array($file));
+	    				$this->container->get('fos_user.user_manager')->updateUser($admin);
+	    			}
+	    		}
 	    	}
 	    	$em->update($file);
 
