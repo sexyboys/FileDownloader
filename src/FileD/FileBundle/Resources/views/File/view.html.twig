@@ -55,7 +55,9 @@
 					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
 					    										
 					    									{% else %}
-					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" onclick="editName('edit{{ file.id }}')" ><i class="icon-share-alt"></i></a><span>{{ file.name }}</span>
+					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}">
+					    											<span>{{ file.name }}</span>
+					    										</a>
 					    														    									
 					    									{% endif %}
 					    								{% else %}
@@ -74,8 +76,8 @@
 					    							
 					    							</td>
 					    							<td>
-					    								{% if file.isDirectory() and file.size == 0 %}
-					    									
+					    								{% if file.isDirectory()%}
+					    								
 					    									{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
 					    									
 					    								{% else %}

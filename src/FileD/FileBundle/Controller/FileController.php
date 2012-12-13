@@ -627,6 +627,7 @@ class FileController extends Controller
     public function getSizeDirectoryAction($id){
 		$size=0;
     	$file = $this->container->get('filed_file.file')->load($id);
+    	$this->get('logger')->debug('[FileController] Calculate size of file with id '.$id);
     	if($file!=null){
     		$size=$this->recursiveSize($file, $size);
     	}
@@ -655,10 +656,15 @@ class FileController extends Controller
      * @return the size
      */
     private function recursiveSize($file,$size){
-    	if(!$file->isDirectory()) $size+=$file->getSize();
-    	else if($file->isDirectory() && $file->getChildren()->count()>0){
+    	if(!$file->isDirectory())
+    	{
+    		$size+=$file->getSize();
+
+    		$this->get('logger')->debug('[FileController] Adding size '.$file->getSize().' of file with id '.$file->getId());
+    	}
+    	else if($file->getChildren()->count()>0){
     		foreach($file->getChildren() as $child){
-    			$size+=$this->recursiveSize($child, $size);
+    			$size = $this->recursiveSize($child, $size);
     		}
     	}
     	return $size;
@@ -806,7 +812,7 @@ class FileController extends Controller
 	    			$users = $shareclass->getUsers();
 
 	    			$file = $this->container->get('filed_user.file')->load($file_id);
-	    			$file = $this->shareAll($file,$users);
+	    			$file = $this->shareAll($file,$users,true);
 	    			
             		$this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('msg.success.file.share'));
 	    			return new RedirectResponse($this->container->get('router')->generate('user_index'));
@@ -828,8 +834,9 @@ class FileController extends Controller
      * Share file and its content to the selected users 
      * @param File the file
      * @param array of Users
+     * @param boolean define that the directory content isn't shared
      */
-    private function shareAll($file,$users)
+    private function shareAll($file,$users,$sharedContent=true)
     {
     	//Reset sharing option
     	//$file->setUsersShare(new \Doctrine\Common\Collections\ArrayCollection());
@@ -869,13 +876,20 @@ class FileController extends Controller
     	$this->container->get('filed_file.file')->update($file);
     	
     	//If this is a directory loop on child to apply sharing options
-    	if($file->isDirectory())
+    	if($file->isDirectory() && $sharedContent)
     	{
     		foreach($file->getChildren() as $child)
     		{
-    			$this->shareAll($child, $users);
+    			$this->shareAll($child, $users,true);
     		}		
     	}
+    	
+    	//Shared all directories parents
+    	if($file->getParent()!=null)
+    	{
+    			$this->shareAll($file->getParent(), $users, false);
+    	}
+    	
     	$this->container->get('filed_file.file')->update($file);
     	
     	return $file;
