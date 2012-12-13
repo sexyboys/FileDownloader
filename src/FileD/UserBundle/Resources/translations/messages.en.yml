@@ -42,6 +42,8 @@ file.list.name.mark: Mark as seen
 file.list.name.mark.by: by
 file.list.name.refresh: Refresh the content of the external directory
 file.list.name.link: Get the public link
+file.list.ok: OK
+file.list.cancel: Cancel
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File

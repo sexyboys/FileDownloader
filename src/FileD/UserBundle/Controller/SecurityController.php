@@ -53,20 +53,22 @@ class SecurityController extends ContainerAware
         $user = $this->container->get('security.context')->getToken()->getUser();
         $hasRight = $fileParent!=null && FileFactory::getInstance()->isSharedWith($user,$fileParent)?true:false;
         $files = null;
+        $seen_files=null;
         if($fileParent != null && $hasRight){
 			//Getting children and only those with rights on it
 			$files = array();
+			$seen_files = array();
 			$needSeen = false;
 			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
         	foreach($fileParent->getChildren() as $child){
 				if(FileFactory::getInstance()->isSharedWith($user,$child)){
 					//check with the seen option and add it if we need it
 					$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
-					if(!$needSeen && !$mark){//only not seen yet
+					if(!$mark){//only not seen yet
 						$files[] = $child;		
 					}
 					else if($needSeen && $mark){//all seen only
-						$files[] = $child;
+						$seen_files[] = $child;
 					}
 				}
 			}
@@ -81,14 +83,14 @@ class SecurityController extends ContainerAware
 	        	foreach($userFiles as $file){
 	        		$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
 
-	        		if($file->getParent()==null){
-		        		if(!$needSeen && !$mark){//only not seen yet
+	        		if($file->getParent()==null)
+	        		{
+		        		if(!$mark){
 		        			$files[] = $file;
 		        		}
-		        		else if($needSeen && $mark){//all seen only
-		        			$files[] = $file;
+		        		else{
+		        			$seen_files[] = $file;
 		        		}
-	        			
 	        		}
         		}
         	}
@@ -100,6 +102,7 @@ class SecurityController extends ContainerAware
             'error'         => $error,
             'csrf_token' => $csrfToken,
         	'files' => $files,
+        	'seen_files' =>$seen_files,
         	'fileId' => $fileId,
         	'showMarkedAsSeen'=> $needSeen,
         	"enable_register" => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_REGISTER)

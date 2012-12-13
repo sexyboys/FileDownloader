@@ -432,10 +432,10 @@ class FileController extends Controller
      * @param $fileId the parent id of the files displayed to generate the url to get back
      * @param $last_username property used to render login form
      * @param $csrf_token property used to render login form
-     * @param $showMarkedAsSeen option used to display file marked as seen or not by default
+     * @param $seen_files the files that is marked as seen
      * @return the rendering view.html.twig with files loaded
      */
-    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$showMarkedAsSeen=false){
+    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$seen_files){
     	
     	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));
     	try{
@@ -496,14 +496,14 @@ class FileController extends Controller
     	
     	return $this->container->get('templating')->renderResponse($template, 
     			array('files' => $files, 
+    				  'seen_files' => $seen_files,
     				  'parent_id' => $parent_id,
     				  'file_id' => $file_id,
     				   'last_username' => $last_username,
     					'txt_usershare'=> $txt_array_usershare,
     					'csrf_token' => $csrf_token,
     					'enable_upload' => $enable_upload,
-    					'enable_share' => $enable_share,
-    					'showMarkedAsSeen' =>$showMarkedAsSeen));
+    					'enable_share' => $enable_share));
     }
     
 
@@ -908,10 +908,12 @@ class FileController extends Controller
 	    //text for marked as seen
 	    $txt_userseen = "";
     	$i=1;
-    	foreach($file->getUsersSeen() as $user){
-    		$txt_userseen.=$user->getUsername();
+    	foreach($file->getUsersSeen() as $user1){
+    		$txt_userseen.=$user1->getUsername();
     		if($i<count($file->getUsersSeen()))$txt_userseen.=",";
-    			
+    		if($user->getId()==$user1->getId()){
+    			$exists=true;
+    		}	
     		$i++;
     	}
 
@@ -923,11 +925,11 @@ class FileController extends Controller
 	    
 	    if($exists){
         	//Marked as seen
-        	$response = '<a href="" title="'.$title.'" ><i title="'.$title.'" class="icon-ok"></i></a>';
+        	$response = '<a href="" title="'.$title.'" onclick="markAsSeen('.$id.',0)"><i title="'.$title.'" class="icon-ok"></i></a>';
         }
         else{
         	//didn't marked as seen
-        	$response = '<a href="" title="'.$title.'" onclick="markAsSeen('.$id.')"><i class="icon-ok-circle"></i></a>';
+        	$response = '<a href="" title="'.$title.'" onclick="markAsSeen('.$id.',1)"><i class="icon-ok-circle"></i></a>';
         }
         
         return new Response($response);
@@ -936,34 +938,43 @@ class FileController extends Controller
     /**
      * Mark a file as seen
      * @param POST integer the file id
+     * @param POST boolean if the file is marked
      * @return response
      */
     public function markAsSeenAction()
     {
     	$id = $_POST['id'];
+    	$marked = $_POST['marked'];
     	$file = $this->container->get('filed_file.file')->load($id);
         $user = $this->container->get('security.context')->getToken()->getUser();
-        $this->markAsSeen($file,$user);
+        $this->markAsSeen($file,$user,$marked==1?true:false);
         return new Response('');
     }
     
     /**
      * Mark a file or directory of sub file
-     * @param $file
-     * @param $user
+     * @param $file the file
+     * @param $user the user
+     * @param boolean marked or not
      */
-    private function markAsSeen($file,$user)
+    private function markAsSeen($file,$user,$marked)
     {
     	if($file->isDirectory())
     	{
     		foreach($file->getChildren() as $child)
     		{
-    			$this->markAsSeen($child, $user);		
+    			$this->markAsSeen($child, $user,$marked);		
     		}
     	}
     	
-        $file->addUsersSeen(array($user));
-        $user->addSeenFiles(array($file));
+    	if($marked){
+	        $file->addUsersSeen(array($user));
+	        $user->addSeenFiles(array($file));
+    	}
+    	else{
+	        $file->getUsersSeen()->removeElement($user);
+	        $user->getSeenFiles()->removeElement($file);
+    	}
     	$this->container->get('filed_user.user')->update($user);
     	$this->container->get('filed_file.file')->update($file);
     	

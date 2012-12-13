@@ -4,11 +4,8 @@
             	<!-- Display home content FILES-->
             	<div class="well">
             		<fieldset >
-		 				<legend>{% if showMarkedAsSeen %}
-		 							{% trans %}file.list.title.seen{% endtrans %} <small><a href="{{ path('user_index') }}?seen=0"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
-		 						{% else %}
-		 							{% trans %}file.list.title{% endtrans %} <small><a href="{{ path('user_index') }}?seen=1"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
-		 						{% endif %}
+		 				<legend>{% trans %}file.list.title{% endtrans %} <small><a href="#seen_files" onclick="showSeenFiles()"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
+		 						
 		 				</legend>
 		            	<div class="row">
 		            		
@@ -52,7 +49,7 @@
 					    											<span class="edit{{ file.id }}">{{ file.name }}</span>
 					    										</a>
 					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
-					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
 					    										
 					    									{% else %}
 					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}">
@@ -62,12 +59,13 @@
 					    									{% endif %}
 					    								{% else %}
 					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+					    										
 					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
 					    											<i class="icon-pencil" style="float:left"></i>
 					    										</a>   
 					    										<span class="edit{{ file.id }}">{{ file.name }}</span>
 					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
-					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">OK</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">Cancel</a>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
 					    										
 					    									{% else %}
 					    										<span>{{ file.name }}</span>
@@ -150,6 +148,109 @@
 		    		</fieldset>
     			</div>
     			
+    			<div class="well" id="seen_files">
+    				<fieldset>
+    					<legend>
+    						{% trans %}file.list.title.seen{% endtrans %} 
+    					</legend>
+    					<div class="row">
+    						{% if seen_files is empty %}
+			    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
+			    				{% else %}
+					            	<table id="filestable" class="table table-striped span10" >
+					            		<thead>
+					            			<tr>
+					            				<th>{% trans %}file.list.name{% endtrans %}</th>
+					            				<th>{% trans %}file.list.size{% endtrans %}</th>
+					            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
+					            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
+					            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
+					            			</tr>
+					            		</thead>
+					            		<tbody>
+					    					{% for file in seen_files %}
+					    						<tr class="tr{{ file.id }}">
+					    							<td>
+					    								{% if file.isDirectory() %}
+					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+					    											<i class="icon-pencil" style="float:left"></i>
+					    										</a>  
+					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" >
+					    											<span class="edit{{ file.id }}">{{ file.name }}</span>
+					    										</a>
+					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
+					    										
+					    									{% else %}
+					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}">
+					    											<span>{{ file.name }}</span>
+					    										</a>
+					    														    									
+					    									{% endif %}
+					    								{% else %}
+					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+					    										
+					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+					    											<i class="icon-pencil" style="float:left"></i>
+					    										</a>   
+					    										<span class="edit{{ file.id }}">{{ file.name }}</span>
+					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
+					    										
+					    									{% else %}
+					    										<span>{{ file.name }}</span>
+					    									{% endif %}
+					    								{% endif %}
+					    							
+					    							</td>
+					    							<td>
+					    								{% if file.isDirectory()%}
+					    								
+					    									{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+					    									
+					    								{% else %}
+					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+					    									{% set size = file.size %}
+					    									{% if size < 1000 %}
+					    										{{ file.size }} {% trans %} file.size.unit {% endtrans %}
+					    									{% elseif size <1000000 %}
+					    										{{ file.size / 1000}}	{% trans %} file.size.unit.kilo {% endtrans %}
+					    									{% elseif size <1000000000 %}
+					    										{{ file.size / 1000000}}	{% trans %} file.size.unit.mega {% endtrans %}
+					    									{% elseif size <1000000000000 %}
+					    										{{ file.size / 1000000000}}	{% trans %} file.size.unit.giga {% endtrans %}
+					    									{% else %}
+					    										{{ file.size / 1000000000000}}	{% trans %} file.size.unit.tera {% endtrans %}
+					    									{% endif %}
+					    								{% endif %}
+					    							</td>
+					    							<td>{%if app.request.locale == "fr" %}
+					    									{{ file.dateCreation|date('d-m-Y H:i:s') }}
+					    								{%else %}
+					    									{{ file.dateCreation|date('Y-m-d H:i:s') }}
+					    								{% endif %}
+					    							</td>
+					    							<td>{{ file.author.username }}</td>
+					    							<td>
+					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
+					    													    								
+					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
+					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
+					    								{% endif %}
+					    								
+					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
+					    												    								
+					    							</td>
+					    						</tr>
+					    					{% endfor %}
+					    				</tbody>
+					    			</table>
+			    				{% endif %}	
+    					</div>
+    				</fieldset>
+    			</div>
+    			
     			
     			<!-- Add file Modal -->
 				<div id="addFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addFileModal" aria-hidden="true">
@@ -224,6 +325,16 @@
 				<!-- Script for name edition -->
 				<script type="text/javascript">
 				<!--
+				//Hide seen files
+				$('#seen_files').css('visibility','hidden');
+				$('#seen_files').css('display','none');
+
+				//Show seen files
+				function showSeenFiles(){
+					$('#seen_files').css('visibility','visible');
+					$('#seen_files').css('display','block');
+				}
+				
 				//Delete a file or directory
 				function deleteFile(id){
 					$('#loadingModal').modal('show');
@@ -375,9 +486,9 @@
 
 
 				//Mark a file as seen (file or repository and its content)
-				function markAsSeen(id){
+				function markAsSeen(id,marked){
 					$('#loadingModal').modal('show');
-			     	var DATA = {'id': id};
+			     	var DATA = {'id': id, 'marked':marked};
 			 		$.ajax({
 			 			type: "POST",
 			 			url: "{{ path('file_mark_as_seen') }}",

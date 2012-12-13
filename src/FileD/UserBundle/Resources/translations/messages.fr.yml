@@ -42,6 +42,8 @@ file.list.name.mark: Marqué comme vu
 file.list.name.mark.by: par
 file.list.name.refresh: Rafraîchir le contenu du dossier externe
 file.list.name.link: Obtenir le lien public
+file.list.ok: OK
+file.list.cancel: Annuler
 
 file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier
