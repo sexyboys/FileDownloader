@@ -102,7 +102,7 @@ class File {
 	/**
 	 * Define if the file is located externaly (on the server outside application)
 	 * @var boolean $external
-	 * @ORM\Column(name="external", type="boolean")
+	 * @ORM\Column(name="external", type="boolean", nullable=true)
 	 */
 	protected $external;
 

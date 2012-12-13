@@ -352,6 +352,7 @@ class FileController extends Controller
 	    	$entity->addUsersShare($users);
 	    	$entity->setDateCreation(new \DateTime());
 	    	$entity->setSize(0);
+	    	$entity->setExternal(true);
 	    	$entity->setMime(FileFactory::getInstance()->getMimeType('dir'));
 	    	
 	    	//create the directory

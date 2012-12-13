@@ -5,7 +5,7 @@ FileDownloader is a file management system which allow registered user to view f
 ==============
 ## Current master version
 ==============
-Beta-1.0
+Beta-1.1
 ==============
 
 ## Demo
