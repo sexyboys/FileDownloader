@@ -370,7 +370,7 @@ class FileController extends Controller
 	    		$entity->setLink($path);
 	    		$this->container->get('filed_file.file')->update($entity);
 
-		    	$entity->setHash(md5($this->container->getParameter("app_hash_passphrase").$file->getId()));
+		    	$entity->setHash(md5($this->container->getParameter("app_hash_passphrase").$entity->getId()));
 	    		$this->container->get('filed_file.file')->update($entity);
 		    	$user->addAddedFiles(array($entity));
 		    	$user->addFiles(array($entity));
