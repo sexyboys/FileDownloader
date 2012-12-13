@@ -55,7 +55,7 @@
 		<div>
 			{% if is_granted("ROLE_USER") %}
 			   <!-- render files list available for the current user-->
-	           		{% render "FileDFileBundle:File:viewFiles" with {'files' : files , 'fileId' : fileId, 'last_username': last_username, 'csrf_token': csrf_token, 'showMarkedAsSeen':showMarkedAsSeen} %}
+	           		{% render "FileDFileBundle:File:viewFiles" with {'files' : files , 'fileId' : fileId, 'last_username': last_username, 'csrf_token': csrf_token} %}
         	{% else %}   
 					{% include ":Security:login.html.twig" with {'last_username': last_username, 'csrf_token': csrf_token} %}
 			{% endif %}

@@ -435,7 +435,7 @@ class FileController extends Controller
      * @param $showMarkedAsSeen option used to display file marked as seen or not by default
      * @return the rendering view.html.twig with files loaded
      */
-    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$showMarkedAsSeen){
+    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$showMarkedAsSeen=false){
     	
     	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));
     	try{
@@ -493,6 +493,7 @@ class FileController extends Controller
     		$enable_share = "1";
     		$enable_upload = "1";
     	}
+    	
     	return $this->container->get('templating')->renderResponse($template, 
     			array('files' => $files, 
     				  'parent_id' => $parent_id,
