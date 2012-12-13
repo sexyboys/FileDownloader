@@ -655,10 +655,10 @@ class FileController extends Controller
      * @return the size
      */
     private function recursiveSize($file,$size){
-    	$size+=$file->getSize();
-    	if($file->isDirectory() && $file->getChildren()->count()>0){
+    	if(!$file->isDirectory()) $size+=$file->getSize();
+    	else if($file->isDirectory() && $file->getChildren()->count()>0){
     		foreach($file->getChildren() as $child){
-    			$size=$this->recursiveSize($child, $size);
+    			$size+=$this->recursiveSize($child, $size);
     		}
     	}
     	return $size;
