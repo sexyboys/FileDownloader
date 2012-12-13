@@ -296,7 +296,6 @@ class FileController extends Controller
 	    	$file->setAuthor($user);
 	    	$file->setMime($mime);
 	    	$file->setDateCreation(new \DateTime());
-	    	$file->addUsersDownload(array($user));
 	    	$file->addUsersShare(array($user));
 	    	$file->setLink($path);
 	    	$file->setExternal(true);
