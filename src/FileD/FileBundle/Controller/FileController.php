@@ -513,7 +513,8 @@ class FileController extends Controller
      * @param $id the file id
      * @return the rendering of display view depending of file type
      */
-    public function viewFileAction($id){
+    public function viewFileAction($id)
+    {
 		try{
     		$file = $this->container->get('filed_file.file')->load($id);
     		$handle = FileFactory::getInstance()->isTypeHandle($file);
@@ -550,7 +551,6 @@ class FileController extends Controller
     		$this->get('logger')->err('[FileController] Error while viewing file of '.$id.' : '.$e->getMessage());
     		
     	}
-    	
     	
     	return $response;
     }

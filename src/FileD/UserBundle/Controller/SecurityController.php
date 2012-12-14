@@ -67,7 +67,7 @@ class SecurityController extends ContainerAware
 					if(!$mark){//only not seen yet
 						$files[] = $child;		
 					}
-					else if($needSeen && $mark){//all seen only
+					else if($mark){//all seen only
 						$seen_files[] = $child;
 					}
 				}
