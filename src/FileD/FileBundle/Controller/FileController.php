@@ -692,6 +692,7 @@ class FileController extends Controller
 	    			$name = $file->getName().".zip";
 	    			$dirname = basename($file->getName());
 	    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+        	        $this->get('logger')->info('[FileController] Zipping directory '.$name.' with path '.$path);
 	    			$zip->open($path, \ZipArchive::CREATE);
 	    			$zip = $this->addToZip($zip, $file, "/", true);
 	    			$zip->close();
@@ -709,25 +710,11 @@ class FileController extends Controller
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
 	    		$response->headers->set('Content-Type', "application/octet-stream");
-	    		//$response->headers->set('Content-Transfer-Encoding', "binary \n");
 	    		$response->headers->set('Content-Disposition', 'attachment; filename="'.$name.'"');
-	    		//$response->headers->set('Content-Length', filesize($path));
 	    		$response->headers->set('X-Sendfile', $path);
-	    		//$response->headers->set('Pragma', 'no-cache');
-	    		//$response->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0, public");
-	    		//$response->headers->set('Expires', "0");
-	    		//$response->setCharset('UTF-8');
-			   // $handle = fopen($path, "rb");
-			    //while (!feof($handle)) {
-			      //    $content = fread($handle, 8192);
-			        // ob_flush();
-			    //}
-			    //$response->setContent($content);
-			    //fclose($handle); 
-	    		// prints the HTTP headers followed by the content
-	    		$response->send();
         	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);
         	    $this->get('logger')->info('[FileController] Downloading file render: '.$response->__toString());
+	    		$response->send();
 	    	}
 	    	else{
 
