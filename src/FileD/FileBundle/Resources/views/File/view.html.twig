@@ -235,7 +235,7 @@
 					    							<td>
 					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
 					    													    								
-					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
+					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
 					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
 					    								{% endif %}
 					    								

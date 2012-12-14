@@ -551,7 +551,6 @@ class FileController extends Controller
     		$this->get('logger')->err('[FileController] Error while viewing file of '.$id.' : '.$e->getMessage());
     		
     	}
-    	
     	return $response;
     }
     /**
@@ -704,6 +703,8 @@ class FileController extends Controller
 	    			 $name = $file->getName();
 	    			 $mime = $file->getMime();
 	    		}
+	    		
+	    		if(!file_exists($path)) throw new Exception("The file didn't exist anymore");
 	    		
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
