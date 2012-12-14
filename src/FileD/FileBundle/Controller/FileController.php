@@ -704,7 +704,7 @@ class FileController extends Controller
 	    			 $mime = $file->getMime();
 	    		}
 	    		
-	    		if(!file_exists($path)) throw new Exception("The file didn't exist anymore");
+	    		if(!file_exists($path)) throw new \Exception("The file didn't exist anymore");
 	    		
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
