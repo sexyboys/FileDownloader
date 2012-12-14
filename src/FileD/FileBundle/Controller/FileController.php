@@ -708,8 +708,13 @@ class FileController extends Controller
 	    		
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
-	    		$response->headers->set('Content-Type', "application/".$mime);
-	    		$response->headers->set('Content-Disposition', sprintf('attachment;filename="%s"', $name, $mime));
+	    		$response->headers->set('Content-Type', "application/force-download".$mime);
+	    		$response->headers->set('Content-Transfer-Encoding', $mime."\n");
+	    		$response->headers->set('Content-Disposition', 'attachment; filename='.$name);
+	    		$response->headers->set('Content-Length', filesize($path));
+	    		$response->headers->set('Pragma', 'no-cache');
+	    		$response->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0, public");
+	    		$response->headers->set('Expires', "0");
 	    		$response->setCharset('UTF-8');
 	    		$response->setContent(file_get_contents($path));
 	    		// prints the HTTP headers followed by the content
