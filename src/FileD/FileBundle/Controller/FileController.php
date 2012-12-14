@@ -716,11 +716,16 @@ class FileController extends Controller
 	    		$response->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0, public");
 	    		$response->headers->set('Expires', "0");
 	    		$response->setCharset('UTF-8');
-	    		$response->setContent(file_get_contents($path));
+	    		$response->setContent(readfile($path));
 	    		// prints the HTTP headers followed by the content
 	    		$response->send();
+        	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);
+        	    $this->get('logger')->info('[FileController] Downloading file render: '.$response->__toString());
 	    	}
-        	$this->get('logger')->info('[FileController] Downloading file with id '.$id);
+	    	else{
+
+	    		$this->get('logger')->err('[FileController] Error while downloading file with id '.$id);
+	    	}
         }
         catch(\Exception $e){
             //add flash msg to user
