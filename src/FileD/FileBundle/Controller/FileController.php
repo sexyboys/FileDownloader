@@ -711,6 +711,7 @@ class FileController extends Controller
 	    		$response->setStatusCode(200);
 	    		$response->headers->set('Content-Type', "application/octet-stream");
 	    		$response->headers->set('Content-Disposition', 'attachment; filename="'.$name.'"');
+	    		$response->headers->set('Content-length', filesize($path));
 	    		$response->headers->set('X-Sendfile', $path);
         	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);
         	    $this->get('logger')->info('[FileController] Downloading file render: '.$response->__toString());
