@@ -708,21 +708,22 @@ class FileController extends Controller
 	    		
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
-	    		$response->headers->set('Content-Type', "text/html;name=\"".$name."\"");
-	    		$response->headers->set('Content-Transfer-Encoding', "binary \n");
+	    		$response->headers->set('Content-Type', "application/octet-stream");
+	    		//$response->headers->set('Content-Transfer-Encoding', "binary \n");
 	    		$response->headers->set('Content-Disposition', 'attachment; filename="'.$name.'"');
-	    		$response->headers->set('Content-Length', filesize($path));
-	    		$response->headers->set('Pragma', 'no-cache');
-	    		$response->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0, public");
-	    		$response->headers->set('Expires', "0");
-	    		$response->setCharset('UTF-8');
-			    $handle = fopen($path, "rb");
-			    while (!feof($handle)) {
-			          $content = fread($handle, 8192);
-			         ob_flush();
-			    }
-			    $response->setContent($content);
-			    fclose($handle); 
+	    		//$response->headers->set('Content-Length', filesize($path));
+	    		$response->headers->set('X-Sendfile', $path);
+	    		//$response->headers->set('Pragma', 'no-cache');
+	    		//$response->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0, public");
+	    		//$response->headers->set('Expires', "0");
+	    		//$response->setCharset('UTF-8');
+			   // $handle = fopen($path, "rb");
+			    //while (!feof($handle)) {
+			      //    $content = fread($handle, 8192);
+			        // ob_flush();
+			    //}
+			    //$response->setContent($content);
+			    //fclose($handle); 
 	    		// prints the HTTP headers followed by the content
 	    		$response->send();
         	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);

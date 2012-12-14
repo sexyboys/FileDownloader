@@ -20,6 +20,7 @@ Beta-1.1.1
 	
 	* You have to install & configure a webserver, a mysql database and php 5 of course!
 	* In php, you have to enable php5-zip and set the upload_max_filesize parameter in php.ini
+	* In Apache or your webserver, you have to install the x-sendfile module ( example for apache on ubuntu sudo apt-get install libapache2-mod-xsendfile)
 	
 	### Install FileDownloader
 	
