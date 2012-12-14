@@ -706,8 +706,15 @@ class FileController extends Controller
 	    		}
 	    		
 	    		if(!file_exists($path)) throw new \Exception("The file didn't exist anymore");
+	    		$options = array(
+	    				'serve_filename' => $name,
+	    				'absolute_path' => true,
+	    				'inline' => false,
+	    		);
 	    		
-	    		$response = new Response();
+	    		$response = $this->get('igorw_file_serve.response_factory')
+	    		->create($path, $mime, $options);
+	    		/*$response = new Response();
 	    		$response->setStatusCode(200);
 	    		$response->headers->set('Content-Type', "application/octet-stream");
 	    		$response->headers->set('Content-Disposition', 'attachment; filename="'.$name.'"');
@@ -715,7 +722,7 @@ class FileController extends Controller
 	    		$response->headers->set('X-Sendfile', $path);
         	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);
         	    $this->get('logger')->info('[FileController] Downloading file render: '.$response->__toString());
-	    		$response->send();
+	    		$response->send();*/
 	    	}
 	    	else{
 

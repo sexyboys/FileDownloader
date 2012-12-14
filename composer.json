@@ -23,7 +23,8 @@
         "sonata-project/doctrine-orm-admin-bundle": "dev-master",
         "sonata-project/cache-bundle": "*",
         "knplabs/knp-menu-bundle":"1.1.*",
-        "sonata-project/exporter": "dev-master"
+        "sonata-project/exporter": "dev-master",
+        "igorw/file-serve-bundle": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [
