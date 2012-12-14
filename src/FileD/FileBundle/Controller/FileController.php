@@ -688,18 +688,15 @@ class FileController extends Controller
 	    			//First : clean the directory of stored zip files
 	    			$this->clearDirectory(__DIR__.FileController::DOWNLOAD_DIR);
 	    			//Then add the new one
-	    			//$zip = new \ZipArchive();
+	    			$zip = new \ZipArchive();
 	    			$name = $file->getName().".zip";
-	    			//$dirname = basename($file->getName());
-	    			//$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
-        	        /*$this->get('logger')->info('[FileController] Zipping directory '.$name.' with path '.$path);
+	    			$dirname = basename($file->getName());
+	    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+        	        $this->get('logger')->info('[FileController] Zipping directory '.$name.' with path '.$path);
 	    			$zip->open($path, \ZipArchive::CREATE);
 	    			$zip = $this->addToZip($zip, $file, "/", true);
 	    			$zip->close();
-	    			$mime = "application/zip";*/
-	    			 $path = $file->getLink();
-	    			 $name = $file->getName();
-	    			 $mime = $file->getMime();
+	    			$mime = "application/zip";
 	    			
 	    		}
 	    		else{
