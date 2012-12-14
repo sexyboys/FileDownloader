@@ -42,14 +42,20 @@ Beta-1.1.1
 FileDownloader use as you might guess Symfony 2 and several bundles or modules to satisfy the features such as:
 
 	* Php Modules ( php5-zip )
+	
+	* Webserver modules ( x-sendfile )
 		
-	* Symfony 2 bundles ( FOSUserBundle, Sonata Admin Bundle )
+	* Symfony 2 bundles ( FOSUserBundle, Sonata Admin Bundle, IgorwFileServeBundle)
 	
 ==============	
 ## Features
 ==============
 
-	* Files List for each user with actions as Add files/directory, share to other user, refresh directory content, delete, view image/mp3
+	* Files List for each user
+	* Add files/directory in local of the server (for administrator only) or from the distant computer
+	* Share to other users
+	* Refresh directory content for local server files
+	* Delete files/directories, view image/mp3, download file or directories (as zip file)
 	* Navigation into directories
 	* For administrator : Add files/directories which are in the server
 	* Administrator panel to manage users
