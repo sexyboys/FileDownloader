@@ -708,7 +708,7 @@ class FileController extends Controller
 	    		
 	    		$response = new Response();
 	    		$response->setStatusCode(200);
-	    		$response->headers->set('Content-Type', "application/force-download".$mime);
+	    		$response->headers->set('Content-Type', "application/force-download");
 	    		$response->headers->set('Content-Transfer-Encoding', $mime."\n");
 	    		$response->headers->set('Content-Disposition', 'attachment; filename='.$name);
 	    		$response->headers->set('Content-Length', filesize($path));
