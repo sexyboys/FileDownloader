@@ -60,16 +60,15 @@ class SecurityController extends ContainerAware
 			$seen_files = array();
 			$needSeen = false;
 			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
-        	foreach($fileParent->getChildren() as $child){
-				if(FileFactory::getInstance()->isSharedWith($user,$child)){
-					//check with the seen option and add it if we need it
-					$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
-					if(!$mark){//only not seen yet
-						$files[] = $child;		
-					}
-					else if($mark){//all seen only
-						$seen_files[] = $child;
-					}
+			$children = $this->container->get('filed_user.file')->findFilesShared($user,$fileParent);
+        	foreach($children as $child){
+				//check with the seen option and add it if we need it
+				$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
+				if(!$mark){//only not seen yet
+					$files[] = $child;		
+				}
+				else if($mark){//all seen only
+					$seen_files[] = $child;
 				}
 			}
         }
@@ -78,20 +77,19 @@ class SecurityController extends ContainerAware
 			$needSeen = false;
 			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
         	if($user !=null && is_object($user)){
-	        	$userFiles = $user->getFiles();
+        		//get files with root from user
+	        	$userFiles = $this->container->get('filed_user.file')->findFilesShared($user,null);
 	        	//We get only root files (with no parent)
 	        	foreach($userFiles as $file){
 	        		$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
 
-	        		if($file->getParent()==null)
-	        		{
-		        		if(!$mark){
-		        			$files[] = $file;
-		        		}
-		        		else{
-		        			$seen_files[] = $file;
-		        		}
+	        		if(!$mark){
+	        			$files[] = $file;
 	        		}
+	        		else{
+	        			$seen_files[] = $file;
+	        		}
+
         		}
         	}
         	$fileId=0;

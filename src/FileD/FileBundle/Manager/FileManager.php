@@ -62,5 +62,18 @@ class FileManager extends EntityManager{
 		$this->logger->info('[FileManager]find File by hash '.$hash);
 		return $this->getRepository()->findByHash($hash);
 	}
+
+	/**
+	 * Find files which have the given user shared and the given parent file
+	 * @param User the user
+	 * @param File the parent file
+	 * @return the files
+	 */
+	public function findFilesShared($user,$parent)
+	{
+	
+		$this->logger->info('[UserManager]Find files which are shared with user '.$user.' and child of '.$parent);
+		return $this->getRepository()->findFilesShared($user,$parent);
+	}
 	
 }

@@ -75,7 +75,7 @@ class File {
 	/**
 	 * Children
 	 * @var array of FileD\FileBundle\Entity\File $children
-	 * @ORM\OneToMany(targetEntity="File", mappedBy="parent", cascade={"remove", "persist"})
+	 * @ORM\OneToMany(targetEntity="File", mappedBy="parent", cascade={"remove", "persist"}, fetch="LAZY")
 	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
 	 */
 	protected $children;
@@ -89,13 +89,13 @@ class File {
 
 	/**
 	 * List of users who have access to this file
-	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="files", cascade={"persist"})
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="files", cascade={"persist"}, fetch="LAZY")
 	 */
 	protected $usersShare;
 
 	/**
 	 * List of users who have marked as seen this file
-	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="seenFiles")
+	 * @ORM\ManyToMany(targetEntity="FileD\UserBundle\Entity\User", mappedBy="seenFiles", fetch="LAZY")
 	 */
 	protected $usersSeen;
 

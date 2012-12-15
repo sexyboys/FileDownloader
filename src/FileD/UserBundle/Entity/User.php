@@ -24,14 +24,14 @@ class User extends BaseUser {
 
 	/**
 	 * List of added files
-	 * @ORM\OneToMany(targetEntity="FileD\FileBundle\Entity\File", mappedBy="author")
+	 * @ORM\OneToMany(targetEntity="FileD\FileBundle\Entity\File", mappedBy="author", fetch="LAZY")
 	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
 	 */
 	protected $addedFiles;
 
 	/**
 	 * List of files available
-	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersShare")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersShare", fetch="LAZY")
      * @ORM\JoinTable(name="users_files_shared")
 	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
 	 */
@@ -39,7 +39,7 @@ class User extends BaseUser {
 
 	/**
 	 * List of files seen/marked as seen
-	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersSeen")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersSeen", fetch="LAZY")
      * @ORM\JoinTable(name="users_files_seen")
 	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
 	 */

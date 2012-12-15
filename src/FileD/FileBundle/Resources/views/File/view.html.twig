@@ -3,7 +3,7 @@
             	<!-- Display home content FILES-->
             	<div class="well">
             		<fieldset >
-		 				<legend>{% trans %}file.list.title{% endtrans %} <small id="show"><a href="#seen_files" onclick="showSeenFiles()"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
+		 				<legend><p>{% trans %}file.list.title{% endtrans %}</p> <small id="show"><a href="#seen_files" onclick="showSeenFiles()"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
 		 				<small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
 		 						
 		 				</legend>
@@ -76,7 +76,27 @@
 					    							<td>
 					    								{% if file.isDirectory()%}
 					    								
-					    									{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+					    									{% if file.size > 0 %}
+					    										<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+						    									{% set size = file.size %}
+						    									{% if size < 1000 %}
+						    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
+						    									{% elseif size <1000000 %}
+						    										{% set size = file.size/1000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
+						    									{% elseif size <1000000000 %}
+						    										{% set size = file.size/1000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
+						    									{% elseif size <1000000000000 %}
+						    										{% set size = file.size/1000000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
+						    									{% else %}
+						    										{% set size = file.size/1000000000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
+						    									{% endif %}
+					    									{% else %}
+					    										{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+					    									{% endif %}
 					    									
 					    								{% else %}
 					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
@@ -155,7 +175,7 @@
     			<div class="well" id="seen_files">
     				<fieldset>
     					<legend>
-    						{% trans %}file.list.title.seen{% endtrans %} <small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
+    						<p>{% trans %}file.list.title.seen{% endtrans %}</p> <small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
     					</legend>
     					<div class="row">
     						{% if seen_files is empty %}
@@ -210,9 +230,27 @@
 					    							</td>
 					    							<td>
 					    								{% if file.isDirectory()%}
-					    								
-					    									{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
-					    									
+					    									{% if file.size > 0 %}
+					    										<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+						    									{% set size = file.size %}
+						    									{% if size < 1000 %}
+						    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
+						    									{% elseif size <1000000 %}
+						    										{% set size = file.size/1000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
+						    									{% elseif size <1000000000 %}
+						    										{% set size = file.size/1000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
+						    									{% elseif size <1000000000000 %}
+						    										{% set size = file.size/1000000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
+						    									{% else %}
+						    										{% set size = file.size/1000000000000 %}
+						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
+						    									{% endif %}
+					    									{% else %}
+					    										{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+					    									{% endif %}
 					    								{% else %}
 					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
 					    									{% set size = file.size %}
@@ -331,6 +369,12 @@
 						display:none;
 						visibility:hidden;
 					}
+					#show, #hide, .well legend p{
+						float:left;
+					}
+					#show, #hide{
+						margin-left:10px;
+					}
 					-->
 				</style>
 				
@@ -364,8 +408,6 @@
 				
 				//Delete a file or directory
 				function deleteFile(id,isExternal){
-				    //$('#dialog-confirm').css('visibility','visible');
-				    //$('#dialog-confirm').css('display','block');*/
 				    if(isExternal){
 						if(confirm("{% trans %} file.list.delete.confirm {% endtrans %}")){
 							result = 2;

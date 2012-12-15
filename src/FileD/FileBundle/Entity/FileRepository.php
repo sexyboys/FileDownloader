@@ -61,4 +61,28 @@ class FileRepository extends EntityRepository
 				    ->getResult();
 		return $result[0];
 	}
+
+	/**
+	 * Find files which have the given user shared and the given parent file
+	 * @param User the user
+	 * @param File the parent file
+	 * @return the files
+	 */
+	public function findFilesShared($user,$parent)
+	{
+	    $query ="SELECT
+		            f
+		        FROM FileDFileBundle:File f
+				JOIN f.usersShare u 
+				WHERE u.id = :id
+		        AND f.parent";
+	    if($parent==null)$query.=" IS NULL";
+	    else $query.="=:parent";
+	    $query.=" ORDER BY f.mime ASC";
+		$query = $this->_em->createQuery($query)
+				    ->setParameter('id', $user->getId());
+		if($parent !=null)$query->setParameter('parent', $parent);
+				    
+		return $query->getResult();
+	}
 }

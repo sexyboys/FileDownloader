@@ -222,7 +222,17 @@ class FileFactory {
 	 * @return constant class (NONE,AUDIO,VIDEO,IMG)
 	 */
 	public function isTypeHandle($file){
-		return $this->types[array_search($file->getMime(), $this->mimeTypes)];
+		$key = array_search($file->getMime(), $this->mimeTypes);
+		if($key!=false){
+			$res = array_key_exists($key, $this->types);
+			if($res){
+				$result=$this->types[$key];
+			}
+			else $result=FileFactory::NONE;
+		}
+		else $result=FileFactory::NONE;
+		
+		return $result;
 	}
 	
 	/**
