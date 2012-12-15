@@ -594,25 +594,29 @@ class FileController extends Controller
     	$resu = null;
     	try{
 	    	$id = $_POST['id'];
+	    	$choice = $_POST['choice'];
 	    	//Delete the local file/directory
 	    	$file = $this->container->get('filed_file.file')->load($id);
-	    	if($file->isDirectory()){
-	    		$dir = $file->getLink();
-    			$this->rrmdir($dir);
+	    	if($choice==2){
+		    	if($file->isDirectory()){
+		    		$dir = $file->getLink();
+	    			$this->rrmdir($dir);
+		    	}
+		    	else $resu = unlink($file->getLink());
+		    	$this->get('logger')->info('[FileController] Delete file with id '.$_POST['id']);
+	            //add flash msg to user
 	    	}
-	    	else $resu = unlink($file->getLink());
-	    	$this->get('logger')->info('[FileController] Delete file with id '.$_POST['id']);
-            //add flash msg to user
-            $this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.delete'));
+			$this->container->get('filed_file.file')->delete($id);
+            
+			$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.delete'));
     	}
     	catch(\Exception $e){
             //add flash msg to user
             $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.delete'));
-	    	$this->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']);
+	    	$this->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']." : ".$e->getMessage());
     		
     	}
 
-    	$this->container->get('filed_file.file')->delete($id);
     	
     	return new Response("true");
     	
@@ -631,19 +635,19 @@ class FileController extends Controller
     		$size=$this->recursiveSize($file, $size);
     	}
     	if($size < 1000){
-    		$response = $size." ".$this->container->get('translator')->trans('file.size.unit');
+    		$response = round($size,3)." ".$this->container->get('translator')->trans('file.size.unit');
     	}
     	else if($size < 1000000){
-    		$response = ($size/1000)." ".$this->container->get('translator')->trans('file.size.unit.kilo');
+    		$response = round($size/1000,3)." ".$this->container->get('translator')->trans('file.size.unit.kilo');
     	}
     	else if($size < 1000000000){
-    		$response = ($size/1000000)." ".$this->container->get('translator')->trans('file.size.unit.mega');
+    		$response = round($size/1000000,3)." ".$this->container->get('translator')->trans('file.size.unit.mega');
     	}
     	else if($size < 1000000000000){
-    		$response = ($size/1000000000)." ".$this->container->get('translator')->trans('file.size.unit.giga');
+    		$response = round($size/1000000000,3)." ".$this->container->get('translator')->trans('file.size.unit.giga');
     	}
     	else{
-    		$response = ($size/1000000000000)." ".$this->container->get('translator')->trans('file.size.unit.tera');
+    		$response = round($size/1000000000000,3)." ".$this->container->get('translator')->trans('file.size.unit.tera');
     	}
     	return new Response($response);
     }
@@ -714,15 +718,6 @@ class FileController extends Controller
 	    		
 	    		$response = $this->get('igorw_file_serve.response_factory')
 	    		->create($path, $mime, $options);
-	    		/*$response = new Response();
-	    		$response->setStatusCode(200);
-	    		$response->headers->set('Content-Type', "application/octet-stream");
-	    		$response->headers->set('Content-Disposition', 'attachment; filename="'.$name.'"');
-	    		$response->headers->set('Content-length', filesize($path));
-	    		$response->headers->set('X-Sendfile', $path);
-        	    $this->get('logger')->info('[FileController] Downloading file with id '.$id);
-        	    $this->get('logger')->info('[FileController] Downloading file render: '.$response->__toString());
-	    		$response->send();*/
 	    	}
 	    	else{
 
@@ -812,7 +807,9 @@ class FileController extends Controller
     	$users = $this->container->get('filed_user.user')->findActiveUsers();
     	$choices = array();
     	foreach($users as $user){
-    		$choices[$user->getId()] = $user->getUsername();
+    		if(!$user->hasRole('ROLE_ADMIN')){
+    			$choices[$user->getId()] = $user->getUsername();
+    		}
     	}
     	$shareclass = new Share();
     	$form = $this->container->get('form.factory')->create(new ShareFileType($choices), $shareclass,array('label'=>$this->container->get('translator')->trans('file.share.list.label')));

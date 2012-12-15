@@ -19,7 +19,7 @@ user.profile.edit: Modifier
 file.list.title: Liste des fichiers disponibles
 file.list.title.seen: Liste des fichiers marqués comme vu
 file.list.title.small.seen: (montrer les fichiers vus)
-file.list.title.small.seen.not: (montrer les fichiers disponibles)
+file.list.title.small.seen.not: (cacher les fichiers vus)
 file.list.addfile: Ajouter un fichier
 file.list.addrepository: Créer un répertoire
 file.list.nofilesfound: Aucun fichiers trouvés.
@@ -44,6 +44,8 @@ file.list.name.refresh: Rafraîchir le contenu du dossier externe
 file.list.name.link: Obtenir le lien public
 file.list.ok: OK
 file.list.cancel: Annuler
+file.list.delete.confirm: Le fichier est géré à l'exterieur de l'application, Etes vous sûr de vouloir supprimer le fichier de l'application et le fichier physique?
+
 
 file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier

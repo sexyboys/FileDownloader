@@ -1,10 +1,10 @@
 <!-- Rendered by userBundle:Index : display all files-->
 
-           
             	<!-- Display home content FILES-->
             	<div class="well">
             		<fieldset >
-		 				<legend>{% trans %}file.list.title{% endtrans %} <small><a href="#seen_files" onclick="showSeenFiles()"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
+		 				<legend>{% trans %}file.list.title{% endtrans %} <small id="show"><a href="#seen_files" onclick="showSeenFiles()"> {% trans %} file.list.title.small.seen {% endtrans %}</a></small>
+		 				<small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
 		 						
 		 				</legend>
 		            	<div class="row">
@@ -82,15 +82,19 @@
 					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
 					    									{% set size = file.size %}
 					    									{% if size < 1000 %}
-					    										{{ file.size }} {% trans %} file.size.unit {% endtrans %}
+					    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
 					    									{% elseif size <1000000 %}
-					    										{{ file.size / 1000}}	{% trans %} file.size.unit.kilo {% endtrans %}
+					    										{% set size = file.size/1000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
 					    									{% elseif size <1000000000 %}
-					    										{{ file.size / 1000000}}	{% trans %} file.size.unit.mega {% endtrans %}
+					    										{% set size = file.size/1000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
 					    									{% elseif size <1000000000000 %}
-					    										{{ file.size / 1000000000}}	{% trans %} file.size.unit.giga {% endtrans %}
+					    										{% set size = file.size/1000000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
 					    									{% else %}
-					    										{{ file.size / 1000000000000}}	{% trans %} file.size.unit.tera {% endtrans %}
+					    										{% set size = file.size/1000000000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
 					    									{% endif %}
 					    								{% endif %}
 					    							</td>
@@ -112,7 +116,7 @@
 					    								{% endif %}
 					    								
 					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
-					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
+					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }},{% if file.external %}true{% else %}false{% endif %})"><i class="icon-remove"></i></a>
 					    								{% endif %}
 					    								
 					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
@@ -151,7 +155,7 @@
     			<div class="well" id="seen_files">
     				<fieldset>
     					<legend>
-    						{% trans %}file.list.title.seen{% endtrans %} 
+    						{% trans %}file.list.title.seen{% endtrans %} <small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
     					</legend>
     					<div class="row">
     						{% if seen_files is empty %}
@@ -213,15 +217,19 @@
 					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
 					    									{% set size = file.size %}
 					    									{% if size < 1000 %}
-					    										{{ file.size }} {% trans %} file.size.unit {% endtrans %}
+					    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
 					    									{% elseif size <1000000 %}
-					    										{{ file.size / 1000}}	{% trans %} file.size.unit.kilo {% endtrans %}
+					    										{% set size = file.size/1000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
 					    									{% elseif size <1000000000 %}
-					    										{{ file.size / 1000000}}	{% trans %} file.size.unit.mega {% endtrans %}
+					    										{% set size = file.size/1000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
 					    									{% elseif size <1000000000000 %}
-					    										{{ file.size / 1000000000}}	{% trans %} file.size.unit.giga {% endtrans %}
+					    										{% set size = file.size/1000000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
 					    									{% else %}
-					    										{{ file.size / 1000000000000}}	{% trans %} file.size.unit.tera {% endtrans %}
+					    										{% set size = file.size/1000000000000 %}
+					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
 					    									{% endif %}
 					    								{% endif %}
 					    							</td>
@@ -231,12 +239,12 @@
 					    									{{ file.dateCreation|date('Y-m-d H:i:s') }}
 					    								{% endif %}
 					    							</td>
-					    							<td>{{ file.author.username }}</td>
+					    							<td>{{ file.author.username }} </td>
 					    							<td>
 					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
 					    													    								
 					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
-					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }})"><i class="icon-remove"></i></a>
+					    									<a href="" class="remove" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }},{% if file.external %}true{% else %}false{% endif %})"><i class="icon-remove"></i></a>
 					    								{% endif %}
 					    								
 					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
@@ -290,8 +298,7 @@
 						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
 					</div>
 				</div>
-				
-				
+								
 				<!-- Style -->
 				<style>
 					<!--
@@ -319,26 +326,55 @@
 					#filestable{
 						width: 90% !important;
 					}
+					
+					#dialog-confirm{
+						display:none;
+						visibility:hidden;
+					}
 					-->
 				</style>
 				
 				<!-- Script for name edition -->
 				<script type="text/javascript">
 				<!--
-				//Hide seen files
-				$('#seen_files').css('visibility','hidden');
-				$('#seen_files').css('display','none');
+				//Var choice option for delete
+				var result=1;//1=only app, 2=app and physical
 
+				//Defaults value at page loading
+				hideSeenFiles();
+
+			    //Hide seen files
+				function hideSeenFiles(){
+					$('#hide').css('visibility','hidden');
+					$('#hide').css('display','none');
+					$('#show').css('visibility','visible');
+					$('#show').css('display','block');
+					$('#seen_files').css('visibility','hidden');
+					$('#seen_files').css('display','none');
+				}
 				//Show seen files
 				function showSeenFiles(){
+					$('#hide').css('visibility','visible');
+					$('#hide').css('display','block');
+					$('#show').css('visibility','hidden');
+					$('#show').css('display','none');
 					$('#seen_files').css('visibility','visible');
 					$('#seen_files').css('display','block');
 				}
 				
 				//Delete a file or directory
-				function deleteFile(id){
-					$('#loadingModal').modal('show');
-					var DATA = {'id': id};
+				function deleteFile(id,isExternal){
+				    //$('#dialog-confirm').css('visibility','visible');
+				    //$('#dialog-confirm').css('display','block');*/
+				    if(isExternal){
+						if(confirm("{% trans %} file.list.delete.confirm {% endtrans %}")){
+							result = 2;
+						}
+				    }
+				    else result = 2;
+			       $('#loadingModal').modal('show');
+					
+					var DATA = {'id': id, 'choice': result};
 			 		$.ajax({
 			 			type: "POST",
 			 			url: "{{ path('file_delete') }}",

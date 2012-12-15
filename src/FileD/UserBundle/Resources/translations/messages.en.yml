@@ -19,7 +19,7 @@ user.profile.edit: Edit
 file.list.title: List of files available
 file.list.title.seen: List of files marked as seen
 file.list.title.small.seen: (show seen files)
-file.list.title.small.seen.not: (show new files)
+file.list.title.small.seen.not: (hide seen files)
 file.list.addfile: Add a file
 file.list.addrepository: Add a repository
 file.list.nofilesfound: No files found.
@@ -44,6 +44,8 @@ file.list.name.refresh: Refresh the content of the external directory
 file.list.name.link: Get the public link
 file.list.ok: OK
 file.list.cancel: Cancel
+file.list.delete.confirm: This file is managed externally of the application, are you sure to delete the file from the application and the physical file ?
+
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File
