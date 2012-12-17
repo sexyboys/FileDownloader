@@ -593,9 +593,15 @@ class FileController extends Controller
 			    	if($file->isDirectory()){
 			    		$dir = $file->getLink();
 		    			$this->rrmdir($dir);
+		    			$this->get('logger')->info('[FileController] Delete physical directory with path '.$dir);
 			    	}
-			    	else $resu = unlink($file->getLink());
-		    		}
+			    	else
+			    	{ 
+			    		$resu = unlink($file->getLink());
+		    			if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
+		    			else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
+			    	}
+	    		}
 	    		catch(\Exception $e)
 	    		{
 	    			$this->get('logger')->err('[FileController] The file didn\'t exist : '.$file->getLink());
@@ -790,14 +796,18 @@ class FileController extends Controller
     	foreach(glob($dir . '/*') as $file) {
     		if(is_dir($file))
     			$this->rrmdir($file);
-    		else
-    			unlink($file);
+    		else{
+    			$resu = unlink($file);
+	    		if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
+	    		else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
+    		}
     	}
 
-    	if(is_dir($dir))
-    		rmdir($dir);
-    	else
-    		unlink($dir);
+    	if(is_dir($dir)) $resu = rmdir($dir);
+    	else $resu = unlink($dir);
+    	
+    	if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
+    	else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
     }
 
     /**
