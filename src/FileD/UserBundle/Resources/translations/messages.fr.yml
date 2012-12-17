@@ -44,7 +44,7 @@ file.list.name.refresh: Rafraîchir le contenu du dossier externe
 file.list.name.link: Obtenir le lien public
 file.list.ok: OK
 file.list.cancel: Annuler
-file.list.delete.confirm: Le fichier est géré à l'exterieur de l'application, Etes vous sûr de vouloir supprimer le fichier de l'application et le fichier physique?
+file.list.delete.confirm: Le fichier est géré à l'exterieur de l'application, Etes vous sûr de vouloir supprimer le fichier de l'application et le fichier physique? (En cliquant sur annuler vous allez supprimer le fichier de l'application seulement)
 
 
 file.share.ahref.title: Partagé avec
@@ -91,6 +91,7 @@ msg.error.file.new: Le fichier n'a pas pu être ajouté, veuillez recommencer ul
 msg.error.file.share: Le fichier n'a pas pu être partagé, veuillez recommencer ultérieurement
 msg.error.repository.new: Le répertoire n'a pas pu être ajouté, veuillez recommencer ultérieurement
 msg.error.file.public: Le fichier n'est pas disponible ou n'existe pas
+msg.error.file.refresh.file: The file %path% cannot be added
 
 msg.success.account.edit: Votre compte a été édité avec succès
 msg.success.file.add: Le(s) fichier(s) ont été ajouté(s) avec succès

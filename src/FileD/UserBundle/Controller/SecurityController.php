@@ -14,7 +14,6 @@ class SecurityController extends ContainerAware
 	/**
 	 * Sign in action rendering form login or action
 	 * @param GET file the file id
-	 * @param GET seen if we have to render only seen files or by default the new ones
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * 
 	 */
@@ -46,63 +45,13 @@ class SecurityController extends ContainerAware
         
         //Get the parent given through GET of files displayed
 		$fileId = array_key_exists('file', $_GET)?$_GET['file']:null;
-		$fileParent = null;
-		if($fileId!=null) $fileParent = $this->container->get('filed_user.file')->load($fileId);
 				
-        //Loading files children of the given parent file only iff the file is shared to the user
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $hasRight = $fileParent!=null && FileFactory::getInstance()->isSharedWith($user,$fileParent)?true:false;
-        $files = null;
-        $seen_files=null;
-        if($fileParent != null && $hasRight){
-			//Getting children and only those with rights on it
-			$files = array();
-			$seen_files = array();
-			$needSeen = false;
-			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
-			$children = $this->container->get('filed_user.file')->findFilesShared($user,$fileParent);
-        	foreach($children as $child){
-				//check with the seen option and add it if we need it
-				$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
-				if(!$mark){//only not seen yet
-					$files[] = $child;		
-				}
-				else if($mark){//all seen only
-					$seen_files[] = $child;
-				}
-			}
-        }
-        else{
-        	//Default root option
-			$needSeen = false;
-			if(array_key_exists('seen', $_GET) && $_GET['seen']!=null && $_GET['seen']!="") $needSeen=$_GET['seen'];
-        	if($user !=null && is_object($user)){
-        		//get files with root from user
-	        	$userFiles = $this->container->get('filed_user.file')->findFilesShared($user,null);
-	        	//We get only root files (with no parent)
-	        	foreach($userFiles as $file){
-	        		$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
-
-	        		if(!$mark){
-	        			$files[] = $file;
-	        		}
-	        		else{
-	        			$seen_files[] = $file;
-	        		}
-
-        		}
-        	}
-        	$fileId=0;
-        }
         
         return $this->renderLogin(array(
             'last_username' => $lastUsername,
             'error'         => $error,
             'csrf_token' => $csrfToken,
-        	'files' => $files,
-        	'seen_files' =>$seen_files,
         	'fileId' => $fileId,
-        	'showMarkedAsSeen'=> $needSeen,
         	"enable_register" => $this->container->get('filed_user.param')->findParameterByKey(ParameterManager::ENABLE_REGISTER)
         ));
     }

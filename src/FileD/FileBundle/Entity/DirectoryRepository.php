@@ -14,4 +14,28 @@ use FileD\FileBundle\Entity\FileRepository;
  */
 class DirectoryRepository extends FileRepository
 {
+
+	/**
+	 * Find directories which have the given user shared and the given parent file
+	 * @param User the user
+	 * @param File the parent file
+	 * @return the files
+	 */
+	public function findDirectoriesShared($user,$parent)
+	{
+	    $query ="SELECT
+		            d
+		        FROM FileDFileBundle:Directory d
+				JOIN d.usersShare u 
+				WHERE u.id = :id
+		        AND d.parent";
+	    if($parent==null)$query.=" IS NULL";
+	    else $query.="=:parent";
+	    $query.=" ORDER BY d.name ASC";
+		$query = $this->_em->createQuery($query)
+				    ->setParameter('id', $user->getId());
+		if($parent !=null)$query->setParameter('parent', $parent);
+				    
+		return $query->getResult();
+	}
 }

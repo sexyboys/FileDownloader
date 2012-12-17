@@ -67,13 +67,16 @@ class FileManager extends EntityManager{
 	 * Find files which have the given user shared and the given parent file
 	 * @param User the user
 	 * @param File the parent file
+	 * @param boolean define if the directories are included
 	 * @return the files
 	 */
-	public function findFilesShared($user,$parent)
+	public function findFilesShared($user,$parent,$includeDir=true)
 	{
 	
-		$this->logger->info('[UserManager]Find files which are shared with user '.$user.' and child of '.$parent);
-		return $this->getRepository()->findFilesShared($user,$parent);
+		//Then get others sorted by name only
+		$array = $this->getRepository()->findFilesShared($user,$parent,$includeDir);
+		$this->logger->info('[FileManager]Find '.count($array).' files which are shared with user '.$user.' and child of '.$parent);
+		return $array;
 	}
 	
 }

@@ -2,6 +2,8 @@
 
 namespace FileD\FileBundle\Entity;
 
+use FileD\FileBundle\Factory\FileFactory;
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -66,9 +68,10 @@ class FileRepository extends EntityRepository
 	 * Find files which have the given user shared and the given parent file
 	 * @param User the user
 	 * @param File the parent file
+	 * @param boolean define if the directories are included
 	 * @return the files
 	 */
-	public function findFilesShared($user,$parent)
+	public function findFilesShared($user,$parent,$includeDir)
 	{
 	    $query ="SELECT
 		            f
@@ -77,11 +80,13 @@ class FileRepository extends EntityRepository
 				WHERE u.id = :id
 		        AND f.parent";
 	    if($parent==null)$query.=" IS NULL";
-	    else $query.="=:parent";
-	    $query.=" ORDER BY f.mime ASC";
+	    else $query.="= :parent";
+	    if(!$includeDir)$query.=" AND f.mime <> :mime";
+	    $query.=" ORDER BY f.name ASC";
 		$query = $this->_em->createQuery($query)
 				    ->setParameter('id', $user->getId());
-		if($parent !=null)$query->setParameter('parent', $parent);
+		if($parent!=null)$query->setParameter('parent', $parent);
+		if(!$includeDir)$query->setParameter('mime',FileFactory::getInstance()->getMimeType('dir'));
 				    
 		return $query->getResult();
 	}

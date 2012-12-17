@@ -38,5 +38,36 @@ class DirectoryManager extends FileManager{
 		$this->logger->info('[DirectoryManager]Create new Directory');
 		return new Directory();
 	}
+
+	/**
+	 * Find directories which have the given user shared and the given parent file
+	 * @param User the user
+	 * @param File the parent file
+	 * @return the files
+	 */
+	public function findDirectoriesShared($user,$parent)
+	{
+	
+		//Then get others sorted by name only
+		$array = $this->getRepository()->findDirectoriesShared($user,$parent);
+		$this->logger->info('[DirectoryManager]Find '.count($array).' directories which are shared with user '.$user.' and child of '.$parent);
+		return $array;
+	}
+	
+	/**
+	 * Reset directories parents size from the given directory
+	 * @param Directory the dir
+	 */
+	public function resetSize($dir)
+	{
+		$dir->setSize(0);
+		$this->update($dir);
+		if($dir->getParent()!=null) $this->resetSize($dir->getParent());
+		
+		$this->logger->info('[DirectoryManager]Reset size of directory '.$dir->getId());
+		
+	}
+	
+	
 	
 }

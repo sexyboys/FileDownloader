@@ -57,100 +57,7 @@ class FileController extends Controller
         );
     }
 
-    /**
-     * Creates a new File entity.
-     *
-     * @Route("/create", name="file_create")
-     * @Method("POST")
-     * @Template("FileDFileBundle:File:new.html.twig")
-     */
-    public function createAction(Request $request)
-    {
-        $entity  = new File();
-        $form = $this->createForm(new FileType(), $entity);
-        $form->bind($request);
-		
-        if ($form->isValid()) {
-        	try{
-	            $em = $this->getDoctrine()->getManager();
-	            $em->persist($entity);
-	            $em->flush();
-			
-	            $this->get('logger')->info('[FileController] Create new '.$entity);
-            	//add flash msg to user
-	            $this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.new'));
-        	}
-        	catch(\Exception $e){
-
-        		//add flash msg to user
-        		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.new'));
-        		
-        		$this->get('logger')->err('[FileController] Error while updating  '.$entity);
-        	}
-            return $this->redirect($this->generateUrl('file_show', array('id' => $entity->getId())));
-        }
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
-    }
-
-    /**
-     * Edits an existing File entity.
-     *
-     * @Route("/{id}/update", name="file_update")
-     * @Method("POST")
-     * @Template("FileDFileBundle:File:edit.html.twig")
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('FileDFileBundle:File')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find File entity.');
-        }
-	
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(new FileType(), $entity);
-        $editForm->bind($request);
-
-        if ($editForm->isValid()) {
-        	try{
-	            $em->persist($entity);
-	            $em->flush();
-
-	            //add flash msg to user
-	            $this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.edit'));
-	            $this->get('logger')->info('[FileController] Updating '.$entity);
-	            
-            }
-            catch(\Exception $e){
-        		//add flash msg to user
-        		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.edit'));
-            
-            	$this->get('logger')->err('[FileController] Error while updating  '.$entity);
-            }
-            return $this->redirect($this->generateUrl('file_edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
-
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
-            ->getForm()
-        ;
-    }
-    
+     
     /**
      * Add files to be uploaded through multiupload plugin
      * @param $_FILES['files']
@@ -159,7 +66,7 @@ class FileController extends Controller
     public function addfileAction(){
 
     	$uploaded_file = new \stdClass();
-    		
+    		$parent=null;
     		$file = $this->container->get('filed_file.file')->create();
     		//upload the file
     		if ($_FILES['files']['tmp_name'][0]!="" && $_FILES['files']['error'][0] == 0) {
@@ -168,6 +75,7 @@ class FileController extends Controller
 	    			if(array_key_exists('parent', $_POST) && $_POST['parent']!=0){
 	    				$parent = $this->container->get('filed_file.file')->load($_POST['parent']);
 	    				if($parent!=null){
+	    					
 	    					$file->setParent($parent);
 	    					//add parent author to child author
 	    					$file->setAuthor($parent->getAuthor());
@@ -187,6 +95,13 @@ class FileController extends Controller
 			    	//Create the entity and the response file
 			    	$file->setName($_FILES['files']['name'][0]);
 			    	$file->setSize($_FILES['files']['size'][0]);
+			    	
+			    	if($parent!=null)
+			    	{
+			    		//Reset size parent
+			    		$this->container->get('filed_file.directory')->resetSize($parent);
+			    	}
+			    	
 			    	$file->setMime($_FILES['files']['type'][0]);
 			    	$file->setDateCreation(new \DateTime());
 			    	$file->addUsersShare(array($user));
@@ -281,71 +196,82 @@ class FileController extends Controller
      */
     private function addFileFromServer($path,$parent){
    
-		//Add the first file
-    	if(is_dir($path)){
-			$em = $this->container->get('filed_file.directory');
-    		$name = basename($path);
-    		$mime= FileFactory::getInstance()->getMimeType('dir');
-    	}
-    	else{
-    		//only file
-			$em = $this->container->get('filed_file.file');
-    	    $name = basename($path);
-    	    $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
-    	}
-    	//check if it exists by its path
-    	$id_find_file = $this->container->get('filed_file.file')->findIdByPath($path);
-    	$file=null;
-    	if($id_find_file==null || $id_find_file==0){
-	    	$file  = $em->create();
-	    	$file->setName($name);
-	    	$file->setSize(filesize($path));
-	    	$user= $this->get('security.context')->getToken()->getUser();
-	    	$file->setMime($mime);
-	    	$file->setDateCreation(new \DateTime(filectime($path)!=false?'@'.filectime($path):null));
-	    	$file->addUsersShare(array($user));
-	    	$file->setLink($path);
-	    	$file->setExternal(true);
-	    	if($parent!=null && $parent!=0){
-				$parent_dir = $this->container->get('filed_file.directory')->load($parent);
-	    		$file->setParent($parent_dir);
-	    		//Apply share options
-	    		$users = $parent_dir->getUsersShare();
-	    		foreach($users as $u)
-	    		{
-	    			if($u->getId() != $user->getId())
-	    			{
-	    				$file->addUsersShare(array($u));
-				    	$u->addFiles(array($file));
-				    	$this->container->get('fos_user.user_manager')->updateUser($u);
-	    			}
-	    		}
-
-	    		//add parent author to child author
-	    		$file->setAuthor($parent_dir->getAuthor());
+    	try{
+			//Add the first file
+	    	if(is_dir($path)){
+				$em = $this->container->get('filed_file.directory');
+	    		$name = basename($path);
+	    		$mime= FileFactory::getInstance()->getMimeType('dir');
 	    	}
 	    	else{
-
-	    		$file->setAuthor($user);
-	    		//share to the admins too
-	    		$admins = $this->container->get('filed_user.user')->findAdministrators();
-	    		foreach($admins as $admin)
-	    		{
-	    			//Shared the file to all administrators and escape the current user in case of it's an admin
-	    			if($admin->getId()!=$user->getId()){
-	    				$file->addUsersShare(array($admin));
-	    				$admin->addFiles(array($file));
-	    				$this->container->get('fos_user.user_manager')->updateUser($admin);
-	    			}
-	    		}
+	    		//only file
+				$em = $this->container->get('filed_file.file');
+	    	    $name = basename($path);
+	    	    $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
 	    	}
-	    	$em->update($file);
-
-	    	$file->setHash(md5($this->container->getParameter("app_hash_passphrase").$file->getId()));
-	    	$em->update($file);
-	    	$user->addFiles(array($file));
-	    	$this->container->get('fos_user.user_manager')->updateUser($user);
+	    	//check if it exists by its path
+	    	$id_find_file = $this->container->get('filed_file.file')->findIdByPath($path);
+	    	$file=null;
+	    	if($id_find_file==null || $id_find_file==0){
+		    	$file  = $em->create();
+		    	$file->setName($name);
+		    	$file->setSize(filesize($path));
+		    	$user= $this->get('security.context')->getToken()->getUser();
+		    	$file->setMime($mime);
+		    	$file->setDateCreation(new \DateTime(filectime($path)!=false?'@'.filectime($path):null));
+		    	$file->addUsersShare(array($user));
+		    	$file->setLink($path);
+		    	$file->setExternal(true);
+		    	if($parent!=null && $parent!=0){
+					$parent_dir = $this->container->get('filed_file.directory')->load($parent);
+		    		$file->setParent($parent_dir);
+		    		//Apply share options
+		    		$users = $parent_dir->getUsersShare();
+		    		foreach($users as $u)
+		    		{
+		    			if($u->getId() != $user->getId())
+		    			{
+		    				$file->addUsersShare(array($u));
+					    	$u->addFiles(array($file));
+					    	$this->container->get('fos_user.user_manager')->updateUser($u);
+		    			}
+		    		}
+	
+		    		//add parent author to child author
+		    		$file->setAuthor($parent_dir->getAuthor());
+		    	}
+		    	else{
+	
+		    		$file->setAuthor($user);
+		    		//share to the admins too
+		    		$admins = $this->container->get('filed_user.user')->findAdministrators();
+		    		foreach($admins as $admin)
+		    		{
+		    			//Shared the file to all administrators and escape the current user in case of it's an admin
+		    			if($admin->getId()!=$user->getId()){
+		    				$file->addUsersShare(array($admin));
+		    				$admin->addFiles(array($file));
+		    				$this->container->get('fos_user.user_manager')->updateUser($admin);
+		    			}
+		    		}
+		    	}
+		    	$em->update($file);
+	
+		    	$file->setHash(md5($this->container->getParameter("app_hash_passphrase").$file->getId()));
+		    	$em->update($file);
+		    	$user->addFiles(array($file));
+		    	$this->container->get('fos_user.user_manager')->updateUser($user);
+	
+		    	$this->get('logger')->info('[FileController] Adding by refresh, file ('.$file->getId().') '.$file->getName());
+	    	}
     	}
+    	catch(\Exception $e){
+	    	$this->get('logger')->err('[FileController] Error while adding by refresh, file '.$path);$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.add'));
+            //add flash msg to user
+	        $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.refresh.file',
+        array('%path%' => $path)));
+	        		
+    	}    	
     	
     	if(is_dir($path)){
     		//Add file for children
@@ -388,7 +314,7 @@ class FileController extends Controller
 	    	$entity->addUsersShare($users);
 	    	$entity->setDateCreation(new \DateTime());
 	    	$entity->setSize(0);
-	    	$entity->setExternal(true);
+	    	$entity->setExternal(false);
 	    	$entity->setMime(FileFactory::getInstance()->getMimeType('dir'));
 	    	
 	    	//create the directory
@@ -400,51 +326,64 @@ class FileController extends Controller
     		
     		
     		$path.="/".date('U');
-    		$result = mkdir($path,0755,true);
-	    	if($result){
-	    		//save the entity
-	    		$entity->setLink($path);
-	    		$this->container->get('filed_file.file')->update($entity);
+    		$result = false;
+    		try{
+    			$result = mkdir($path,0755,true);
+		    	if($result){
+		    		//save the entity
+		    		$entity->setLink($path);
+		    		$this->container->get('filed_file.file')->update($entity);
+	
+			    	$entity->setHash(md5($this->container->getParameter("app_hash_passphrase").$entity->getId()));
+		    		$this->container->get('filed_file.file')->update($entity);
+			    	$user->addAddedFiles(array($entity));
+			    	$user->addFiles(array($entity));
+					$this->container->get('fos_user.user_manager')->updateUser($user);
+	
+					//add flash msg to user
+					$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.repository.new'));
+		    	}
+		    	else{
+	
+		    		//add flash msg to user
+		    		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.repository.new'));
+		    		return new Response('false');
+		    	}
+	    		return new Response('true');
 
-		    	$entity->setHash(md5($this->container->getParameter("app_hash_passphrase").$entity->getId()));
-	    		$this->container->get('filed_file.file')->update($entity);
-		    	$user->addAddedFiles(array($entity));
-		    	$user->addFiles(array($entity));
-				$this->container->get('fos_user.user_manager')->updateUser($user);
+    		}
+    		catch(\Exception $e){
+    			$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.repository.new'));
 
-				//add flash msg to user
-				$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.repository.new'));
-	    	}
-	    	else{
-
-	    		//add flash msg to user
-	    		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.repository.new'));
+    			$this->get('logger')->err('[FileController] Error while adding a new repository for path '.$path.',  '.$e->getMessage());
 	    		return new Response('false');
-	    	}
-	    	return new Response('true');
+    		}
     	}
     	else return new Response('false');
     }
     
     /**
      * Render files 
-     * @param $files the files to be display
      * @param $fileId the parent id of the files displayed to generate the url to get back
      * @param $last_username property used to render login form
      * @param $csrf_token property used to render login form
-     * @param $seen_files the files that is marked as seen
      * @return the rendering view.html.twig with files loaded
      */
-    public function viewFilesAction($files,$fileId,$last_username,$csrf_token,$seen_files){
+    public function viewFilesAction($fileId,$last_username,$csrf_token){
     	
-    	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));
+    	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));	
+    	$non_seen_files = null;
+	    $seen_files=null;
+    	$txt_array_usershare = "";
+    	$needSeen = false;
+		$parent = null;
+		$file=null;
+    	$parent_id=-1;
     	try{
 	    	//Get the parent id
-	    	$parent_id=-1;
-	    	$file_id=0;
 	    	if($fileId!=0){
 	    		$file = $this->container->get('filed_file.file')->load($fileId);
-	    		$file_id=$file->getId();
+	    		//print_r($file);exit;
 		    	if($file!=null && is_object($file)){
 			    	$parent = $file->getParent();
 			    	if($parent!=null && is_object($parent)){
@@ -454,10 +393,56 @@ class FileController extends Controller
 		    	}
 		    	else $parent_id=0;
 	    	}
+	    	//Loading files children of the given parent file only iff the file is shared to the user
+	    	$fileParent = $file;
+	    	$user = $this->container->get('security.context')->getToken()->getUser();
+	    	$hasRight = $fileParent!=null && FileFactory::getInstance()->isSharedWith($user,$fileParent)?true:false;
+	    
+	    	if($fileParent != null && $hasRight){
+	    		//Getting children and only those with rights on it
+	    		$non_seen_files = array();
+	    		$seen_files = array();
+	    			    			
+	    		$dir = $this->container->get('filed_user.dir')->findDirectoriesShared($user,$fileParent);
+	    		$files = $this->container->get('filed_user.file')->findFilesShared($user,$fileParent,false);
+	    	
+	    		$children = array_merge($dir,$files);
+	    		foreach($children as $child){
+	    			//check with the seen option and add it if we need it
+	    			$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$child);
+	    			if(!$mark){//only not seen yet
+	    				$non_seen_files[] = $child;
+	    			}
+	    			else if($mark){//all seen only
+	    				$seen_files[] = $child;
+	    			}
+	    		}
+	    	}
+	    	else{
+	    		//Default root option
+	    		if($user !=null && is_object($user)){
+	    			//get files with root from user
+	    			$dir = $this->container->get('filed_user.dir')->findDirectoriesShared($user,null);
+	    			$files = $this->container->get('filed_user.file')->findFilesShared($user,null,false);
+	    			$userFiles = array_merge($dir,$files);
+	    			//We get only root files (with no parent)
+	    			foreach($userFiles as $file){
+	    				$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
+	    	
+	    				if(!$mark){
+	    					$non_seen_files[] = $file;
+	    				}
+	    				else{
+	    					$seen_files[] = $file;
+	    				}
+	    	
+	    			}
+	    		}
+	    		$fileId=0;
+	    	}
 	    	
 	    	//Map an array idfile=>usernames
 	    	//format id:username1,username2;id2:username1
-	    	$txt_array_usershare = "";
 	    	$j=1;
 	    	foreach($files as $file){
 	    		$usersshare=$file->getId().":";
@@ -474,7 +459,7 @@ class FileController extends Controller
 	    		$j++;
 	    	} 
 
-	    	$this->get('logger')->info('[FileController] Viewing files of  '.$last_username);
+	    	$this->get('logger')->info('[FileController] Viewing files of  '.$user->getUsername());
 	    	
     	}
     	catch(\Exception $e){
@@ -495,15 +480,17 @@ class FileController extends Controller
     	}
     	
     	return $this->container->get('templating')->renderResponse($template, 
-    			array('files' => $files, 
+    			array('files' => $non_seen_files, 
     				  'seen_files' => $seen_files,
     				  'parent_id' => $parent_id,
-    				  'file_id' => $file_id,
-    				   'last_username' => $last_username,
-    					'txt_usershare'=> $txt_array_usershare,
-    					'csrf_token' => $csrf_token,
-    					'enable_upload' => $enable_upload,
-    					'enable_share' => $enable_share));
+    				  'parent' => $fileParent,
+    				  'file_id' => $fileId,
+    				  'last_username' => $last_username,
+    				  'txt_usershare'=> $txt_array_usershare,
+    				  'csrf_token' => $csrf_token,
+    				  'enable_upload' => $enable_upload,
+        			  'showMarkedAsSeen'=> $needSeen,
+    				  'enable_share' => $enable_share));
     }
     
 
@@ -598,14 +585,28 @@ class FileController extends Controller
 	    	//Delete the local file/directory
 	    	$file = $this->container->get('filed_file.file')->load($id);
 	    	if($choice==2){
-		    	if($file->isDirectory()){
-		    		$dir = $file->getLink();
-	    			$this->rrmdir($dir);
-		    	}
-		    	else $resu = unlink($file->getLink());
+	    		try{
+			    	if($file->isDirectory()){
+			    		$dir = $file->getLink();
+		    			$this->rrmdir($dir);
+			    	}
+			    	else $resu = unlink($file->getLink());
+		    		}
+	    		catch(\Exception $e)
+	    		{
+	    			$this->get('logger')->err('[FileController] The file didn\'t exist : '.$file->getLink());
+	    		}
 		    	$this->get('logger')->info('[FileController] Delete file with id '.$_POST['id']);
 	            //add flash msg to user
 	    	}
+
+	    	$parent = $file->getParent();
+	    	if($parent!=null)
+	    	{
+	    		//Reset size parent
+	    		$this->container->get('filed_file.directory')->resetSize($parent);
+	    	}
+	    	
 			$this->container->get('filed_file.file')->delete($id);
             
 			$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.delete'));
@@ -613,7 +614,7 @@ class FileController extends Controller
     	catch(\Exception $e){
             //add flash msg to user
             $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.delete'));
-	    	$this->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']." : ".$e->getMessage());
+	    	$this->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']." : ".$e->getCode()." : ".$e->getMessage());
     		
     	}
 
@@ -635,19 +636,19 @@ class FileController extends Controller
     		$size=$this->recursiveSize($file, $size);
     	}
     	if($size < 1000){
-    		$response = round($size,3)." ".$this->container->get('translator')->trans('file.size.unit');
+    		$response = round($size,2)." ".$this->container->get('translator')->trans('file.size.unit');
     	}
     	else if($size < 1000000){
-    		$response = round($size/1000,3)." ".$this->container->get('translator')->trans('file.size.unit.kilo');
+    		$response = round($size/1000,2)." ".$this->container->get('translator')->trans('file.size.unit.kilo');
     	}
     	else if($size < 1000000000){
-    		$response = round($size/1000000,3)." ".$this->container->get('translator')->trans('file.size.unit.mega');
+    		$response = round($size/1000000,2)." ".$this->container->get('translator')->trans('file.size.unit.mega');
     	}
     	else if($size < 1000000000000){
-    		$response = round($size/1000000000,3)." ".$this->container->get('translator')->trans('file.size.unit.giga');
+    		$response = round($size/1000000000,2)." ".$this->container->get('translator')->trans('file.size.unit.giga');
     	}
     	else{
-    		$response = round($size/1000000000000,3)." ".$this->container->get('translator')->trans('file.size.unit.tera');
+    		$response = round($size/1000000000000,2)." ".$this->container->get('translator')->trans('file.size.unit.tera');
     	}
     	return new Response($response);
     }
@@ -998,12 +999,13 @@ class FileController extends Controller
     public function refreshAction()
     {
     	$id = $_POST['id'];
+    	$this->get('logger')->info('[FileController] Refreshing external file '.$id);
     	$file = $this->container->get('filed_file.file')->load($id);
     	if($file!=null)
     	{
     		$this->addFileFromServer($file->getLink(), $file->getParent()!=null?$file->getParent()->getId():null);
 	        $user = $this->container->get('security.context')->getToken()->getUser();
-	        $this->markAsSeen($file,$user);
+	        //$this->markAsSeen($file,$user);
     	}
         return new Response('');
     }
@@ -1021,11 +1023,12 @@ class FileController extends Controller
     	try{
 	    	if($file!=null)
 	    	{
-    	$template = sprintf('FileDFileBundle:File:public_download.html.%s', $this->container->getParameter('fos_user.template.engine'));
+    			$template = sprintf('FileDFileBundle:File:public_download.html.%s', $this->container->getParameter('fos_user.template.engine'));
 		        	return $this->container->get('templating')->renderResponse($template,
 		        			array(
 		        					'file' => $file
-		        			));	        	
+		        			));	
+	    		//direct dld for later update maybe? return $this->downloadPublicAction($file->getId());   	
 	    	}
 	        else{
 	        	$this->get('logger')->error('[FileController] Trying to access public file with hash '.$hash.' with ip '.$container->get('request')->getClientIp());
@@ -1034,9 +1037,9 @@ class FileController extends Controller
 	        }
         }
         catch(\Exception $e){
-        $this->get('logger')->error('[FileController] Trying to access public file with hash '.$hash.' with ip '.$container->get('request')->getClientIp());
-        		$this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('msg.error.file.public'));
-        		return new RedirectResponse($this->container->get('router')->generate('user_index'));
+        	$this->get('logger')->error('[FileController] Trying to access public file with hash '.$hash.' with ip '.$container->get('request')->getClientIp());
+        	$this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('msg.error.file.public'));
+        	return new RedirectResponse($this->container->get('router')->generate('user_index'));
         }
     }
     

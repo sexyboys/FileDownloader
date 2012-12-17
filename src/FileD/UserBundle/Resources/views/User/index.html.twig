@@ -27,35 +27,12 @@
 <script src="{{asset('bundles/filedfile/js/jquerymultiupload/jquery.fileupload-ui.js')}}"></script>
 <script src="{{asset('bundles/filedfile/js/jquerymultiupload/locale.js')}}"></script>
 
-<script type="text/javascript">
-	function addRepository(){
-		//add a repository on current level with ajax request
-		var DATA = {'id': {{ fileId }}};
-		$.ajax({
-			type: "POST",
-			url: "{{ path('file_add_repository') }}",
-			data: DATA,
-			async:false,
-			cache: false,
-			success: function(data){
-				document.location.reload(true);
-				return false;
-			},
-			error: function(request,status,error){
-				document.location.reload(true);
-				return false;
-			}
-		});
-
-	}
-
-</script>
 {% endblock %}
 {% block content %}
 		<div>
 			{% if is_granted("ROLE_USER") %}
 			   <!-- render files list available for the current user-->
-	           		{% render "FileDFileBundle:File:viewFiles" with {'files' : files , 'fileId' : fileId, 'last_username': last_username, 'csrf_token': csrf_token, 'seen_files':seen_files} %}
+	           		{% render "FileDFileBundle:File:viewFiles" with {'fileId' : fileId, 'last_username': last_username, 'csrf_token': csrf_token} %}
         	{% else %}   
 					{% include ":Security:login.html.twig" with {'last_username': last_username, 'csrf_token': csrf_token} %}
 			{% endif %}
