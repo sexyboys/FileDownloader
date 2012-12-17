@@ -140,7 +140,7 @@
 					    								
 					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
 					    								
-					    								{% if is_granted("ROLE_ADMIN") and file.getExternal() and file.isDirectory() %}
+					    								{% if file.getExternal() and file.isDirectory() %}
 					    									<a href="" title="{% trans %} file.list.name.refresh {% endtrans %}" onclick="refresh({{ file.id }})"><i class="icon-refresh"></i></a>
 					    								{% endif %}
 					    								
