@@ -1001,13 +1001,38 @@ class FileController extends Controller
     	$id = $_POST['id'];
     	$this->get('logger')->info('[FileController] Refreshing external file '.$id);
     	$file = $this->container->get('filed_file.file')->load($id);
+   
     	if($file!=null)
     	{
+    		//Trying to find if isset files to delete physically (so delete in the application too)
+    		$this->checkRemoteFiles($file);
+    		//Find new files
     		$this->addFileFromServer($file->getLink(), $file->getParent()!=null?$file->getParent()->getId():null);
 	        $user = $this->container->get('security.context')->getToken()->getUser();
 	        //$this->markAsSeen($file,$user);
     	}
         return new Response('');
+    }
+    
+    /**
+     * Check if file and descendants always exist
+     * @param File $file
+     */
+    private function checkRemoteFiles($file)
+    {
+    	//check physical existence of the file
+    	if(file_exists($file->getLink()))
+    	{
+    		foreach($file->getChildren() as $child)
+    		{
+    			$this->checkRemoteFiles($child);
+    		}
+    	}
+    	else{
+    		//doesn't exist anymore so delete it
+			$this->container->get('filed_file.file')->delete($file->getId());
+    	}
+    	
     }
     
     /**
