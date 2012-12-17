@@ -60,12 +60,13 @@ class DirectoryManager extends FileManager{
 	 */
 	public function resetSize($dir)
 	{
-		$dir->setSize(0);
-		$this->update($dir);
-		if($dir->getParent()!=null) $this->resetSize($dir->getParent());
-		
-		$this->logger->info('[DirectoryManager]Reset size of directory '.$dir->getId());
-		
+		if($dir!=null){
+			$dir->setSize("0");
+			$this->update($dir);
+			if($dir->getParent()!=null) $this->resetSize($dir->getParent());
+			
+			$this->logger->info('[DirectoryManager]Reset size of directory '.$dir->getId());
+		}
 	}
 	
 	

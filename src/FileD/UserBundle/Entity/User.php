@@ -31,7 +31,7 @@ class User extends BaseUser {
 
 	/**
 	 * List of files available
-	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", inversedBy="usersShare", fetch="LAZY")
+	 * @ORM\ManyToMany(targetEntity="FileD\FileBundle\Entity\File", cascade={"persist"}, inversedBy="usersShare", fetch="LAZY")
      * @ORM\JoinTable(name="users_files_shared")
 	 * @ORM\OrderBy({"mime" = "ASC", "name" = "ASC"})
 	 */

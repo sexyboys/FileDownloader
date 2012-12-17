@@ -241,7 +241,7 @@ class FileController extends Controller
 		    		$file->setAuthor($parent_dir->getAuthor());
 		    	}
 		    	else{
-	
+
 		    		$file->setAuthor($user);
 		    		//share to the admins too
 		    		$admins = $this->container->get('filed_user.user')->findAdministrators();
@@ -263,10 +263,12 @@ class FileController extends Controller
 		    	$this->container->get('fos_user.user_manager')->updateUser($user);
 	
 		    	$this->get('logger')->info('[FileController] Adding by refresh, file ('.$file->getId().') '.$file->getName());
+	    		$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.add'));
 	    	}
+	    	
     	}
     	catch(\Exception $e){
-	    	$this->get('logger')->err('[FileController] Error while adding by refresh, file '.$path);$this->container->get('session')->setFlash('success', $this->container->get('translator')->trans('msg.success.file.add'));
+	    	$this->get('logger')->err('[FileController] Error while adding by refresh, file '.$path.' : '.$e->getMessage());
             //add flash msg to user
 	        $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.refresh.file',
         array('%path%' => $path)));
@@ -274,6 +276,8 @@ class FileController extends Controller
     	}    	
     	
     	if(is_dir($path)){
+
+    		$this->container->get('filed_file.directory')->resetSize($file);
     		//Add file for children
     		$filenames = scandir($path);
     		foreach($filenames as $filename){
@@ -1004,11 +1008,11 @@ class FileController extends Controller
    
     	if($file!=null)
     	{
-    		//Trying to find if isset files to delete physically (so delete in the application too)
-    		$this->checkRemoteFiles($file);
     		//Find new files
     		$this->addFileFromServer($file->getLink(), $file->getParent()!=null?$file->getParent()->getId():null);
-	        $user = $this->container->get('security.context')->getToken()->getUser();
+    		//Trying to find if isset files to delete physically (so delete in the application too)
+    		$this->checkRemoteFiles($file);
+	        //$user = $this->container->get('security.context')->getToken()->getUser();
 	        //$this->markAsSeen($file,$user);
     	}
         return new Response('');
