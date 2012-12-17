@@ -874,7 +874,7 @@ class FileController extends Controller
     	if(count($users_added) != $file->getUsersShare()->count()){
     		//Find the ones to remove
     		foreach($file->getUsersShare() as $user){
-    			if(!array_key_exists($user->getId(),$users_added)){
+    			if(!array_key_exists($user->getId(),$users_added) && !$user->hasRole('ROLE_ADMIN')){
     				//remove it
     				$this->get('logger')->info('[FileController] Unsharing file '.$file->getId().' to user id'.$user->getId());
     				$file->removeUsersShare(array($user));
