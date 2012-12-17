@@ -50,7 +50,7 @@ class DirectoryManager extends FileManager{
 	
 		//Then get others sorted by name only
 		$array = $this->getRepository()->findDirectoriesShared($user,$parent);
-		$this->logger->info('[DirectoryManager]Find '.count($array).' directories which are shared with user '.$user.' and child of '.$parent);
+		$this->logger->debug('[DirectoryManager]Find '.count($array).' directories which are shared with user '.$user.' and child of '.$parent);
 		return $array;
 	}
 	
@@ -65,7 +65,7 @@ class DirectoryManager extends FileManager{
 			$this->update($dir);
 			if($dir->getParent()!=null) $this->resetSize($dir->getParent());
 			
-			$this->logger->info('[DirectoryManager]Reset size of directory '.$dir->getId());
+			$this->logger->debug('[DirectoryManager]Reset size of directory '.$dir->getId());
 		}
 	}
 	

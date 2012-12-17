@@ -28,7 +28,7 @@ class FileManager extends EntityManager{
 	
 	public function update($file){
 		$this->persistAndFlush($file);
-		$this->logger->info('[FileManager]Update '.$file);
+		$this->logger->debug('[FileManager]Update '.$file);
 	
 	}
 	
@@ -37,7 +37,7 @@ class FileManager extends EntityManager{
 	 * @return the new entity
 	 */
 	public function create(){
-		$this->logger->info('[FileManager]Create new File');
+		$this->logger->debug('[FileManager]Create new File');
 		return new File();
 	}
 	
@@ -48,7 +48,7 @@ class FileManager extends EntityManager{
 	 */
 	public function findIdByPath($path)
 	{
-		$this->logger->info('[FileManager]find File id by path '.$path);
+		$this->logger->debug('[FileManager]find File id by path '.$path);
 		return $this->getRepository()->findIdByPath($path);
 	}
 	
@@ -59,7 +59,7 @@ class FileManager extends EntityManager{
 	 */
 	public function findFileByHash($hash)
 	{
-		$this->logger->info('[FileManager]find File by hash '.$hash);
+		$this->logger->debug('[FileManager]find File by hash '.$hash);
 		return $this->getRepository()->findByHash($hash);
 	}
 
@@ -75,7 +75,7 @@ class FileManager extends EntityManager{
 	
 		//Then get others sorted by name only
 		$array = $this->getRepository()->findFilesShared($user,$parent,$includeDir);
-		$this->logger->info('[FileManager]Find '.count($array).' files which are shared with user '.$user.' and child of '.$parent);
+		$this->logger->debug('[FileManager]Find '.count($array).' files which are shared with user '.$user.' and child of '.$parent);
 		return $array;
 	}
 	
