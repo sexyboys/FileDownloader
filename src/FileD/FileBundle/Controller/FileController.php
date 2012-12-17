@@ -625,7 +625,7 @@ class FileController extends Controller
             //add flash msg to user
             $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.delete'));
 	    	$this->get('logger')->err('[FileController] Error while deleting file with id '.$_POST['id']." : ".$e->getCode()." : ".$e->getMessage());
-    		
+    	
     	}
 
     	
@@ -793,21 +793,27 @@ class FileController extends Controller
      * @param string $dir path to directory
      */
     private function rrmdir($dir) {
-    	foreach(glob($dir . '/*') as $file) {
-    		if(is_dir($file))
-    			$this->rrmdir($file);
-    		else{
-    			$resu = unlink($file);
-	    		if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
-	    		else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
-    		}
+    	try{
+	    	foreach(glob($dir . '/*') as $file) {
+	    		if(is_dir($file))
+	    			$this->rrmdir($file);
+	    		else{
+	    			$resu = unlink($file);
+		    		if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
+		    		else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
+	    		}
+	    	}
+			$resu=false;
+	    	if(is_dir($dir)) $resu = rmdir($dir);
+	    	else $resu = unlink($dir);
+	    	
+	    	if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
+	    	else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
     	}
-
-    	if(is_dir($dir)) $resu = rmdir($dir);
-    	else $resu = unlink($dir);
-    	
-    	if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
-    	else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
+    	catch(\Exception $e)
+    	{
+    		$this->get('logger')->err('[FileController] The file couldn\'t be deleted : '.$e->getMessage());
+    	}
     }
 
     /**
