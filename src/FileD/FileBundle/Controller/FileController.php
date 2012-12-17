@@ -1017,21 +1017,32 @@ class FileController extends Controller
     /**
      * Check if file and descendants always exist
      * @param File $file
+     * @return the size of the file or every files into
      */
     private function checkRemoteFiles($file)
     {
+    	$size = 0;
     	//check physical existence of the file
     	if(file_exists($file->getLink()))
     	{
+    		//File exist so check the size too
     		foreach($file->getChildren() as $child)
     		{
-    			$this->checkRemoteFiles($child);
+    			$size += $this->checkRemoteFiles($child);
     		}
+    		//Update file
+    		if($file->isDirectory()){
+    			$file->setSize($size);
+    			$this->container->get('filed_file.file')->update($file);
+    		}
+    		else $size = $file->getSize();
     	}
     	else{
     		//doesn't exist anymore so delete it
 			$this->container->get('filed_file.file')->delete($file->getId());
     	}
+    	
+    	return $size;
     	
     }
     
