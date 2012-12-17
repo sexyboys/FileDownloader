@@ -17,9 +17,8 @@
 		            		<div class="span3 offset8">
 		            			{% if enable_upload =="1" and parent is null or not parent.external %}
 			            			<a href="#addFileModal" data-toggle="modal" ><i class="icon-plus"></i>{% trans %}file.list.addfile{% endtrans %}</a><br/>
-			            			{% if is_granted("ROLE_ADMIN")%}
-			            				<a href="#" onclick="addRepository()" ><i class="icon-plus"></i>{% trans %}file.list.addrepository{% endtrans %}</a>
-		            				{% endif %}
+			            			<a href="#" onclick="addRepository()" ><i class="icon-plus"></i>{% trans %}file.list.addrepository{% endtrans %}</a>
+		            				
 			            		{% endif %}
 		            		</div>
 		            			
