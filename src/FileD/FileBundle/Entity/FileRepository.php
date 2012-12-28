@@ -78,9 +78,8 @@ class FileRepository extends EntityRepository
 		        FROM FileDFileBundle:File f
 				JOIN f.usersShare u 
 				WHERE u.id = :id
-		        AND f.parent";
-	    if($parent==null)$query.=" IS NULL";
-	    else $query.="= :parent";
+		        ";
+	    if($parent!=null)$query.=" AND f.parent=:parent";
 	    if(!$includeDir)$query.=" AND f.mime <> :mime";
 	    $query.=" ORDER BY f.name ASC";
 		$query = $this->_em->createQuery($query)

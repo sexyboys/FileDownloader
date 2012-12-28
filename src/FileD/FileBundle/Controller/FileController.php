@@ -409,7 +409,7 @@ class FileController extends Controller
 	    			    			
 	    		$dir = $this->container->get('filed_user.dir')->findDirectoriesShared($user,$fileParent);
 	    		$files = $this->container->get('filed_user.file')->findFilesShared($user,$fileParent,false);
-	    	
+	    		
 	    		$children = array_merge($dir,$files);
 	    		foreach($children as $child){
 	    			//check with the seen option and add it if we need it
@@ -428,16 +428,19 @@ class FileController extends Controller
 	    			//get files with root from user
 	    			$dir = $this->container->get('filed_user.dir')->findDirectoriesShared($user,null);
 	    			$files = $this->container->get('filed_user.file')->findFilesShared($user,null,false);
-	    			$userFiles = array_merge($dir,$files);
+	    			$children = array_merge($dir,$files);
 	    			//We get only root files (with no parent)
-	    			foreach($userFiles as $file){
-	    				$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
-	    	
-	    				if(!$mark){
-	    					$non_seen_files[] = $file;
-	    				}
-	    				else{
-	    					$seen_files[] = $file;
+	    			foreach($children as $file){
+	    				//Check if the parent file is shared too or not (in this case, add it)
+	    				if($file->getParent()==null || !FileFactory::getInstance()->isSharedWith($user,$file->getParent())){
+		    				$mark = FileFactory::getInstance()->isMarkedAsSeenBy($user,$file);
+		    				
+		    				if(!$mark){
+		    					$non_seen_files[] = $file;
+		    				}
+		    				else{
+		    					$seen_files[] = $file;
+		    				}
 	    				}
 	    	
 	    			}
@@ -448,17 +451,17 @@ class FileController extends Controller
 	    	//Map an array idfile=>usernames
 	    	//format id:username1,username2;id2:username1
 	    	$j=1;
-	    	foreach($files as $file){
+	    	foreach($children as $file){
 	    		$usersshare=$file->getId().":";
 	    		$i=1;
-	    		foreach($file->getUsersShare() as $user){
-	    			$usersshare.=$user->getUsername();
+	    		foreach($file->getUsersShare() as $usr){
+	    			$usersshare.=$usr->getUsername();
 	    			if($i<count($file->getUsersShare()))$usersshare.=",";
 	    			
 	    			$i++;
 	    		}
 	    		$txt_array_usershare.=$usersshare;
-	    		if($j<count($files)) $txt_array_usershare.=";";
+	    		if($j<count($children)) $txt_array_usershare.=";";
 	
 	    		$j++;
 	    	} 
@@ -483,6 +486,12 @@ class FileController extends Controller
     		$enable_upload = "1";
     	}
     	
+    	//Define the link to get back to the parent directory (case if parent dir is not shared go to root view files)
+    	if($fileParent!=null){
+    		$is_grand_parent_shared = $fileParent->getParent()!=null?FileFactory::getInstance()->isSharedWith($user,$fileParent->getParent()):false;
+    		
+    	}
+    	else $is_grand_parent_shared=true;
     	return $this->container->get('templating')->renderResponse($template, 
     			array('files' => $non_seen_files, 
     				  'seen_files' => $seen_files,
@@ -494,7 +503,8 @@ class FileController extends Controller
     				  'csrf_token' => $csrf_token,
     				  'enable_upload' => $enable_upload,
         			  'showMarkedAsSeen'=> $needSeen,
-    				  'enable_share' => $enable_share));
+    				  'enable_share' => $enable_share,
+    				  'is_grand_parent_shared' =>$is_grand_parent_shared));
     }
     
 
@@ -841,7 +851,6 @@ class FileController extends Controller
 	    		if ($form->isValid()) {
 	    			$file_id = $shareclass->getId();
 	    			$users = $shareclass->getUsers();
-
 	    			$file = $this->container->get('filed_user.file')->load($file_id);
 	    			$file = $this->shareAll($file,$users,true);
 	    			
@@ -916,10 +925,11 @@ class FileController extends Controller
     	}
     	
     	//Shared all directories parents
-    	if($file->getParent()!=null)
+    	//No needed anymore
+    	/*if($file->getParent()!=null)
     	{
     			$this->shareAll($file->getParent(), $users, false);
-    	}
+    	}*/
     	
     	$this->container->get('filed_file.file')->update($file);
     	

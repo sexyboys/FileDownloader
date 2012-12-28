@@ -1,5 +1,8 @@
 <!-- Rendered by userBundle:Index : display all files-->
 
+<script>
+	var paramIdFile = 0;
+</script>
             	<!-- Display home content FILES-->
             	<div class="well">
             		<fieldset >
@@ -9,7 +12,7 @@
 		 				</legend>
 		            	<div class="row">
 		            		
-	            			{% if parent_id == 0 %}
+	            			{% if parent_id == 0 or not is_grand_parent_shared %}
 	            				<a class="span3 " href="{{ path('user_index') }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            
 	            			{% elseif parent_id > 0 %}
 	            				<a class="span3 " href="{{ path('user_index') }}?file={{ parent_id }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            			
@@ -328,7 +331,7 @@
 					</div>
 					<div class="modal-body">
 					
-						{% render "FileDFileBundle:File:shareFile" %}
+					{% render "FileDFileBundle:File:shareFile" %}
 						
 					</div>
 					<div class="modal-footer">
@@ -563,6 +566,7 @@
 							for(var j=0;j<tab_usernames.length;j++){
 								//Find the usernames already shared in the form
 								var labels = $('#filed_filebundle_filesharetype_users label');
+								
 								var username = tab_usernames[j];
 								for(var k =0;k<labels.length;k++){
 									if(labels[k].innerHTML == username){

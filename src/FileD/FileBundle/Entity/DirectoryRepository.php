@@ -28,9 +28,8 @@ class DirectoryRepository extends FileRepository
 		        FROM FileDFileBundle:Directory d
 				JOIN d.usersShare u 
 				WHERE u.id = :id
-		        AND d.parent";
-	    if($parent==null)$query.=" IS NULL";
-	    else $query.="=:parent";
+		        ";
+	    if($parent!=null)$query.=" AND d.parent =:parent";
 	    $query.=" ORDER BY d.name ASC";
 		$query = $this->_em->createQuery($query)
 				    ->setParameter('id', $user->getId());
