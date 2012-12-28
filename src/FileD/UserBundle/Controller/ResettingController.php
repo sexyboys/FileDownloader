@@ -40,10 +40,10 @@ class ResettingController extends ContainerAware
             return $this->container->get('templating')->renderResponse(':Resetting:request.html.'.$this->getEngine(), array('invalid_username' => $username));
         }
 
-        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
+       /* if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
 
         	return $this->container->get('templating')->renderResponse(':Resetting:passwordAlreadyRequested.html.'.$this->getEngine());
-        }
+        }*/
 
         if (null === $user->getConfirmationToken()) {
             /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
@@ -81,8 +81,11 @@ class ResettingController extends ContainerAware
     /**
      * Reset user password
      */
-    public function resetAction($token)
+    public function resetAction($token=null)
     {
+    	if($token==null){
+    		$token=$_GET['token'];
+    	}
         $user = $this->container->get('fos_user.user_manager')->findUserByConfirmationToken($token);
 
         if (null === $user) {

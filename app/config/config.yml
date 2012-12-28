@@ -73,6 +73,11 @@ fos_user:
     from_email:
         address:        webmaster@example.com
         sender_name:    Admin
+    resetting:
+        email:
+            from_email:
+                address:        admin@localhost
+                sender_name:    FileDownloader
         
 sonata_doctrine_orm_admin:
     # default value is null, so doctrine uses the value defined in the configuration
