@@ -717,6 +717,7 @@ class FileController extends Controller
 	    			$name = $file->getName().".zip";
 	    			$dirname = basename($file->getName());
 	    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+	    			
         	        $this->get('logger')->info('[FileController] Zipping directory '.$name.' with path '.$path);
 	    			$zip->open($path, \ZipArchive::CREATE);
 	    			$zip = $this->addToZip($zip, $file, "/", true);
@@ -749,7 +750,7 @@ class FileController extends Controller
             //add flash msg to user
             $this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.download'));
 
-        	$this->get('logger')->err('[FileController] Error while downloading file with id '.$id);
+        	$this->get('logger')->err('[FileController] Error while downloading file with id '.$id." : ".$e->getMessage());
         }
     	return $response;
     }
@@ -773,10 +774,28 @@ class FileController extends Controller
     	}
     	else{
     		//add the file to the zip
-    		$zip->addFile($file->getLink(), $filename.$file->getName());
+    		$name =  $this->encodeStr($filename.$file->getName());
+    		//$link = $this->encodeStr($file->getLink());
+    		$this->get('logger')->info('[FileController] Add file '.$name.' with path '.$file->getLink().' to the zip');
+    		$zip->addFile($file->getLink(), $name);
     	}
     	
     	return $zip;
+    }
+    
+    /**
+     * Encode special chars (use for zip filename)
+     * @param string name
+     * @return the encoded name
+     */
+    private function encodeStr($name)
+    {
+    	$name = iconv("CP850", "ISO-8859-1//TRANSLIT", $name);
+    	$name=strtr($name,"ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ","AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn");
+    	$name = preg_replace('#[^a-z0-9./]+#i','-',$name);
+    	$name = trim($name,'-');
+    	
+    	return $name;
     }
     
     
@@ -817,8 +836,8 @@ class FileController extends Controller
 	    	if(is_dir($dir)) $resu = rmdir($dir);
 	    	else $resu = unlink($dir);
 	    	
-	    	if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$file->getLink());
-	    	else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$file->getLink());
+	    	if($resu)$this->get('logger')->info('[FileController] Delete physical file with path '.$dir);
+	    	else $this->get('logger')->err('[FileController] The file wasn\'t deleted : '.$dir);
     	}
     	catch(\Exception $e)
     	{
