@@ -7,7 +7,9 @@ FileDownloader is a file management system which allow registered user to view f
 Current master version
 ----------------------
 
-```beta-1.1.5```
+```
+beta-1.1.5
+```
 
 
 Demo
