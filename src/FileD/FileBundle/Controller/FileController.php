@@ -1028,12 +1028,16 @@ class FileController extends Controller
     	}
     	
     	if($marked){
-	        $file->addUsersSeen(array($user));
-	        $user->addSeenFiles(array($file));
+	        if(!FileFactory::getInstance()->isMarkedAsSeenBy($user, $file)){
+    			$file->addUsersSeen(array($user));
+	        	$user->addSeenFiles(array($file));
+	        }
     	}
     	else{
-	        $file->getUsersSeen()->removeElement($user);
-	        $user->getSeenFiles()->removeElement($file);
+	        if(FileFactory::getInstance()->isMarkedAsSeenBy($user, $file)){
+	        	$file->getUsersSeen()->removeElement($user);
+	        	$user->getSeenFiles()->removeElement($file);
+	        }
     	}
     	$this->container->get('filed_user.user')->update($user);
     	$this->container->get('filed_file.file')->update($file);
