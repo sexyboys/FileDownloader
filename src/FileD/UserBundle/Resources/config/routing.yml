@@ -43,7 +43,7 @@ file_delete:
     defaults: { _controller: FileDFileBundle:File:delete }
     
 file_download:
-    pattern:  /file/{id}/download
+    pattern:  /file/download
     defaults: { _controller: FileDFileBundle:File:download }
     
 file_share:

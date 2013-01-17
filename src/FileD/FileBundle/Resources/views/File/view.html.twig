@@ -10,13 +10,29 @@
 		 				<small id="hide"><a href="" onclick="hideSeenFiles()"> {% trans %} file.list.title.small.seen.not {% endtrans %}</a></small>
 		 						
 		 				</legend>
+		 				
+            		    <ul class="breadcrumb">
+						    <li {% if breadcrumb|length == 0 %}
+						    		class="active">{% trans %}file.list.breadcrumb{% endtrans %}
+						    	{% else %}
+						    		><a href="{{ path('user_index') }}">{% trans %}file.list.breadcrumb{% endtrans %}</a>
+						    	{% endif %}
+						    	<span class="divider">/</span>
+						    </li>
+						    {% set i = 1 %}
+							{% for row in breadcrumb %}
+		            			<li 
+		            				{% if i==breadcrumb|length %}
+		            					class="active">{{ row['name'] }}
+		            				{% else %}
+		            					><a href="{{ path('user_index') }}?file={{ row['id'] }}">{{ row['name'] }}</a>
+		            				{% endif %} <span class="divider">/</span></li>
+		            			{% set i = i + 1 %}
+							{% endfor %}
+					    </ul>
+					    
 		            	<div class="row">
-		            		
-	            			{% if parent_id == 0 or not is_grand_parent_shared %}
-	            				<a class="span3 " href="{{ path('user_index') }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            
-	            			{% elseif parent_id > 0 %}
-	            				<a class="span3 " href="{{ path('user_index') }}?file={{ parent_id }}"><i class="icon-folder-open"></i>{% trans %} file.list.parent {% endtrans %}</a>		            			
-	            			{% endif %}
+	            			
 		            		<div class="span3 offset8">
 		            			{% if enable_upload =="1" and parent is null or not parent.external %}
 			            			<a href="#addFileModal" data-toggle="modal" ><i class="icon-plus"></i>{% trans %}file.list.addfile{% endtrans %}</a><br/>
@@ -281,7 +297,7 @@
 					    							</td>
 					    							<td>{{ file.author.username }} </td>
 					    							<td>
-					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
+					    								<a href="" onclick="download({{ file.id }})" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
 					    													    								
 					    								{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
 					    									<a href="" class="remove" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }},{% if file.external %}true{% else %}false{% endif %})"><i class="icon-remove"></i></a>
@@ -449,7 +465,7 @@
 			 			type: "POST",
 			 			url: "{{ path('file_delete') }}",
 			 			data: DATA,
-			 			async:false,
+			 			async:true,
 			 			cache: false,
 			 			success: function(data){
 			 				//avoid full refresh
@@ -487,7 +503,7 @@
 				 			type: "POST",
 				 			url: "{{ path('file_edit') }}",
 				 			data: DATA,
-				 			async:false,
+				 			async:true,
 				 			cache: false,
 				 			success: function(data){
 				 				//avoid full refresh
@@ -600,7 +616,7 @@
 			 			type: "POST",
 			 			url: "{{ path('file_mark_as_seen') }}",
 			 			data: DATA,
-			 			async:false,
+			 			async:true,
 			 			cache: false,
 			 			success: function(data){
 							$('#loadingModal').modal('hide');
@@ -624,7 +640,7 @@
 			 			type: "POST",
 			 			url: "{{ path('file_refresh') }}",
 			 			data: DATA,
-			 			async:false,
+			 			async:true,
 			 			cache: false,
 			 			success: function(data){
 							$('#loadingModal').modal('hide');
@@ -634,6 +650,28 @@
 			 			error: function(request,status,error){
 							$('#loadingModal').modal('hide');
 			 				document.location.reload(true);
+			 				return false;
+			 			}
+			 		});
+				} 
+
+
+				// Download feature
+				function download(id){
+					$('#loadingModal').modal('show');
+			     	var DATA = {'id': id};
+			 		$.ajax({
+			 			type: "POST",
+			 			url: "{{ path('file_download') }}",
+			 			data: DATA,
+			 			async:true,
+			 			cache: false,
+			 			success: function(data){
+							$('#loadingModal').modal('hide');
+			 				return false;
+			 			},
+			 			error: function(request,status,error){
+							$('#loadingModal').modal('hide');
 			 				return false;
 			 			}
 			 		});

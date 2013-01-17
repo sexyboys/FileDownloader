@@ -31,6 +31,7 @@ file.list.actions: Tools
 file.list.addfile: Add a new file
 file.list.close: Close
 file.list.parent: Parent Directory
+file.list.breadcrumb: Root
 file.list.name.saving: Saving...
 file.list.name.edit: Edit the name
 file.list.name.access: Display the directory content

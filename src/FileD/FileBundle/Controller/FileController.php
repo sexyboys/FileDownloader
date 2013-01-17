@@ -146,7 +146,7 @@ class FileController extends Controller
 	        		//add flash msg to user
 	        		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.add'));
 	        		
-	        		$this->get('logger')->err('[FileController] Error while adding  '.$file);
+	        		$this->get('logger')->err('[FileController] Error while adding  '.$file." : ".$e->getMessage());
     				$response = new Response($e->getMessage());
 	        	}
     		}
@@ -383,11 +383,12 @@ class FileController extends Controller
 		$parent = null;
 		$file=null;
     	$parent_id=-1;
+    	$breadcrumb = null;
     	try{
 	    	//Get the parent id
 	    	if($fileId!=0){
 	    		$file = $this->container->get('filed_file.file')->load($fileId);
-	    		//print_r($file);exit;
+	    		
 		    	if($file!=null && is_object($file)){
 			    	$parent = $file->getParent();
 			    	if($parent!=null && is_object($parent)){
@@ -406,7 +407,9 @@ class FileController extends Controller
 	    		//Getting children and only those with rights on it
 	    		$non_seen_files = array();
 	    		$seen_files = array();
-	    			    			
+
+	    		//Find the breadcrumb
+	    		$breadcrumb = FileFactory::getInstance()->findBreadcrumb($fileParent);
 	    		$dir = $this->container->get('filed_user.dir')->findDirectoriesShared($user,$fileParent);
 	    		$files = $this->container->get('filed_user.file')->findFilesShared($user,$fileParent,false);
 	    		
@@ -504,6 +507,7 @@ class FileController extends Controller
     				  'enable_upload' => $enable_upload,
         			  'showMarkedAsSeen'=> $needSeen,
     				  'enable_share' => $enable_share,
+    			      'breadcrumb' => $breadcrumb,
     				  'is_grand_parent_shared' =>$is_grand_parent_shared));
     }
     
@@ -700,8 +704,9 @@ class FileController extends Controller
      * @param integer $id
      * @return Response download window
      */
-    public function downloadAction($id)
+    public function downloadAction($id=null)
     {
+    	if(!isset($id) && $id==null) $id = $_GET['id'];
 		$response = new Response();
     	$file = $this->container->get('filed_file.file')->load($id);
         $user = $this->container->get('security.context')->getToken()->getUser();

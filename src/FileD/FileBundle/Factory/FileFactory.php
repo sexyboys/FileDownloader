@@ -265,4 +265,23 @@ class FileFactory {
 		}
 		else return "flv";
 	}
+	
+	/**
+	 * Find the breadcrumb of the given file
+	 * @param File $file
+	 * @param array Breadcrumb 
+	 * @return array (name/id file) of breadcrumb (root is not included)
+	 */
+	public function findBreadcrumb($file,$breadcrumb=null)
+	{
+		if($file->getParent()!=null)
+		{
+			$breadcrumb = $this->findBreadcrumb($file->getParent(),$breadcrumb);
+			
+		}
+		$bread['name'] = $file->getName();
+		$bread['id'] = $file->getId();
+		$breadcrumb[] = $bread;
+		return $breadcrumb;
+	}
 }

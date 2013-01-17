@@ -31,6 +31,7 @@ file.list.actions: Actions
 file.list.addfile: Ajouter des fichiers
 file.list.close: Fermer
 file.list.parent: Retourner au dossier parent
+file.list.breadcrumb: Racine
 file.list.name.saving: Sauvegarde...
 file.list.name.edit: Modifier le nom
 file.list.name.access: Accèder au contenu du repertoire
