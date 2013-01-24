@@ -41,83 +41,65 @@
 			            		{% endif %}
 		            		</div>
 		            			
-			    				{% if files is empty %}
-			    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
-			    				{% else %}
-					            	<table id="filestable" class="table table-striped span10" >
-					            		<thead>
-					            			<tr>
-					            				<th>{% trans %}file.list.name{% endtrans %}</th>
-					            				<th>{% trans %}file.list.size{% endtrans %}</th>
-					            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
-					            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
-					            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
-					            			</tr>
-					            		</thead>
-					            		<tbody>
-					    					{% for file in files %}
-					    						<tr class="tr{{ file.id }}">
-					    							<td>
-					    								{% if file.isDirectory() %}
-					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
-					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
-					    											<i class="icon-pencil" style="float:left"></i>
-					    										</a>  
-					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" >
-					    											<span class="edit{{ file.id }}">{{ file.name }}</span>
-					    										</a>
-					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
-					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
-					    										
-					    									{% else %}
-					    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}">
-					    											<span>{{ file.name }}</span>
-					    										</a>
-					    														    									
-					    									{% endif %}
-					    								{% else %}
-					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
-					    										
-					    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
-					    											<i class="icon-pencil" style="float:left"></i>
-					    										</a>   
-					    										<span class="edit{{ file.id }}">{{ file.name }}</span>
-					    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
-					    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
-					    										
-					    									{% else %}
-					    										<span>{{ file.name }}</span>
-					    									{% endif %}
-					    								{% endif %}
-					    							
-					    							</td>
-					    							<td>
-					    								{% if file.isDirectory()%}
-					    								
-					    									{% if file.size > 0 %}
-					    										<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
-						    									{% set size = file.size %}
-						    									{% if size < 1000 %}
-						    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
-						    									{% elseif size <1000000 %}
-						    										{% set size = file.size/1000 %}
-						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
-						    									{% elseif size <1000000000 %}
-						    										{% set size = file.size/1000000 %}
-						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
-						    									{% elseif size <1000000000000 %}
-						    										{% set size = file.size/1000000000 %}
-						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
-						    									{% else %}
-						    										{% set size = file.size/1000000000000 %}
-						    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
-						    									{% endif %}
-					    									{% else %}
-					    										{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
-					    									{% endif %}
-					    									
-					    								{% else %}
-					    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+		    				{% if files is empty %}
+		    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
+		    				{% else %}
+				            	<table id="filestable" class="table table-striped span10" >
+				            		<thead>
+				            			<tr>
+				            				<th></th>
+				            				<th>{% trans %}file.list.name{% endtrans %}</th>
+				            				<th>{% trans %}file.list.size{% endtrans %}</th>
+				            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
+				            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
+				            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
+				            			</tr>
+				            		</thead>
+				            		<tbody>
+				    					{% for file in files %}
+				    						<tr class="tr{{ file.id }}">
+				    							<td>
+				    								<input type="checkbox" id="not_seen_box" value="{{ file.id }}"/>
+				    							</td>
+				    							<td>
+				    								{% if file.isDirectory() %}
+				    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+				    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+				    											<i class="icon-pencil" style="float:left"></i>
+				    										</a>  
+				    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}" >
+				    											<span class="edit{{ file.id }}">{{ file.name }}</span>
+				    										</a>
+				    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+				    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
+				    										
+				    									{% else %}
+				    										<a href="{{ path('user_index', {'file' : file.id}) }}" title="{% trans %}file.list.name.access{% endtrans %}">
+				    											<span>{{ file.name }}</span>
+				    										</a>
+				    														    									
+				    									{% endif %}
+				    								{% else %}
+				    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
+				    										
+				    										<a href='#' onclick="editName({{ file.id }});" title="{% trans %}file.list.name.edit{% endtrans %}">
+				    											<i class="icon-pencil" style="float:left"></i>
+				    										</a>   
+				    										<span class="edit{{ file.id }}">{{ file.name }}</span>
+				    										<input type="text" name="input{{ file.id }}" id="input{{ file.id }}" value="{{ file.name }}" style="visibility:hidden;display:none;float:left;"/>
+				    										<a href="#" class="btn" onclick="sendData({{ file.id }},true)" id="btnok{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.ok{% endtrans %}</a> <a href="#" class="btn" onclick="sendData({{ file.id }},false)" id="btncancel{{ file.id }}" style="visibility:hidden;display:none;float:left;">{% trans %}file.list.cancel{% endtrans %}</a>
+				    										
+				    									{% else %}
+				    										<span>{{ file.name }}</span>
+				    									{% endif %}
+				    								{% endif %}
+				    							
+				    							</td>
+				    							<td>
+				    								{% if file.isDirectory()%}
+				    								
+				    									{% if file.size > 0 %}
+				    										<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
 					    									{% set size = file.size %}
 					    									{% if size < 1000 %}
 					    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
@@ -134,59 +116,96 @@
 					    										{% set size = file.size/1000000000000 %}
 					    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
 					    									{% endif %}
-					    								{% endif %}
-					    							</td>
-					    							<td>{%if app.request.locale == "fr" %}
-					    									{{ file.dateCreation|date('d-m-Y H:i:s') }}
-					    								{%else %}
-					    									{{ file.dateCreation|date('Y-m-d H:i:s') }}
-					    								{% endif %}
-					    							</td>
-					    							<td>{{ file.author.username }}</td>
-					    							<td>
-					    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
-					    								
-					    								{% render "FileDFileBundle:File:viewFile" with {'id' : file.id } %}
-					    								
-					    								{% if (file.author.username == app.user.username and enable_share =="1") or is_granted("ROLE_ADMIN") %}
-					    									{% set titleShare %}{% trans %} file.share.ahref.title {% endtrans %}{% set i =1 %} {% for user in file.usersShare %}{{ user.username }}{% if i<file.usersShare|length %},{% endif %}{% set i=i+1 %} {% endfor %}{% endset %}
-					    									<a title="{{ titleShare }}" href="#shareModal" data-toggle="modal" onclick="share({{ file.id }})"><i class="icon-share"></i></a>
-					    								{% endif %}
-					    								
-					    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
-					    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }},{% if file.external %}true{% else %}false{% endif %})"><i class="icon-remove"></i></a>
-					    								{% endif %}
-					    								
-					    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
-					    								
-					    								{% if file.getExternal() and file.isDirectory() %}
-					    									<a href="" title="{% trans %} file.list.name.refresh {% endtrans %}" onclick="refresh({{ file.id }})"><i class="icon-refresh"></i></a>
-					    								{% endif %}
-					    								
-					    								<a href="#publicLinkModal{{ file.id }}" data-toggle="modal"  title="{% trans %} file.list.name.link {% endtrans %}"><i class="icon-globe"></i></a>
-					    								
-										    			<!-- Public Link Modal -->
-														<div id="publicLinkModal{{ file.id }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="publicLinkModal" aria-hidden="true">
-															<div class="modal-header">
-																<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-																<h3 id="myModalLabel">{% trans %}file.list.name.link{% endtrans %}</h3>
-															</div>
-															<div class="modal-body">
-																<small><a href="{{ url('file_public_link' , {'hash':file.hash})}}">{{ url('file_public_link' , {'hash':file.hash})}}</a>
-																</small>
-															</div>
-															<div class="modal-footer">
-																<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
-															</div>
+				    									{% else %}
+				    										{% render "FileDFileBundle:File:getSizeDirectory" with {'id' : file.id} %}
+				    									{% endif %}
+				    									
+				    								{% else %}
+				    									<!--  Calculating the rendering of size XXX or X Ko or X Mo or X Go or X To-->
+				    									{% set size = file.size %}
+				    									{% if size < 1000 %}
+				    										{{ size|number_format(2, '.', ' ')}} {% trans %} file.size.unit {% endtrans %}
+				    									{% elseif size <1000000 %}
+				    										{% set size = file.size/1000 %}
+				    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.kilo {% endtrans %}
+				    									{% elseif size <1000000000 %}
+				    										{% set size = file.size/1000000 %}
+				    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.mega {% endtrans %}
+				    									{% elseif size <1000000000000 %}
+				    										{% set size = file.size/1000000000 %}
+				    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.giga {% endtrans %}
+				    									{% else %}
+				    										{% set size = file.size/1000000000000 %}
+				    										{{ size|number_format(2, '.', ' ')}}	{% trans %} file.size.unit.tera {% endtrans %}
+				    									{% endif %}
+				    								{% endif %}
+				    							</td>
+				    							<td>{%if app.request.locale == "fr" %}
+				    									{{ file.dateCreation|date('d-m-Y H:i:s') }}
+				    								{%else %}
+				    									{{ file.dateCreation|date('Y-m-d H:i:s') }}
+				    								{% endif %}
+				    							</td>
+				    							<td>{{ file.author.username }}</td>
+				    							<td>
+				    								<a href="{{ path('file_download' , {'id':file.id} ) }}" title="{% trans %} file.list.name.download {% endtrans %}"><i class="icon-download"></i></a>
+				    								
+				    								{% render "FileDFileBundle:File:viewFile" with {'id' : file.id } %}
+				    								
+				    								{% if (file.author.username == app.user.username and enable_share =="1") or is_granted("ROLE_ADMIN") %}
+				    									{% set titleShare %}{% trans %} file.share.ahref.title {% endtrans %}{% set i =1 %} {% for user in file.usersShare %}{{ user.username }}{% if i<file.usersShare|length %},{% endif %}{% set i=i+1 %} {% endfor %}{% endset %}
+				    									<a title="{{ titleShare }}" href="#shareModal" data-toggle="modal" onclick="share({{ file.id }})"><i class="icon-share"></i></a>
+				    								{% endif %}
+				    								
+				    								{% if file.author.username == app.user.username or  is_granted("ROLE_ADMIN")%}
+				    									<a href="" title="{% trans %} file.list.name.delete {% endtrans %}" onclick="deleteFile({{ file.id }},{% if file.external %}true{% else %}false{% endif %})"><i class="icon-remove"></i></a>
+				    								{% endif %}
+				    								
+				    								{% render "FileDFileBundle:File:isMarkAsSeenFile" with {'id' : file.id} %}
+				    								
+				    								{% if file.getExternal() and file.isDirectory() %}
+				    									<a href="" title="{% trans %} file.list.name.refresh {% endtrans %}" onclick="refresh({{ file.id }})"><i class="icon-refresh"></i></a>
+				    								{% endif %}
+				    								
+				    								<a href="#publicLinkModal{{ file.id }}" data-toggle="modal"  title="{% trans %} file.list.name.link {% endtrans %}"><i class="icon-globe"></i></a>
+				    								
+									    			<!-- Public Link Modal -->
+													<div id="publicLinkModal{{ file.id }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="publicLinkModal" aria-hidden="true">
+														<div class="modal-header">
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+															<h3 id="myModalLabel">{% trans %}file.list.name.link{% endtrans %}</h3>
 														</div>
-					    								
-					    							</td>
-					    						</tr>
-					    					{% endfor %}
-					    				</tbody>
-					    			</table>
-			    				{% endif %}	
+														<div class="modal-body">
+															<small><a href="{{ url('file_public_link' , {'hash':file.hash})}}">{{ url('file_public_link' , {'hash':file.hash})}}</a>
+															</small>
+														</div>
+														<div class="modal-footer">
+															<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
+														</div>
+													</div>
+				    								
+				    							</td>
+				    						</tr>
+				    					{% endfor %}
+				    				</tbody>
+				    			</table>
+				    			
+				    			
+				    			<div class="span5">
+				    				<!-- List of all selectable actions -->
+				            		<input type="checkbox" id="selectall" onclick="selectAll(0)"/>
+				            		{% trans %} file.list.all.selectall {% endtrans %}
+				            		<!-- Share/Delete/MarkAsSeen -->	
+				            		<a title="{% trans %}file.list.all.share{% endtrans %}" href="#shareAllModal" data-toggle="modal" onclick="shareAll()"><i class="icon-share"></i></a>
+				            		<a title="{% trans %}file.list.all.delete{% endtrans %}" href="" onclick="deleteAll(0)"><i class="icon-remove"></i></a>
+				            		<a title="{% trans %}file.list.all.mark{% endtrans %}" href="" onclick="markAll(0)"><i class="icon-ok"></i></a>
+				            	</div>
+				            	
+			            	</div>
+		    				{% endif %}	
+		    				
 			    		</div>
+					    
 		    		</fieldset>
     			</div>
     			
@@ -202,6 +221,7 @@
 					            	<table id="filestable" class="table table-striped span10" >
 					            		<thead>
 					            			<tr>
+					            				<th></th>
 					            				<th>{% trans %}file.list.name{% endtrans %}</th>
 					            				<th>{% trans %}file.list.size{% endtrans %}</th>
 					            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
@@ -212,6 +232,9 @@
 					            		<tbody>
 					    					{% for file in seen_files %}
 					    						<tr class="tr{{ file.id }}">
+					    							<td>
+					    								<input type="checkbox" id="box_seen" value="{{ file.id }}"/>
+					    							</td>
 					    							<td>
 					    								{% if file.isDirectory() %}
 					    									{% if file.author.username == app.user.username or is_granted("ROLE_ADMIN")%}
@@ -310,6 +333,17 @@
 					    					{% endfor %}
 					    				</tbody>
 					    			</table>
+					    			
+					    			
+				    			<div class="span5">
+				    				<!-- List of all selectable actions -->
+				            		<input type="checkbox" id="selectall_seen" onclick="selectAll(1)"/>
+				            		{% trans %} file.list.all.selectall {% endtrans %}
+				            		<!-- Share/Delete/MarkAsSeen -->	
+				            		<a title="{% trans %}file.list.all.share{% endtrans %}" href="#shareAllModal" data-toggle="modal" onclick="shareAll()"><i class="icon-share"></i></a>
+				            		<a title="{% trans %}file.list.all.delete{% endtrans %}" href="" onclick="deleteAll(1)"><i class="icon-remove"></i></a>
+				            		<a title="{% trans %}file.list.all.mark{% endtrans %}" href="" onclick="markAll(1)"><i class="icon-ok-circle"></i></a>
+				            	</div>
 			    				{% endif %}	
     					</div>
     				</fieldset>
@@ -348,6 +382,22 @@
 					<div class="modal-body">
 					
 					{% render "FileDFileBundle:File:shareFile" %}
+						
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans %}file.list.close{% endtrans %}</button>
+					</div>
+				</div>
+				
+    			<!-- ALL Share Modal -->
+				<div id="shareAllModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="myModalLabel">{% trans %}file.list.name.share{% endtrans %}</h3>
+					</div>
+					<div class="modal-body">
+						
+						{% render "FileDFileBundle:File:shareAllFile" %}
 						
 					</div>
 					<div class="modal-footer">
@@ -403,7 +453,8 @@
 				
 				<!-- Script for name edition -->
 				<script type="text/javascript">
-				
+
+				<!-- Function which add a repository -->
 				function addRepository(){
 					//add a repository on current level with ajax request
 					var DATA = {'id': {{ file_id }}};
@@ -450,7 +501,11 @@
 					$('#seen_files').css('display','block');
 				}
 				
-				//Delete a file or directory
+
+				<!-- Function which delete a file or a repository 
+					//param id the id of the file/repository
+					//param isExternal define if the file is internal handled of the app or external (on the server)
+				-->
 				function deleteFile(id,isExternal){
 				    if(isExternal){
 						if(confirm("{% trans %} file.list.delete.confirm {% endtrans %}")){
@@ -481,7 +536,10 @@
 			 		});
 				}
 
-				//Prepare edition of name directory
+
+				<!-- Function which edit the name of a repository or file
+					//param id the id of the file/repository
+				-->
 				function editName(id){
 				    $('#input'+id).css('visibility','visible');
 				    $('#input'+id).css('display','block');
@@ -494,7 +552,11 @@
 				    $('.edit'+id).css('display','none');
 				}
 
-				//Send data to be saved
+
+				<!-- Function which send data of new name
+					//param id the id of the file/repository
+					//param canSaved if the data is saved
+				-->
 				function sendData(id,canSaved){
 					if(canSaved){
 						var value = $('#input'+id).val();
@@ -566,7 +628,10 @@
 				 		});
 				}
 
-				//Share a repository (and all content) or a file to another user
+				
+				<!-- Function which share a file or a repository 
+					//param id the id of the file/repository
+				-->
 				function share(id){
 
 					$('#loadingModal').modal('show');
@@ -602,13 +667,31 @@
 						} 
 						
 					}
+					var fileid = {{ file_id }}
+					$('#current_url_file').val(fileid);
 
 					$('#loadingModal').modal('hide');
 					return true;
 				} 
 
+				//Share files checked with users checked in modal box
+				
+				
+				<!-- Function which share all files or repositories selected 
+				-->
+				function shareAll(){
+					//get files checked and put in input
+					$('input:checkbox[id^="'+uid+'"]:checked').each(function(){
+						$('#files_share_input').val($('#files_share_input').val()+";"+$(this).prop("value"));
+					});
+					var fileid = {{ file_id }}
+					$('#current_url_file').val(fileid);
+				}
 
-				//Mark a file as seen (file or repository and its content)
+				<!-- Function which mark a file or a repository as seen
+					//param id the id of the file/repository
+					//param if the file have to be marked or unmarked
+				-->
 				function markAsSeen(id,marked){
 					$('#loadingModal').modal('show');
 			     	var DATA = {'id': id, 'marked':marked};
@@ -631,8 +714,9 @@
 			 		});
 				} 
 
-
-				// Refresh repository and its content)
+				<!-- Function which refresh a repository
+					//param id the id of the repository
+				-->
 				function refresh(id){
 					$('#loadingModal').modal('show');
 			     	var DATA = {'id': id};
@@ -656,7 +740,9 @@
 				} 
 
 
-				// Download feature
+				<!-- Function which download a repository or file
+					//param id the id of the repository/file
+				-->
 				function download(id){
 					$('#loadingModal').modal('show');
 			     	var DATA = {'id': id};
@@ -676,6 +762,51 @@
 			 			}
 			 		});
 				} 
+
+				<!-- Function which select all files 
+					//param type (0: not seen files panel, 1: seen files panel)
+				-->
+				function selectAll(type){
+					if(type==0){//not seen files
+						$('input:checkbox[id=not_seen_box]').prop('checked', $('input:checkbox[id=selectall]').prop('checked'));
+					}
+					else{//seen files
+						$('input:checkbox[id=box_seen]').prop('checked',$('input:checkbox[id=selectall_seen]').prop('checked'));
+					}
+					 
+				}
+
+				<!-- Function which delete all files selected
+					//param type (0: not seen files panel, 1: seen files panel)
+				-->
+				function deleteAll(type)
+				{
+					$('#loadingModal').modal('show');
+					var uid="not_seen_box";
+					if(type==1){//not seen files
+						uid="box_seen";
+					}
+					$('input:checkbox[id^="'+uid+'"]:checked').each(function(){
+						id=$(this).prop("value");
+						var DATA = {'id': id, 'choice': 2};
+				 		$.ajax({
+				 			type: "POST",
+				 			url: "{{ path('file_delete') }}",
+				 			data: DATA,
+				 			async:true,
+				 			cache: false,
+				 			success: function(data){
+				 				//avoid full refresh
+				 				if(data=="true") $('.tr'+id).remove();
+				 			},
+				 			error: function(request,status,error){
+				 			}
+				 		});
+					});
+					$('#loadingModal').modal('hide');
+					return true;
+					
+				}
 
 				//-->
 				</script>

@@ -46,7 +46,11 @@ file.list.name.link: Get the public link
 file.list.ok: OK
 file.list.cancel: Cancel
 file.list.delete.confirm: This file is managed externally of the application, are you sure to delete the file from the application and the physical file ? (By clicking on cancel, you will delete file in the application)
-
+file.list.all.selectall: Select all files
+file.list.all.share: Share
+file.list.all.delete: Delete
+file.list.all.mark: Mark as seen
+file.list.all.share.modal: Share files
 
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File
@@ -91,6 +95,7 @@ msg.error.file.download: The file wasn't downloaded, please try later
 msg.error.file.edit: The file wasn't edited, please try later
 msg.error.file.new: The file wasn't added, please try later
 msg.error.file.share: The file wasn't shared, please try later
+msg.error.files.share: The files were not shared, please try later
 msg.error.repository.new: The folder wasn't added, please try later
 msg.error.file.public: The file is not available or not found
 msg.error.file.refresh.file: The file %path% cannot be added
@@ -101,5 +106,6 @@ msg.success.file.delete: The file was successfully removed
 msg.success.file.edit: The file was successfully edited
 msg.success.file.new: The file was successfully added
 msg.success.file.share: The file was successfully shared
+msg.success.files.share: The files were successfully shared
 msg.success.repository.new: The repository was successfully added
 

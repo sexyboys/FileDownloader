@@ -716,12 +716,17 @@ class FileController extends Controller
 	    		if($file->isDirectory()){
 	    			//Zip directory and store it locally to process download
 	    			//First : clean the directory of stored zip files
-	    			$this->clearDirectory(__DIR__.FileController::DOWNLOAD_DIR);
+	    			$zip_path=__DIR__.FileController::DOWNLOAD_DIR."/".$user->getId();
+	    			//Before clean, check if the path exist
+	    			if(!file_exists($zip_path)){
+	    				mkdir($zip_path);
+	    			}
+	    			$this->clearDirectory($zip_path);
 	    			//Then add the new one
 	    			$zip = new \ZipArchive();
 	    			$name = $file->getName().".zip";
 	    			$dirname = basename($file->getName());
-	    			$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+	    			$path = $zip_path."/".$name;
 	    			
         	        $this->get('logger')->info('[FileController] Zipping directory '.$name.' with path '.$path);
 	    			$zip->open($path, \ZipArchive::CREATE);
@@ -879,7 +884,7 @@ class FileController extends Controller
 	    			$file = $this->shareAll($file,$users,true);
 	    			
             		$this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('msg.success.file.share'));
-	    			return new RedirectResponse($this->container->get('router')->generate('user_index'));
+	    			return new RedirectResponse($this->container->get('router')->generate('user_index')."?file=".$_POST['current_url_file']);
 	    		}
 	    	}
     	}
@@ -887,6 +892,57 @@ class FileController extends Controller
 
     		$this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('msg.error.file.share'));
     		$this->get('logger')->err('[FileController] Error while sharing file with id '.$shareclass->getId()." : ".$e->getMessage());
+    	}
+    	return $this->container->get('templating')->renderResponse($template,
+    			array(
+    					'form' => $form->createView()
+    				));
+    }
+
+    /**
+     * Share all selected files/repositories to a list of users
+     * @param Request the request
+     * @return redirection to index
+     */
+    public function shareAllFileAction(Request $request)
+    {
+    	$template = sprintf('FileDFileBundle:File:share.html.%s', $this->container->getParameter('fos_user.template.engine'));
+    	
+    	$users = $this->container->get('filed_user.user')->findActiveUsers();
+    	$choices = array();
+    	foreach($users as $user){
+    		if(!$user->hasRole('ROLE_ADMIN')){
+    			$choices[$user->getId()] = $user->getUsername();
+    		}
+    	}
+    	$shareclass = new Share();
+    	$form = $this->container->get('form.factory')->create(new ShareFileType($choices), $shareclass,array('label'=>$this->container->get('translator')->trans('file.share.list.label')));
+    	try{
+	    	if ($request->getMethod() == 'POST') { 
+	    		$form->bindRequest($request); 
+	    	
+	    		if ($form->isValid()) {
+	    			$file_id = $shareclass->getId();
+	    			$users = $shareclass->getUsers();
+	    			$txt = $_POST['files'];
+	    			$tab_ids = explode(";", $txt);
+	    			foreach($tab_ids as $row ){
+	    				
+	    				$file = $this->container->get('filed_user.file')->load($row);
+	    				if($file!=null){
+	    					$file = $this->shareAll($file,$users,true);
+	    				}
+	    			}
+	    			
+            		$this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('msg.success.files.share'));
+	    			return new RedirectResponse($this->container->get('router')->generate('user_index')."?file=".$_POST['current_url_file']);
+	    		}
+	    	}
+    	}
+    	catch(\Exception $e){
+
+    		$this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('msg.error.files.share'));
+    		$this->get('logger')->err('[FileController] Error while sharing files : '.$e->getMessage());
     	}
     	return $this->container->get('templating')->renderResponse($template,
     			array(
@@ -1153,12 +1209,17 @@ class FileController extends Controller
     			if($file->isDirectory()){
     				//Zip directory and store it locally to process download
     				//First : clean the directory of stored zip files
-    				$this->clearDirectory(__DIR__.FileController::DOWNLOAD_DIR);
+	    			//Before clean, check if the path exist
+    				$zip_path = __DIR__.FileController::DOWNLOAD_DIR."/public/".date('U');
+	    			if(!file_exists($zip_path)){
+	    				mkdir($zip_path,0770,true);
+	    			}
+	    			$this->clearDirectory($zip_path);
     				//Then add the new one
     				$zip = new \ZipArchive();
     				$name = $file->getName().".zip";
     				$dirname = basename($file->getName());
-    				$path = __DIR__."/../../../../web/data/downloads/zip/".$name;
+	    			$path = $zip_path."/".$name;
     				$zip->open($path, \ZipArchive::CREATE);
     				$zip = $this->addToZip($zip, $file, "/", true);
     				$zip->close();
@@ -1186,7 +1247,7 @@ class FileController extends Controller
     		//add flash msg to user
     		$this->container->get('session')->setFlash('error', $this->container->get('translator')->trans('msg.error.file.download'));
     
-    		$this->get('logger')->err('[FileController] Error while downloading file with id '.$id);
+    		$this->get('logger')->err('[FileController] Error while downloading file with id '.$id." : ".$e->getMessage());
     	}
     	return $response;
     }
