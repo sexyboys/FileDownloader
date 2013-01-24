@@ -50,6 +50,7 @@ file.list.all.selectall: Tout sélectionner
 file.list.all.share: Partager
 file.list.all.delete: Supprimer
 file.list.all.mark: Marquer comme vu
+file.list.all.unmark: Marquer comme non vu
 file.list.all.share.modal: Partage des fichiers
 
 file.share.ahref.title: Partagé avec

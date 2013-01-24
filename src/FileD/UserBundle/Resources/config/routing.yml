@@ -50,6 +50,10 @@ file_share:
     pattern:  /share
     defaults: { _controller: FileDFileBundle:File:shareFile }
     
+file_share_all:
+    pattern:  /share-all
+    defaults: { _controller: FileDFileBundle:File:shareAllFile }
+    
 file_mark_as_seen:
     pattern:  /mark
     defaults: { _controller: FileDFileBundle:File:markAsSeen }

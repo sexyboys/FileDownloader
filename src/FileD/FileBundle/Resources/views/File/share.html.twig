@@ -1,8 +1,7 @@
 <!-- form -->
 		<form action="{{ path('file_share') }}" method="POST" {{ form_enctype(form) }} class="control-group">
 			<input type="hidden" name="current_url_file" id="current_url_file" value=""/> 
-			<input type="hidden" name="files_share_input" id="files_share_input" value=""/><!-- used by share files only by separating ids with ;-->
-    					{{ form_widget(form) }}
+			{{ form_widget(form) }}
     		<br/><br/>
 	   		 <input type="submit" id="_submit" name="_submit" class="btn btn-primary" data-loading-text="" value="{% trans %}file.share.submit{% endtrans %}"/>		    
 					

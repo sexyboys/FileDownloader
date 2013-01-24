@@ -8,7 +8,7 @@ Current master version
 ----------------------
 
 ```
-beta-1.1.5
+beta-1.1.7
 ```
 
 

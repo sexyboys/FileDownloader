@@ -198,7 +198,7 @@
 				            		<!-- Share/Delete/MarkAsSeen -->	
 				            		<a title="{% trans %}file.list.all.share{% endtrans %}" href="#shareAllModal" data-toggle="modal" onclick="shareAll()"><i class="icon-share"></i></a>
 				            		<a title="{% trans %}file.list.all.delete{% endtrans %}" href="" onclick="deleteAll(0)"><i class="icon-remove"></i></a>
-				            		<a title="{% trans %}file.list.all.mark{% endtrans %}" href="" onclick="markAll(0)"><i class="icon-ok"></i></a>
+				            		<a title="{% trans %}file.list.all.mark{% endtrans %}" href="" onclick="markAll(1,1)"><i class="icon-ok-circle"></i></a>
 				            	</div>
 				            	
 			            	</div>
@@ -342,7 +342,7 @@
 				            		<!-- Share/Delete/MarkAsSeen -->	
 				            		<a title="{% trans %}file.list.all.share{% endtrans %}" href="#shareAllModal" data-toggle="modal" onclick="shareAll()"><i class="icon-share"></i></a>
 				            		<a title="{% trans %}file.list.all.delete{% endtrans %}" href="" onclick="deleteAll(1)"><i class="icon-remove"></i></a>
-				            		<a title="{% trans %}file.list.all.mark{% endtrans %}" href="" onclick="markAll(1)"><i class="icon-ok-circle"></i></a>
+				            		<a title="{% trans %}file.list.all.unmark{% endtrans %}" href="" onclick="markAll(1,0)"><i class="icon-ok"></i></a>
 				            	</div>
 			    				{% endif %}	
     					</div>
@@ -390,7 +390,7 @@
 				</div>
 				
     			<!-- ALL Share Modal -->
-				<div id="shareAllModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+				<div id="shareAllModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareAllModal" aria-hidden="true">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 						<h3 id="myModalLabel">{% trans %}file.list.name.share{% endtrans %}</h3>
@@ -681,11 +681,14 @@
 				-->
 				function shareAll(){
 					//get files checked and put in input
-					$('input:checkbox[id^="'+uid+'"]:checked').each(function(){
-						$('#files_share_input').val($('#files_share_input').val()+";"+$(this).prop("value"));
-					});
+					$('#files_share_input').prop("value","");
 					var fileid = {{ file_id }}
-					$('#current_url_file').val(fileid);
+					$('.share_all #current_url_file').val(fileid);
+					$('.share_all #filed_filebundle_filesharetype_id').val(fileid);
+					
+					$('#filestable input:checked').each(function(){
+						$('#files_share_input').prop("value",$("#files_share_input").val()+";"+$(this).prop("value"));
+					});
 				}
 
 				<!-- Function which mark a file or a repository as seen
@@ -712,6 +715,37 @@
 			 				return false;
 			 			}
 			 		});
+				} 
+
+				<!-- Function which mark a file or a repository as seen
+				//param type (0: not seen files panel, 1: seen files panel)
+				//param marked (0: to mark, 1: to unmark)
+				-->
+				function markAll(type,marked){
+			 		$('#loadingModal').modal('show');
+					var uid="not_seen_box";
+					if(type==1){//not seen files
+						uid="box_seen";
+					}
+					$('#filestable input:checked').each(function(){
+						id=$(this).prop("value");
+						var DATA = {'id': id, 'marked':marked};
+				 		$.ajax({
+				 			type: "POST",
+				 			url: "{{ path('file_mark_as_seen') }}",
+				 			data: DATA,
+				 			async:true,
+				 			cache: false,
+				 			success: function(data){
+				 				return false;
+				 			},
+				 			error: function(request,status,error){
+				 				return false;
+				 			}
+				 		});
+					});
+					$('#loadingModal').modal('hide');
+					return true;
 				} 
 
 				<!-- Function which refresh a repository

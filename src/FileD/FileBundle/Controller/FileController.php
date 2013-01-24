@@ -906,43 +906,44 @@ class FileController extends Controller
      */
     public function shareAllFileAction(Request $request)
     {
-    	$template = sprintf('FileDFileBundle:File:share.html.%s', $this->container->getParameter('fos_user.template.engine'));
+    	$template = sprintf('FileDFileBundle:File:share_all.html.%s', $this->container->getParameter('fos_user.template.engine'));
     	
-    	$users = $this->container->get('filed_user.user')->findActiveUsers();
-    	$choices = array();
-    	foreach($users as $user){
-    		if(!$user->hasRole('ROLE_ADMIN')){
-    			$choices[$user->getId()] = $user->getUsername();
-    		}
-    	}
-    	$shareclass = new Share();
-    	$form = $this->container->get('form.factory')->create(new ShareFileType($choices), $shareclass,array('label'=>$this->container->get('translator')->trans('file.share.list.label')));
     	try{
+	    	$users = $this->container->get('filed_user.user')->findActiveUsers();
+	    	$choices = array();
+	    	foreach($users as $user){
+	    		if(!$user->hasRole('ROLE_ADMIN')){
+	    			$choices[$user->getId()] = $user->getUsername();
+	    		}
+	    	}
+	    	$shareclass = new Share();
+	    	$form = $this->container->get('form.factory')->create(new ShareFileType($choices), $shareclass,array('label'=>$this->container->get('translator')->trans('file.share.list.label')));
+    	
 	    	if ($request->getMethod() == 'POST') { 
 	    		$form->bindRequest($request); 
-	    	
-	    		if ($form->isValid()) {
-	    			$file_id = $shareclass->getId();
+	    		//if ($form->isValid()) {
 	    			$users = $shareclass->getUsers();
-	    			$txt = $_POST['files'];
+	    			$txt = $_POST['files_share_input'];
 	    			$tab_ids = explode(";", $txt);
 	    			foreach($tab_ids as $row ){
-	    				
-	    				$file = $this->container->get('filed_user.file')->load($row);
-	    				if($file!=null){
-	    					$file = $this->shareAll($file,$users,true);
+	    				if($row!=null && $row!=""){
+		    				$file = $this->container->get('filed_user.file')->load($row);
+		    				if($file!=null){
+		    					$file = $this->shareAll($file,$users,true);
+		    				}
+		    				else $this->get('logger')->err('[FileController] Unable to share file with id '.$row);
 	    				}
 	    			}
 	    			
             		$this->container->get('session')->setFlash('success',$this->container->get('translator')->trans('msg.success.files.share'));
 	    			return new RedirectResponse($this->container->get('router')->generate('user_index')."?file=".$_POST['current_url_file']);
-	    		}
+	    		//}
 	    	}
     	}
     	catch(\Exception $e){
 
     		$this->container->get('session')->setFlash('error',$this->container->get('translator')->trans('msg.error.files.share'));
-    		$this->get('logger')->err('[FileController] Error while sharing files : '.$e->getMessage());
+    		$this->get('logger')->err('[FileController] Error while sharing files : '.$e->getCode().' : '.$e->getMessage());
     	}
     	return $this->container->get('templating')->renderResponse($template,
     			array(
@@ -1064,11 +1065,19 @@ class FileController extends Controller
      */
     public function markAsSeenAction()
     {
-    	$id = $_POST['id'];
-    	$marked = $_POST['marked'];
-    	$file = $this->container->get('filed_file.file')->load($id);
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $this->markAsSeen($file,$user,$marked==1?true:false);
+    	try{
+	    	$id = $_POST['id'];
+	    	$marked = $_POST['marked'];
+	    	$file = $this->container->get('filed_file.file')->load($id);
+	        $user = $this->container->get('security.context')->getToken()->getUser();
+	        $this->markAsSeen($file,$user,$marked==1?true:false);
+    		$this->get('logger')->info('[FileController] Mark as '.$marked==1?'unseen':'seen'.' file '.$file->getId().' to user id'.$user->getId());
+	     
+    	}
+    	catch(Exception $e){
+    		
+    		$this->get('logger')->info('[FileController] Error while marking file '.$id.' : '.$e->getMessage());
+    	}
         return new Response('');
     }
     
