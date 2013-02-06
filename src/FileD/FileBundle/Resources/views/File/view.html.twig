@@ -44,14 +44,14 @@
 		    				{% if files is empty %}
 		    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
 		    				{% else %}
-				            	<table id="filestable" class="table table-striped span10" >
+				            	<table id="filestable" class="table table-striped span10 tablesorter unseen" >
 				            		<thead>
 				            			<tr>
 				            				<th></th>
-				            				<th>{% trans %}file.list.name{% endtrans %}</th>
-				            				<th>{% trans %}file.list.size{% endtrans %}</th>
-				            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
-				            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
+				            				<th class="">{% trans %}file.list.name{% endtrans %}</th>
+				            				<th class="header">{% trans %}file.list.size{% endtrans %}</th>
+				            				<th class="">{% trans %}file.list.addedon{% endtrans %}</th>
+				            				<th class="">{% trans %}file.list.addedby{% endtrans %}</th>
 				            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
 				            			</tr>
 				            		</thead>
@@ -218,17 +218,17 @@
     						{% if seen_files is empty %}
 			    					<p class="text-error span2 offset2">{% trans %}file.list.nofilesfound{% endtrans %}</p>
 			    				{% else %}
-					            	<table id="filestable" class="table table-striped span10" >
+					            	<table id="filestable" class="table table-striped span10 tablesorter seen" >
 					            		<thead>
-					            			<tr>
-					            				<th></th>
-					            				<th>{% trans %}file.list.name{% endtrans %}</th>
-					            				<th>{% trans %}file.list.size{% endtrans %}</th>
-					            				<th>{% trans %}file.list.addedon{% endtrans %}</th>
-					            				<th>{% trans %}file.list.addedby{% endtrans %}</th>
-					            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
-					            			</tr>
-					            		</thead>
+				            			<tr>
+				            				<th></th>
+				            				<th class="">{% trans %}file.list.name{% endtrans %}</th>
+				            				<th class="header">{% trans %}file.list.size{% endtrans %}</th>
+				            				<th class="">{% trans %}file.list.addedon{% endtrans %}</th>
+				            				<th class="">{% trans %}file.list.addedby{% endtrans %}</th>
+				            				<th>{% trans %}file.list.actions{% endtrans %}</th>	
+				            			</tr>
+				            		</thead>
 					            		<tbody>
 					    					{% for file in seen_files %}
 					    						<tr class="tr{{ file.id }}">
@@ -436,6 +436,7 @@
 					
 					#filestable{
 						width: 90% !important;
+						margin-left: 40px;
 					}
 					
 					#dialog-confirm{
@@ -453,7 +454,7 @@
 				
 				<!-- Script for name edition -->
 				<script type="text/javascript">
-
+				
 				<!-- Function which add a repository -->
 				function addRepository(){
 					//add a repository on current level with ajax request
@@ -842,7 +843,13 @@
 					
 				}
 
+				<!-- Function which order files
+					//param: columnName(string), type of order(integer 0=asc,1=desc) , type of files panel (integer unseen=0,seen=1) 
 				//-->
+				function orderFiles(colname,order,filestype)
+				{
+					
+				}
 				</script>
 				            	
          

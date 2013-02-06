@@ -374,6 +374,9 @@ class FileController extends Controller
      * @return the rendering view.html.twig with files loaded
      */
     public function viewFilesAction($fileId,$last_username,$csrf_token){
+    	$title = $this->container->get('translator')->trans("app.url.files");
+    	//Add the title page
+    	$this->container->get('session')->set('page',$title);
     	
     	$template = sprintf('FileDFileBundle:File:view.html.%s', $this->container->getParameter('fos_user.template.engine'));	
     	$non_seen_files = null;
@@ -495,6 +498,8 @@ class FileController extends Controller
     		
     	}
     	else $is_grand_parent_shared=true;
+    	
+    	
     	return $this->container->get('templating')->renderResponse($template, 
     			array('files' => $non_seen_files, 
     				  'seen_files' => $seen_files,

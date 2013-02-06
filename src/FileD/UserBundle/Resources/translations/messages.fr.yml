@@ -1,3 +1,5 @@
+app.url.files: Liste des fichiers
+
 app.nav.home: Accueil
 app.nav.compte: Mon compte
 app.nav.contact: Contact
@@ -52,6 +54,14 @@ file.list.all.delete: Supprimer
 file.list.all.mark: Marquer comme vu
 file.list.all.unmark: Marquer comme non vu
 file.list.all.share.modal: Partage des fichiers
+file.list.name.asc: Trier les fichiers sur le nom (ascendant) 
+file.list.name.desc: Trier les fichiers sur le nom (descendant)
+file.list.size.asc: Trier les fichiers sur la taille (ascendant)
+file.list.size.desc: Trier les fichiers sur la taille (descendant)
+file.list.date.asc: Trier les fichiers sur la date de publication (ascendant)
+file.list.date.desc: Trier les fichiers sur la date de publication (descendant)
+file.list.author.asc: Trier les fichiers sur le nom de l'auteur (ascendant)
+file.list.author.desc: Trier les fichiers sur le nom de l'auteur (descendant)
 
 file.share.ahref.title: Partagé avec
 file.share.title: Partage de fichier

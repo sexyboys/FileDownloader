@@ -2,9 +2,12 @@
 	<head>
 		<title> {{ app.session.get('page') }} | {{ appname }}</title>
         <meta charset="UTF-8" />
-		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap.css') }}">
-		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap-responsive.css') }}">
-		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/docs.css') }}">
+        <link href="{{ asset('bundles/filedfile/img/favicon.png') }}" rel="shortcut icon">
+        
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/bootstrap-responsive.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/css/docs.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('bundles/filedfile/js/jquery.tablesorter/style.css') }}"/>
 		<style>
 			/**Left sidebar **/
 			.nav-list{
@@ -31,14 +34,21 @@
 	<script src="{{ asset('bundles/filedfile/js/fancybox/jquery.fancybox.pack.js') }}"></script>
 	<script src="{{ asset('bundles/filedfile/js/fancybox/jquery.mousewheel-3.0.6.pack.js') }}"></script>
 	
+	<script src="{{ asset('bundles/filedfile/js/jquery.tablesorter.js') }}"></script>
+	<script src="{{ asset('bundles/filedfile/js/jquery.tablesorter.pager.js') }}"></script>
+	<script src="{{ asset('bundles/filedfile/js/jquery.metadata.js') }}"></script>
+	
 	
 	
 	
 	<script type="text/javascript">
 
-
+		$(document).ready(function() { 
+	    	$("#filestable").tablesorter({headers: { 0: { sorter: false}, 5: {sorter: false} }});
 			$(".gallery").fancybox();
-		
+
+		 } 
+		); 
 	</script>
 		{% block js %}
 		{% endblock %}

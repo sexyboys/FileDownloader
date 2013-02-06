@@ -1,3 +1,5 @@
+app.url.files: List of files
+
 app.nav.home: Home
 app.nav.compte: My account
 app.nav.contact: Contact
@@ -52,7 +54,14 @@ file.list.all.delete: Delete
 file.list.all.mark: Mark as seen
 file.list.all.unmark: Mark as unseen
 file.list.all.share.modal: Share files
-
+file.list.name.asc: Sort ascending files by name 
+file.list.name.desc: Sort descending files by name
+file.list.size.asc: Sort ascending files by size 
+file.list.size.desc: Sort descending files by size
+file.list.date.asc: Sort ascending files by publication date
+file.list.date.desc: Sort descending files by publication date
+file.list.author.asc: Sort ascending files by author name
+file.list.author.desc: Sort descending files by author name
 file.share.ahref.title: Sharing with
 file.share.title: Sharing File
 file.share.list.label: Users
