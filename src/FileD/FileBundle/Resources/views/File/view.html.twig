@@ -718,7 +718,7 @@
 			 		});
 				} 
 
-				<!-- Function which mark a file or a repository as seen
+				<!-- Function which mark  files or  repositories as seen
 				//param type (0: not seen files panel, 1: seen files panel)
 				//param marked (0: to mark, 1: to unmark)
 				-->
@@ -729,13 +729,14 @@
 						uid="box_seen";
 					}
 					$('#filestable input:checked').each(function(){
+
 						id=$(this).prop("value");
-						var DATA = {'id': id, 'marked':marked};
+                        var DATA = {'id': id, 'marked':marked};
 				 		$.ajax({
 				 			type: "POST",
 				 			url: "{{ path('file_mark_as_seen') }}",
 				 			data: DATA,
-				 			async:true,
+				 			async:false,
 				 			cache: false,
 				 			success: function(data){
 				 				return false;
@@ -746,6 +747,7 @@
 				 		});
 					});
 					$('#loadingModal').modal('hide');
+                    document.location.reload(true);
 					return true;
 				} 
 
@@ -823,33 +825,30 @@
 					}
 					$('input:checkbox[id^="'+uid+'"]:checked').each(function(){
 						id=$(this).prop("value");
+
 						var DATA = {'id': id, 'choice': 2};
 				 		$.ajax({
 				 			type: "POST",
 				 			url: "{{ path('file_delete') }}",
 				 			data: DATA,
-				 			async:true,
+				 			async:false,
 				 			cache: false,
 				 			success: function(data){
 				 				//avoid full refresh
-				 				if(data=="true") $('.tr'+id).remove();
+				 				//if(data=="true") $('.tr'+id).remove();
+                                 return false;
 				 			},
 				 			error: function(request,status,error){
+                                 return false;
 				 			}
 				 		});
 					});
 					$('#loadingModal').modal('hide');
+                    document.location.reload(true);
 					return true;
 					
 				}
 
-				<!-- Function which order files
-					//param: columnName(string), type of order(integer 0=asc,1=desc) , type of files panel (integer unseen=0,seen=1) 
-				//-->
-				function orderFiles(colname,order,filestype)
-				{
-					
-				}
 				</script>
 				            	
          
