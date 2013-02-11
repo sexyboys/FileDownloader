@@ -17,3 +17,5 @@ app/config/parameters.yml
 composer.phar
 .settings
 .settings/*
+.idea
+.idea/*
