@@ -33,7 +33,16 @@
       <file leaf-file-name="view.html.twig" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="837" column="34" selection-start="35170" selection-end="35170" vertical-scroll-proportion="0.6047904">
+            <state line="515" column="35" selection-start="25720" selection-end="25720" vertical-scroll-proportion="0.4251497">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FileController.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="629" column="13" selection-start="22818" selection-end="22818" vertical-scroll-proportion="-25.625">
               <folding />
             </state>
           </provider>
@@ -267,6 +276,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FileD" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FileBundle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Controller" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FileDownloader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FileDownloader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -392,9 +427,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="629" column="13" selection-start="22818" selection-end="22818" vertical-scroll-proportion="-25.625">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="837" column="34" selection-start="35170" selection-end="35170" vertical-scroll-proportion="0.6047904">
+        <state line="515" column="35" selection-start="25720" selection-end="25720" vertical-scroll-proportion="0.4251497">
           <folding />
         </state>
       </provider>

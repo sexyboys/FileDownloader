@@ -513,7 +513,7 @@
 							result = 2;
 						}
 				    }
-				    else result = 2;
+				    else result = 1;
 			       $('#loadingModal').modal('show');
 					
 					var DATA = {'id': id, 'choice': result};
@@ -826,7 +826,7 @@
 					$('input:checkbox[id^="'+uid+'"]:checked').each(function(){
 						id=$(this).prop("value");
 
-						var DATA = {'id': id, 'choice': 2};
+						var DATA = {'id': id, 'choice': 1};
 				 		$.ajax({
 				 			type: "POST",
 				 			url: "{{ path('file_delete') }}",
