@@ -597,6 +597,7 @@ class FileController extends Controller
     /**
      * Deletes a File entity.
      * @param $_POST['id'] the id of the file
+     * @param $_POST['choice'] the choice for file (1 to ignore physical delete, 2 to do a physical delete too)
      * @return true or false
      */
     public function deleteAction()

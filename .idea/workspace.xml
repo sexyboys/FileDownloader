@@ -5,7 +5,7 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/src/FileD/FileBundle/Controller/DefaultController.php" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/Default/index.html.twig" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/web/data/downloads/zip/Test.zip" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig" afterPath="$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php" afterPath="$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php" />
     </list>
     <ignored path="FileDownloader.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,19 +30,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="view.html.twig" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="view.html.twig" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="515" column="35" selection-start="25720" selection-end="25720" vertical-scroll-proportion="0.4251497">
+            <state line="504" column="0" selection-start="25310" selection-end="25310" vertical-scroll-proportion="-7.9166665">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FileController.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="FileController.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="629" column="13" selection-start="22818" selection-end="22818" vertical-scroll-proportion="-25.625">
+            <state line="599" column="100" selection-start="21819" selection-end="21819" vertical-scroll-proportion="0.23353294">
               <folding />
             </state>
           </provider>
@@ -67,6 +67,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig" />
+        <option value="$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php" />
       </list>
     </option>
   </component>
@@ -427,16 +428,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php">
+    <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="629" column="13" selection-start="22818" selection-end="22818" vertical-scroll-proportion="-25.625">
+        <state line="504" column="0" selection-start="25310" selection-end="25310" vertical-scroll-proportion="-7.9166665">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Resources/views/File/view.html.twig">
+    <entry file="file://$PROJECT_DIR$/src/FileD/FileBundle/Controller/FileController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="515" column="35" selection-start="25720" selection-end="25720" vertical-scroll-proportion="0.4251497">
+        <state line="599" column="100" selection-start="21819" selection-end="21819" vertical-scroll-proportion="0.23353294">
           <folding />
         </state>
       </provider>
