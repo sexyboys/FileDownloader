@@ -1,4 +1,7 @@
+
+app.url.index: Accueil
 app.url.files: Liste des fichiers
+app.url.account: Mon compte
 
 app.nav.home: Accueil
 app.nav.compte: Mon compte

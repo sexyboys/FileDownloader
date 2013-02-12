@@ -24,7 +24,10 @@ class UserController extends Controller
      */
     public function indexAction()
     {
-    	$this->get('session')->set("page","Accueil");
+        $title = $this->container->get('translator')->trans("app.url.index");
+        //Add the title page
+        $this->container->get('session')->set('page',$title);
+
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('FileDUserBundle:User')->findAll();

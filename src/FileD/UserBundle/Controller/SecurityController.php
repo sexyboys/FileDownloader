@@ -19,6 +19,11 @@ class SecurityController extends ContainerAware
 	 */
     public function loginAction()
     {
+
+        $title = $this->container->get('translator')->trans("app.url.files");
+        //Add the title page
+        $this->container->get('session')->set('page',$title);
+
         $request = $this->container->get('request');
         $session = $request->getSession();
         // get the error if any (works with forward and redirect -- see below)

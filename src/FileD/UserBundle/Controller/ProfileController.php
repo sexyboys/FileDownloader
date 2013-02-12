@@ -33,6 +33,10 @@ class ProfileController extends ContainerAware
      */
     public function showAction()
     {
+        $title = $this->container->get('translator')->trans("app.url.account");
+        //Add the title page
+        $this->container->get('session')->set('page',$title);
+
         $user = $this->container->get('security.context')->getToken()->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
